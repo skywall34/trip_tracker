@@ -1,0 +1,167 @@
+package templates
+
+import (
+    "github.com/skywall34/trip-tracker/internal/models"
+    "time"
+    "fmt"
+)
+
+templ TripsPage() {
+	<div class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+		<div class="text-center mb-8 mt-4">
+
+            <!-- Flight Path Image -->
+			<img src="/static/images/flight_path.png" alt="Flight Path" class="mx-auto w-32 h-32">
+
+            <!-- Title and subtitle -->
+            <h1 class="text-5xl sm:text-4xl font-bold text-gray-800 mb-2">Saving Your Trips Is Easier Now</h1>
+
+            <!-- Search Bar -->
+            <div class="flex justify-center mt-4">
+                <input
+                    type="text"
+                    placeholder="Search for a trip"
+                    class="w-2/3 sm:w-1/2 rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none"
+                />
+                <button class="rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border rounded-full overflow-hidden w-full max-w-sm mx-auto mb-6">
+            <button hx-get="/trips?&past=false" hx-target="#trips-list" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
+                Upcoming
+            </button>
+            <button hx-get="/trips?&past=true" hx-target="#trips-list" class="w-1/2 bg-gray-200 text-gray-600 py-2 font-semibold transition hover:bg-gray-300 focus:outline-none">
+                Past
+            </button>
+        </div>
+			
+        <!-- Trip Cards List TODO: Filter only by user and date range -->
+        <div id="trips-list">
+            <!-- This will be populated by HTMX, calling RenderTrips or RenderPastTrips -->
+        </div>   
+	</div>
+}
+
+templ RenderTrips(trips []models.Trip) {
+
+    <!-- Trip Filters TODO: Show Date Filter -->
+    <div class="text-center text-lg font-semibold mt-4 text-green-700">
+        {time.Now().AddDate(0, 0, -7).Format("2 Jan")} - {time.Now().Format("2 Jan")}
+    </div>
+      
+
+    <div class="space-y-6">
+        for _, trip := range trips {
+            <!-- Flight Card TODO: Reservation, Terminal, Gate -->
+            <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
+                <span></span>
+                <span>{
+                    fmt.Sprintf(
+                        "%dh %dm", 
+                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
+                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
+                    }
+                </span>
+            </div>
+            <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg">
+                <div class="flex justify-between items-cente">
+                    <div class="text-center w-full">
+                        <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
+                        <span class="block text-xl font-semiboldd"> { time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05")} </span>
+                    </div>
+                    <span class="text-3xl font-bold text-green-600">→</span>
+                    <div class="text-center w-full">
+                        <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
+                        <span class="block text-xl font-semibold">{time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05")}</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
+                    <span class="col-span-1">Flight</span>
+                    <span class="col-span-1">Reservation</span>
+                    <span class="col-span-1">Terminal</span>
+                    <span class="col-span-1">Gate</span>
+                </div>
+                <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
+                    <span class="col-span-1">{trip.FlightNumber}</span>
+                    <span class="col-span-1">{trip.Reservation}</span>
+                    <span class="col-span-1">{trip.Terminal}</span>
+                    <span class="col-span-1">{trip.Gate}</span>
+                </div>
+            </div>
+        
+            <!-- Check-In Section TODO: Status Backend -->
+            <div class="bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1">
+                <div class="flex justify-between">
+                    <div class="text-center w-full">
+                        <span class="block text-sm font-bold">Status</span>
+                        <span class="block text-sm font-bold">On Time</span>
+                    </div>
+                    <div class="text-center w-full">
+                        <span class="block text-sm font-bold">Check-In At</span>
+                        <span class="block text-sm font-bold">
+                            {time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).Format("2006-01-02 15:04:05")}
+                        </span>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2">
+                    <div class="bg-green-500 h-full" style="width: 60%;"></div>
+                </div>
+            </div>
+
+            if time.Now().Unix() > int64(trip.DepartureTime) - (24 * 60 * 60) && time.Now().Unix() < int64(trip.DepartureTime) - (90 * 60) {
+                <!-- Check-In Button Only If Within the time frame (24hrs before and up to 90 minutes before departure) -->
+                <button class="w-full bg-green-500 text-white py-2 mt-2 rounded-lg font-semibold hover:bg-green-600 transition">
+                    Check In
+                </button>
+            }
+        }
+    </div>
+}
+
+templ RenderPastTrips(trips []models.Trip) {
+
+    <div class="space-y-6">
+        for _, trip := range trips {
+            <!-- Flight Card TODO: Reservation, Terminal, Gate -->
+            <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
+                <span></span>
+                <span>{
+                    fmt.Sprintf(
+                        "%dh %dm", 
+                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
+                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
+                    }
+                </span>
+            </div>
+            <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg">
+                <div class="flex justify-between items-cente">
+                    <div class="text-center w-full">
+                        <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
+                        <span class="block text-xl font-semiboldd"> { time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05")} </span>
+                    </div>
+                    <span class="text-3xl font-bold text-green-600">→</span>
+                    <div class="text-center w-full">
+                        <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
+                        <span class="block text-xl font-semibold">{time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05")}</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
+                    <span class="col-span-1">Flight</span>
+                    <span class="col-span-1">Reservation</span>
+                    <span class="col-span-1">Terminal</span>
+                    <span class="col-span-1">Gate</span>
+                </div>
+                <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
+                    <span class="col-span-1">{trip.FlightNumber}</span>
+                    <span class="col-span-1">{trip.Reservation}</span>
+                    <span class="col-span-1">{trip.Terminal}</span>
+                    <span class="col-span-1">{trip.Gate}</span>
+                </div>
+            </div>
+        }
+    </div>
+}

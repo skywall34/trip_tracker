@@ -1,0 +1,38 @@
+package templates
+
+templ Register() {
+    <div class="flex-1 flex flex-col justify-center items-center">
+        <h1 class="text-5xl font-bold mb-4">Register</h1>
+
+        <form hx-post="/register" hx-trigger="submit" hx-target-400="#register-error" class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <div id="register-error"></div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Email</label>
+                <input type="email" name="email" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium">Password</label>
+                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium">First Name</label>
+                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium">Last Name</label>
+                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                Register
+            </button>
+        </form>
+    </div>
+}
+
+templ RegisterError() {
+    <p>Invalid Email or Password</p>
+}

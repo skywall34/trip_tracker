@@ -1,0 +1,35 @@
+package templates
+
+templ Login() {
+    <div hx-ext="response-targets" class="flex-1 flex flex-col justify-center items-center">
+        <h1 class="text-5xl font-bold mb-4">Welcome Back</h1>
+        <p class="text-lg text-gray-600 mb-6 text-center">Login to continue your journey</p>
+
+        <form hx-post="/login" hx-trigger="submit" hx-target-401="#login-error" class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <div id="login-error"></div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium">Email</label>
+                <input type="email" name="email" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-medium">Password</label>
+                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                Sign In
+            </button>
+        </form>
+
+        <p class="mt-4 text-gray-600">
+            Don't have an account yet?
+            <a href="/register" class="text-green-600 font-semibold hover:underline">Register</a>
+        </p>
+
+    </div>
+}
+
+templ LoginError() {
+    <p>Invalid Email or Password</p>
+}
