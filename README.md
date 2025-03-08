@@ -25,6 +25,34 @@ We use the aviationstack API for real time flight/airport information [Check the
 
 ---
 
+## Database
+
+I use sqlite for this project
+
+### Installation
+
+Assuming you're working on an Ubuntu 22.04, but this process is similar for most OS cases.
+
+```bash
+sudo apt update
+```
+
+```bash
+sudo apt install sqlite3
+```
+
+Verify the installation
+
+```bash
+sqlite3 --version
+```
+
+Creates the shell and new database. I like to put this under the database folder
+
+```bash
+sqlite3 database.db
+```
+
 ## Installing Tailwind
 
 To generate the Tailwind style sheet, we use the Tailwind binary. To get started with TailWind CSS, make sure you have the correct binary in the root directory. follow the instructions in this guide. Make sure you download the correct binary for your operating system. https://tailwindcss.com/blog/standalone-cli

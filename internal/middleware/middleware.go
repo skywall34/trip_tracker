@@ -4,10 +4,11 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
+
+	db "github.com/skywall34/trip-tracker/internal/database"
 )
 
 type key string
@@ -120,44 +121,43 @@ func GetTwNonce(ctx context.Context) string {
 
 /***********************************Auth Middleware**********************************************/
 
+type AuthMiddleware struct {
+	sessionStore *db.SessionStore
+	sessionCookieName string
+}
+
+func NewAuthMiddleware(sessionStore *db.SessionStore, sessionCookieName string) *AuthMiddleware {
+	return &AuthMiddleware{
+		sessionStore: sessionStore,
+		sessionCookieName: sessionCookieName,
+	}
+}
+
 type UserContextKey string
 
 var UserKey UserContextKey = "user"
 
-// validateSession checks if there's a "session_id" cookie, and uses that ID to
-// look up the associated user. In a real app, you'd query a database or cache.
-// TODO: Replace with actual session validation logic. The return will be the whole User
-func validateSession(r *http.Request) (int, error) {
-    // Check if we have a session_id cookie
-    cookie, err := r.Cookie("session_id")
-    if err != nil {
-        // No session_id cookie found
-        return 0, errors.New("session cookie not found")
-    }
 
-    // In a real implementation, you'd look up the session in your session store.
-    // For demonstration, we'll pretend any non-empty cookie value is valid.
-    sessionID := cookie.Value
-    if sessionID == "" {
-        return 0, errors.New("invalid or empty session ID")
-    }
-
-    // Mock user ID retrieval from the session store.
-    // For example, maybe session ID 'abc123' = user ID 42, etc.
-    // We'll just return a static userID for demonstration.
-    mockUserID := 1
-
-    // If everything checks out, return the user ID
-    return mockUserID, nil
-}
-
-
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
+func (m *AuthMiddleware) AddUserToContext(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check if the user is authenticated
-		userId, err := validateSession(r)
+		cookie, err := r.Cookie("session_id")
 		if err != nil {
-			// if the request came from /home, redirect just retunr
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		sessionID := cookie.Value
+		if sessionID == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// Get user from session
+		userId, err := m.sessionStore.GetUserFromSession(sessionID)
+
+		if err != nil {
+			// if the request came from /home, redirect just return
 			if r.URL.Path == "/" {
 				next.ServeHTTP(w, r)
 				return

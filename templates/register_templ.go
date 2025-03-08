@@ -29,7 +29,7 @@ func Register() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex-1 flex flex-col justify-center items-center\"><h1 class=\"text-5xl font-bold mb-4\">Register</h1><form hx-post=\"/register\" hx-trigger=\"submit\" hx-target-400=\"#register-error\" class=\"bg-white p-8 rounded-lg shadow-lg w-96\"><div id=\"register-error\"></div><div class=\"mb-4\"><label class=\"block text-gray-700 font-medium\">Email</label> <input type=\"email\" name=\"email\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">Password</label> <input type=\"password\" name=\"password\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">First Name</label> <input type=\"password\" name=\"password\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">Last Name</label> <input type=\"password\" name=\"password\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><button type=\"submit\" class=\"w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition\">Register</button></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex-1 flex flex-col justify-center items-center\"><h1 class=\"text-5xl font-bold mb-4\">Register</h1><form hx-post=\"/register\" hx-trigger=\"submit\" hx-target-400=\"#register-error\" class=\"bg-white p-8 rounded-lg shadow-lg w-96\"><div id=\"register-error\"></div><div class=\"mb-4\"><label class=\"block text-gray-700 font-medium\">Email</label> <input type=\"email\" name=\"email\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">Password</label> <input type=\"password\" name=\"password\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">First Name</label> <input type=\"text\" name=\"firstname\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">Last Name</label> <input type=\"text\" name=\"lastname\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><button type=\"submit\" class=\"w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition\">Register</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -59,6 +59,35 @@ func RegisterError() templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p>Invalid Email or Password</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func RegisterSuccess() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<h1 class=\"text-5xl font-bold mb-4\">Registration Successful!</h1><p>Go to <a href=\"/\">Home</a></p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

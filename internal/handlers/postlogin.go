@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/templates"
@@ -11,15 +13,18 @@ import (
 
 type PostLoginHandler struct {
 	userStore *db.UserStore
+	sessionStore *db.SessionStore
 }
 
 type PostLoginHandlerParams struct {
 	UserStore *db.UserStore
+	SessionStore *db.SessionStore
 }
 
 func NewPostLoginHandler(params PostLoginHandlerParams) *PostLoginHandler {
 	return &PostLoginHandler{
 		userStore: params.UserStore,
+		sessionStore: params.SessionStore,
 	}
 }
 
@@ -39,7 +44,6 @@ func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// TODO: Proper authentication logic here
 	user, err := h.userStore.GetUser(email)
 	if err != nil {
-		fmt.Println("Invalid User")
 		w.WriteHeader(http.StatusUnauthorized)
 		c := templates.LoginError()
 		c.Render(r.Context(), w)
@@ -55,9 +59,15 @@ func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Example: Assume user logs in successfully and gets a session ID
-	// TODO: Generate a secure session ID via Session Store
-	sessionID := "abc123" // This would typically be generated securely
+	sessionID, err := h.sessionStore.CreateSession(strconv.FormatInt(user.ID, 10))
+
+	if err != nil {
+		log.Fatal("Error Creating session: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		c := templates.LoginError()
+		c.Render(r.Context(), w)
+		return
+	}
 
 	// Set the session cookie (max-age 1 day, httpOnly for security)
 	http.SetCookie(w, &http.Cookie{

@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/internal/models"
@@ -13,15 +15,18 @@ import (
 
 type PostRegisterHandler struct {
 	userStore *db.UserStore
+	sessionStore *db.SessionStore
 }
 
 type PostRegisterHandlerParams struct {
 	UserStore *db.UserStore
+	SessionStore *db.SessionStore
 }
 
 func NewPostRegisterHandler(params PostRegisterHandlerParams) *PostRegisterHandler {
 	return &PostRegisterHandler{
 		userStore: params.UserStore,
+		sessionStore: params.SessionStore,
 	}
 }
 
@@ -61,7 +66,7 @@ func (h *PostRegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
         Email: email,
     }
 
-	_, err = h.userStore.CreateUser(newUser)
+	newUserID, err := h.userStore.CreateUser(newUser)
 
 	if err != nil {
 		// w.WriteHeader(http.StatusBadRequest)
@@ -71,8 +76,15 @@ func (h *PostRegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// TODO: Generate a secure session ID via Session Store
-	sessionID := "abc123" // This would typically be generated securely
+	sessionID, err := h.sessionStore.CreateSession(strconv.FormatInt(newUserID, 10))
+
+	if err != nil {
+		log.Fatal("Error Creating session: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		c := templates.LoginError()
+		c.Render(r.Context(), w)
+		return
+	}
 
 	// Set the session cookie (max-age 1 day, httpOnly for security)
 	http.SetCookie(w, &http.Cookie{
@@ -85,16 +97,11 @@ func (h *PostRegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 
 	fmt.Println("User Registered, session cookie set.")
 
-	// Redirect user after setting cookie
-	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-func HtmxRegisterHandler(w http.ResponseWriter, r *http.Request) {
-	c := templates.Register()
-	err := templates.Layout(c, "Mia's Trips").Render(r.Context(), w)
+	c := templates.RegisterSuccess()
+	err = c.Render(r.Context(), w)
 
 	if err != nil {
-		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+		http.Error(w, "Error Rendering Template", http.StatusInternalServerError)
 		return
 	}
 }

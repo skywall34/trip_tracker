@@ -27,6 +27,8 @@ func main() {
 
     userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
     tripStore := database.NewTripStore(database.NewTripStoreParams{DB: db})
+    sessionStore := database.NewSessionStore(database.NewSessionStoreParams{DB: db})
+    authMiddleware := m.NewAuthMiddleware(sessionStore, "session_id")
 
     mux := http.NewServeMux()
 
@@ -34,23 +36,30 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
     // Main
-    mux.Handle("/", m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetHomeHandler().ServeHTTP))))
+    mux.Handle("/", authMiddleware.AddUserToContext(
+        m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetHomeHandler().ServeHTTP))))
 
     // Page Routes
-    mux.Handle("GET /trips",  m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetTripHandler(
+    mux.Handle("GET /trips",  authMiddleware.AddUserToContext(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetTripHandler(
         handlers.GetTripHandlerParams{
             TripStore: tripStore,
-    }).ServeHTTP))))
+        }).ServeHTTP))))
     mux.Handle("GET /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetLoginHandler().ServeHTTP)))
     mux.Handle("POST /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostLoginHandler(
         handlers.PostLoginHandlerParams{
             UserStore: userStore,
-    }).ServeHTTP)))
+            SessionStore: sessionStore,
+        }).ServeHTTP)))
+    mux.Handle("POST /logout", m.CSPMiddleware(handlers.NewPostLogoutHandler(
+        handlers.PostLogoutHandlerParams{
+            SessionCookieName: "session_id",
+        }).ServeHTTP))
     mux.Handle("GET /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetRegisterHandler().ServeHTTP)))
     mux.Handle("POST /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostRegisterHandler(
         handlers.PostRegisterHandlerParams{
             UserStore: userStore,
-    }).ServeHTTP)))
+            SessionStore: sessionStore,
+        }).ServeHTTP)))
 
     port := os.Getenv("PORT")
     if port == "" {

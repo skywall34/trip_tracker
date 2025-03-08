@@ -18,12 +18,12 @@ templ Register() {
 
             <div class="mb-6">
                 <label class="block text-gray-700 font-medium">First Name</label>
-                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                <input type="text" name="firstname" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
             </div>
 
             <div class="mb-6">
                 <label class="block text-gray-700 font-medium">Last Name</label>
-                <input type="password" name="password" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                <input type="text" name="lastname" required class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
             </div>
 
             <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
@@ -35,4 +35,9 @@ templ Register() {
 
 templ RegisterError() {
     <p>Invalid Email or Password</p>
+}
+
+templ RegisterSuccess() {
+    <h1 class="text-5xl font-bold mb-4">Registration Successful!</h1>
+    <p>Go to <a href="/">Home</a></p>
 }
