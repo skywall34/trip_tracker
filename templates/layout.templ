@@ -28,7 +28,7 @@ templ nav() {
             <a href="/about" class="hover:underline text-gray-700">About</a>
             <a href="/trips" class="hover:underline text-gray-700">Trips</a>
             if middleware.GetUserUsingContext(ctx) >= 0 {
-                <a hx-post="/logout" class="button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition">
+                <a hx-post="/logout" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition">
                     Logout
                 </a>
             } else {

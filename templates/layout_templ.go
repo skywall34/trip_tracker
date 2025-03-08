@@ -148,7 +148,7 @@ func nav() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if middleware.GetUserUsingContext(ctx) >= 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a hx-post=\"/logout\" class=\"button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition\">Logout</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a hx-post=\"/logout\" hx-trigger=\"click\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition\">Logout</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

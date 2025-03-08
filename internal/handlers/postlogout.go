@@ -27,5 +27,7 @@ func (h *PostLogoutHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Path:    "/",
 	})
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// HTMX Redirect Response
+    w.Header().Set("HX-Redirect", "/") // This makes HTMX handle the redirect
+    w.WriteHeader(http.StatusSeeOther) // HTTP 303 See Other (optional but recommended)
 }
