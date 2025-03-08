@@ -8,7 +8,15 @@ import (
 	"github.com/skywall34/trip-tracker/templates"
 )
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
+type GetHomeHandler struct {}
+
+type GetHomeHandlerParams struct {}
+
+func NewGetHomeHandler() *GetHomeHandler {
+	return &GetHomeHandler{}
+}
+
+func (h *GetHomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     userId := m.GetUserUsingContext(r.Context())
 

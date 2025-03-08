@@ -4,27 +4,40 @@ import (
 	"fmt"
 	"net/http"
 
+	db "github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/templates"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func HtmxLoginHandler(w http.ResponseWriter, r *http.Request) {
-	c := templates.Login()
-	err := templates.Layout(c, "Mia's Trips").Render(r.Context(), w)
+type PostLoginHandler struct {
+	userStore *db.UserStore
+}
 
-	if err != nil {
-		http.Error(w, "Error rendering template", http.StatusInternalServerError)
-		return
+type PostLoginHandlerParams struct {
+	UserStore *db.UserStore
+}
+
+func NewPostLoginHandler(params PostLoginHandlerParams) *PostLoginHandler {
+	return &PostLoginHandler{
+		userStore: params.UserStore,
 	}
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func comparePasswords(password, hashedPassword string) (bool, error) {
+    err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+    if err != nil {
+        return false, err
+    }
+    return true, nil
+}
+
+func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
 	// TODO: Proper authentication logic here
-	// TODO: 
-	user, err := GetUser(email)
+	user, err := h.userStore.GetUser(email)
 	if err != nil {
 		fmt.Println("Invalid User")
 		w.WriteHeader(http.StatusUnauthorized)
@@ -33,7 +46,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	passwordIsValid, err := ComparePasswords(password, user.Password)
+	passwordIsValid, err := comparePasswords(password, user.Password)
 
 	if err != nil || !passwordIsValid {
 		w.WriteHeader(http.StatusUnauthorized)

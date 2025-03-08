@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/internal/handlers"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
 )
@@ -19,17 +20,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-    // Initialize User Data
-    // Hashing the passwords for the users
-    for id, user := range handlers.Users {
-        hashedPassword, err := handlers.HashPassword(user.Password)
-        if err != nil {
-            fmt.Printf("Error hashing password for user %d: %s\n", id, err)
-            return
-        }
-        user.Password = hashedPassword
-        handlers.Users[id] = user
+    db, err := database.InitDB("./internal/database/database.db")
+    if err != nil {
+        log.Fatal(err)
     }
+
+    userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
+    tripStore := database.NewTripStore(database.NewTripStoreParams{DB: db})
 
     mux := http.NewServeMux()
 
@@ -37,29 +34,23 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
     // Main
-    mux.HandleFunc("/", m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.HomeHandler))))
+    mux.Handle("/", m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetHomeHandler().ServeHTTP))))
 
     // Page Routes
-    mux.Handle("GET /trips",  m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.HtmxTripsHandler))))
-    mux.Handle("GET /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.HtmxLoginHandler)))
-    mux.Handle("POST /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.LoginHandler)))
-    mux.Handle("GET /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.HtmxRegisterHandler)))
-    mux.Handle("POST /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.RegisterHandler)))
-
-    // API Routes
-    mux.Handle("GET /api/trips", m.ApplicationJsonMiddleware(handlers.GetTripsHandler))
-    mux.Handle("POST /api/trips", m.ApplicationJsonMiddleware(handlers.PostTripsHandler))
-    mux.Handle("PUT /api/trips", m.ApplicationJsonMiddleware(handlers.EditTripsHandler))
-    mux.HandleFunc("DELETE /api/trips", handlers.DeleteTripsHandler)
-
-    // User Routes
-    mux.Handle("GET /api/users", m.ApplicationJsonMiddleware(handlers.GetUsersHandler))
-    mux.Handle("POST /api/users", m.ApplicationJsonMiddleware(handlers.PostUsersHandler))
-    mux.Handle("PUT /api/users", m.ApplicationJsonMiddleware(handlers.EditUsersHandler))
-    mux.HandleFunc("DELETE /api/users", handlers.DeleteUsersHandler)
-
-    // User Filter Routes
-    mux.Handle("GET /api/user/trips", m.ApplicationJsonMiddleware(handlers.GetTripsForUserHandler))
+    mux.Handle("GET /trips",  m.AuthMiddleware(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetTripHandler(
+        handlers.GetTripHandlerParams{
+            TripStore: tripStore,
+    }).ServeHTTP))))
+    mux.Handle("GET /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetLoginHandler().ServeHTTP)))
+    mux.Handle("POST /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostLoginHandler(
+        handlers.PostLoginHandlerParams{
+            UserStore: userStore,
+    }).ServeHTTP)))
+    mux.Handle("GET /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetRegisterHandler().ServeHTTP)))
+    mux.Handle("POST /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostRegisterHandler(
+        handlers.PostRegisterHandlerParams{
+            UserStore: userStore,
+    }).ServeHTTP)))
 
     port := os.Getenv("PORT")
     if port == "" {
