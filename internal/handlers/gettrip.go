@@ -68,8 +68,18 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             return
         }
 
+        currentUnixTime := time.Now().Unix()
+
         if filterPast == "true" {
-            renderErr := templates.RenderPastTrips(userTrips).Render(r.Context(), w)
+            var pastTrips []models.Trip
+
+            // Filter only the past trips before now
+            for _, trip := range userTrips {
+                if trip.DepartureTime < uint32(currentUnixTime) {
+                    pastTrips = append(pastTrips, trip)
+                }
+            }
+            renderErr := templates.RenderPastTrips(pastTrips).Render(r.Context(), w)
             if renderErr != nil {
                 http.Error(w, "Error rendering template", http.StatusInternalServerError)
                 return
@@ -78,10 +88,8 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
             // We want upcoming, which are trips that are coming in the future (up to 1 week)
             var filteredTrips []models.Trip
             for _, trip := range userTrips {
-                // get the current unix time
-                currentUnixTime := time.Now().Unix()
-                // get the unix time for 1 week from now
-                oneWeekFromNow := currentUnixTime + (7 * 24 * 60 * 60)
+                // get the unix time for 1 year from now
+                oneWeekFromNow := currentUnixTime + (365 * 24 * 60 * 60) 
                 if trip.DepartureTime > uint32(currentUnixTime) && trip.DepartureTime < uint32(oneWeekFromNow) {
                     filteredTrips = append(filteredTrips, trip)
                 }

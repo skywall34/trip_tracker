@@ -10,11 +10,11 @@ templ TripsPage() {
 	<div class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
 		<div class="text-center mb-8 mt-4">
 
-            <!-- Flight Path Image -->
-			<img src="/static/images/flight_path.png" alt="Flight Path" class="mx-auto w-32 h-32">
-
             <!-- Title and subtitle -->
             <h1 class="text-5xl sm:text-4xl font-bold text-gray-800 mb-2">Saving Your Trips Is Easier Now</h1>
+
+            <!-- Create Trip Form -->
+            @CreateTripForm()
 
             <!-- Search Bar -->
             <div class="flex justify-center mt-4">
@@ -50,7 +50,7 @@ templ RenderTrips(trips []models.Trip) {
 
     <!-- Trip Filters TODO: Show Date Filter -->
     <div class="text-center text-lg font-semibold mt-4 text-green-700">
-        {time.Now().AddDate(0, 0, -7).Format("2 Jan")} - {time.Now().Format("2 Jan")}
+        {time.Now().Format("2 Jan 2006")} - {time.Now().AddDate(1, 0, 0).Format("2 Jan 2006")}
     </div>
       
 
@@ -126,7 +126,6 @@ templ RenderPastTrips(trips []models.Trip) {
 
     <div class="space-y-6">
         for _, trip := range trips {
-            <!-- Flight Card TODO: Reservation, Terminal, Gate -->
             <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
                 <span></span>
                 <span>{
@@ -163,5 +162,57 @@ templ RenderPastTrips(trips []models.Trip) {
                 </div>
             </div>
         }
+    </div>
+}
+
+
+templ CreateTripForm() {
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Add a New Trip</h2>
+        
+        <form hx-post="/trips" hx-target="#trips-list" hx-swap="beforeend">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Departure</label>
+                    <input type="text" name="departure" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter departure location" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Arrival</label>
+                    <input type="text" name="arrival" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter arrival location" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Departure Time</label>
+                    <input type="datetime-local" name="departuretime" class="w-full border rounded-lg px-4 py-2 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Arrival Time</label>
+                    <input type="datetime-local" name="arrivaltime" class="w-full border rounded-lg px-4 py-2 focus:outline-none" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Airline</label>
+                    <input type="text" name="airline" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter airline name" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Flight Number</label>
+                    <input type="text" name="flightnumber" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter flight number" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Reservation</label>
+                    <input type="text" name="reservation" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter reservation code">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Terminal</label>
+                    <input type="text" name="terminal" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter terminal">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Gate</label>
+                    <input type="text" name="gate" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter gate">
+                </div>
+            </div>
+
+            <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition">
+                Submit Trip
+            </button>
+        </form>
     </div>
 }

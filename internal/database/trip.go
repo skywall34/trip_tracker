@@ -20,14 +20,25 @@ func NewTripStore(params NewTripStoreParams) *TripStore {
 	return &TripStore{db: params.DB}
 }
 
-func (t *TripStore) CreateTrip(userId int, departure string, arrival string, departureTime int64, arrivalTime int64, airline string, flightNumber string, reservation string, terminal string, gate string) (int64, error) {
+func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
 	stmt, err := t.db.Prepare("INSERT INTO trips (user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(userId, departure, arrival, departureTime, arrivalTime, airline, flightNumber, reservation, terminal, gate)
+	res, err := stmt.Exec(
+		newTrip.UserId, 
+		newTrip.Departure, 
+		newTrip.Arrival, 
+		newTrip.DepartureTime, 
+		newTrip.ArrivalTime, 
+		newTrip.Airline, 
+		newTrip.FlightNumber, 
+		newTrip.Reservation, 
+		newTrip.Terminal, 
+		newTrip.Gate,
+	)
 	if err != nil {
 		return 0, err
 	}

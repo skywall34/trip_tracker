@@ -44,6 +44,10 @@ func main() {
         handlers.GetTripHandlerParams{
             TripStore: tripStore,
         }).ServeHTTP))))
+    mux.Handle("POST /trips",  authMiddleware.AddUserToContext(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostTripHandler(
+        handlers.PostTripHandlerParams{
+            TripStore: tripStore,
+        }).ServeHTTP))))
     mux.Handle("GET /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetLoginHandler().ServeHTTP)))
     mux.Handle("POST /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostLoginHandler(
         handlers.PostLoginHandlerParams{
