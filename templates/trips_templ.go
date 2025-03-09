@@ -120,66 +120,66 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span></div><div class=\"bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg\"><div class=\"flex justify-between items-cente\"><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span></div><div class=\"bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg\"><div class=\"flex justify-between items-cente\"><!-- Departure Time stored in UTC--><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Departure)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 73, Col: 93}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 74, Col: 93}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span class=\"block text-xl font-semiboldd\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span class=\"block text-xl font-semibold time-convert\" data-utc=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05"))
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 74, Col: 139}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 75, Col: 155}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</span></div><span class=\"text-3xl font-bold text-green-600\">→</span><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\">Loading...</span></div><span class=\"text-3xl font-bold text-green-600\">→</span><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Arrival)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 78, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 81, Col: 90}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</span> <span class=\"block text-xl font-semibold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</span> <span class=\"block text-xl font-semibold time-convert\" data-utc=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05"))
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 79, Col: 134}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 82, Col: 153}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</span></div></div><div class=\"grid grid-cols-4 text-sm text-gray-400 mt-4 text-center\"><span class=\"col-span-1\">Flight</span> <span class=\"col-span-1\">Reservation</span> <span class=\"col-span-1\">Terminal</span> <span class=\"col-span-1\">Gate</span></div><div class=\"grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700\"><span class=\"col-span-1\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\">Loading...</span></div></div><div class=\"grid grid-cols-4 text-sm text-gray-400 mt-4 text-center\"><span class=\"col-span-1\">Flight</span> <span class=\"col-span-1\">Reservation</span> <span class=\"col-span-1\">Terminal</span> <span class=\"col-span-1\">Gate</span></div><div class=\"grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700\"><span class=\"col-span-1\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(trip.FlightNumber)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 89, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 94, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -192,7 +192,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Reservation)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 90, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 95, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -205,7 +205,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Terminal)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 91, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 96, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -218,26 +218,26 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Gate)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 92, Col: 55}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 97, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</span></div></div><!-- Check-In Section TODO: Status Backend --> <div class=\"bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1\"><div class=\"flex justify-between\"><div class=\"text-center w-full\"><span class=\"block text-sm font-bold\">Status</span> <span class=\"block text-sm font-bold\">On Time</span></div><div class=\"text-center w-full\"><span class=\"block text-sm font-bold\">Check-In At</span> <span class=\"block text-sm font-bold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</span></div></div><!-- Check-In Section TODO: Status Backend --> <div class=\"bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1\"><div class=\"flex justify-between\"><div class=\"text-center w-full\"><span class=\"block text-sm font-bold\">Status</span> <span class=\"block text-sm font-bold\">On Time</span></div><div class=\"text-center w-full\"><span class=\"block text-sm font-bold\">Check-In At</span> <span class=\"block text-sm font-bold time-convert\" data-utc=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
-			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime)-(24*60*60), 0).Format("2006-01-02 15:04:05"))
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime)-(24*60*60), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 106, Col: 115}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 110, Col: 168}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</span></div></div><div class=\"w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2\"><div class=\"bg-green-500 h-full\" style=\"width: 60%;\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">Loading...</span></div></div><div class=\"w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2\"><div class=\"bg-green-500 h-full\" style=\"width: 60%;\"></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -293,7 +293,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime)) * time.Second).Hours()),
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes())%60))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 135, Col: 123}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 140, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -306,59 +306,59 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Departure)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 142, Col: 93}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 147, Col: 93}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</span> <span class=\"block text-xl font-semiboldd\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</span> <span class=\"block text-xl font-semibold time-convert\" data-utc=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var18 string
-			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05"))
+			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 143, Col: 139}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 148, Col: 155}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</span></div><span class=\"text-3xl font-bold text-green-600\">→</span><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\">Loading...</span></div><span class=\"text-3xl font-bold text-green-600\">→</span><div class=\"text-center w-full\"><span class=\"block text-lg font-bold text-green-700\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Arrival)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 147, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 154, Col: 90}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</span> <span class=\"block text-xl font-semibold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</span> <span class=\"block text-xl font-semibold time-convert\" data-utc=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var20 string
-			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05"))
+			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 148, Col: 134}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 155, Col: 153}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</span></div></div><div class=\"grid grid-cols-4 text-sm text-gray-400 mt-4 text-center\"><span class=\"col-span-1\">Flight</span> <span class=\"col-span-1\">Reservation</span> <span class=\"col-span-1\">Terminal</span> <span class=\"col-span-1\">Gate</span></div><div class=\"grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700\"><span class=\"col-span-1\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\">Loading...</span></div></div><div class=\"grid grid-cols-4 text-sm text-gray-400 mt-4 text-center\"><span class=\"col-span-1\">Flight</span> <span class=\"col-span-1\">Reservation</span> <span class=\"col-span-1\">Terminal</span> <span class=\"col-span-1\">Gate</span></div><div class=\"grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700\"><span class=\"col-span-1\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var21 string
 			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(trip.FlightNumber)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 158, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 167, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 			if templ_7745c5c3_Err != nil {
@@ -371,7 +371,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Reservation)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 159, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 168, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 			if templ_7745c5c3_Err != nil {
@@ -384,7 +384,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Terminal)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 160, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 169, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -397,7 +397,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Gate)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 161, Col: 55}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 170, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {

@@ -20,6 +20,7 @@ type Nonces struct {
 	ResponseTargets string
 	Tw              string
 	HtmxCSSHash     string
+	ConvertTS       string
 }
 
 
@@ -47,6 +48,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			Tw: generateRandomString(16),
 			// Precomputed hash for HTMX CSS.
 			HtmxCSSHash: "sha256-pgn1TCGZX6O77zDvy0oTODMOxemn0oj0LeCnQTRj7Kg=",
+			// Nonce for convertTimes.js
+			ConvertTS: generateRandomString(16),
 		}
 
 		// Store the nonce set in the request context so other parts of the application
@@ -55,9 +58,10 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' ; style-src 'nonce-%s' '%s';",
+			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' ; style-src 'nonce-%s' '%s';",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
+			nonceSet.ConvertTS,
 			nonceSet.Tw,
 			nonceSet.HtmxCSSHash,
 		)
@@ -104,7 +108,6 @@ func GetNonces(ctx context.Context) Nonces {
 
 func GetHtmxNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
-
 	return nonceSet.Htmx
 }
 
@@ -116,6 +119,11 @@ func GetResponseTargetsNonce(ctx context.Context) string {
 func GetTwNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.Tw
+}
+
+func GetConverTSNonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.ConvertTS
 }
 
 

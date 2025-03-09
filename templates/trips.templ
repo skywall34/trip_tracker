@@ -69,14 +69,19 @@ templ RenderTrips(trips []models.Trip) {
             </div>
             <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg">
                 <div class="flex justify-between items-cente">
+                    <!-- Departure Time stored in UTC-->
                     <div class="text-center w-full">
                         <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
-                        <span class="block text-xl font-semiboldd"> { time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05")} </span>
+                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
+                            Loading...
+                        </span>
                     </div>
                     <span class="text-3xl font-bold text-green-600">→</span>
                     <div class="text-center w-full">
                         <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
-                        <span class="block text-xl font-semibold">{time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05")}</span>
+                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
+                            Loading...
+                        </span>
                     </div>
                 </div>
                 <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
@@ -102,8 +107,8 @@ templ RenderTrips(trips []models.Trip) {
                     </div>
                     <div class="text-center w-full">
                         <span class="block text-sm font-bold">Check-In At</span>
-                        <span class="block text-sm font-bold">
-                            {time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).Format("2006-01-02 15:04:05")}
+                        <span class="block text-sm font-bold time-convert" data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}>
+                            Loading...
                         </span>
                     </div>
                 </div>
@@ -140,12 +145,16 @@ templ RenderPastTrips(trips []models.Trip) {
                 <div class="flex justify-between items-cente">
                     <div class="text-center w-full">
                         <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
-                        <span class="block text-xl font-semiboldd"> { time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02 15:04:05")} </span>
+                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
+                            Loading...
+                        </span>
                     </div>
                     <span class="text-3xl font-bold text-green-600">→</span>
                     <div class="text-center w-full">
                         <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
-                        <span class="block text-xl font-semibold">{time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02 15:04:05")}</span>
+                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
+                            Loading...
+                        </span>
                     </div>
                 </div>
                 <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
