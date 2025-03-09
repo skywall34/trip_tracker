@@ -1,10 +1,9 @@
+// convertTimes takes the flight times and transforms input and output to match users' timezones
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM fully loaded, running convertTimes()");
   convertTimes(); // Run initially to update timestamps
 
   if (document.body) {
     document.body.addEventListener("htmx:afterSwap", function () {
-      console.log("HTMX Content Updated! Running convertTimes()");
       convertTimes(); // Run again after HTMX swaps in new content
     });
 

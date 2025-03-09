@@ -62,7 +62,7 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		UserId: int64(userId),
 		Departure: departure,
 		Arrival: arrival,
-		DepartureTime: uint32(parsedDepartureTime.UTC().Unix()),
+		DepartureTime: uint32(parsedDepartureTime.UTC().Unix()), // Save the data as UTC for uniform datetime, Frontend takes care of timezones
 		ArrivalTime: uint32(parsedArrivalTime.UTC().Unix()),
 		Airline: airline,
 		FlightNumber: flightNumber,
