@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: trip-tracker-app
+    ports:
+      - "8080:8080" # Expose app on port 8080
+    volumes:
+      - ./database.db:/app/database.db # Mount SQLite3 database file
+    environment:
+      - DATABASE_URL=/app/database.db # Pass SQLite3 file path as an environment variable
