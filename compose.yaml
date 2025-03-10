@@ -1,12 +1,35 @@
-version: "3.8"
-
 services:
-  app:
-    build: .
-    container_name: trip-tracker-app
+  reverse-proxy:
+    image: traefik:v3.1
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=mshin@fromnto.cloud"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
     ports:
-      - "8080:8080" # Expose app on port 8080
+      - "80:80"
+      # HTTPS Port
+      - "443:443"
     volumes:
-      - ./database.db:/app/database.db # Mount SQLite3 database file
-    environment:
-      - DATABASE_URL=/app/database.db # Pass SQLite3 file path as an environment variable
+      - letsencrypt:/letsencrypt
+      # So that Traefik can listen to Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+  triptracker:
+    build: .
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.triptracker.rule=Host(`fromnto.cloud`)"
+      - "traefik.http.routers.triptracker.entrypoints=websecure"
+      - "traefik.http.routers.triptracker.tls.certresolver=myresolver"
+    volumes:
+      - ./internal/database/database.db:/root/internal/database/database.db # Mount SQLite3 database file
+    deploy:
+      mode: replicated
+      replicas: 3
+volumes:
+  letsencrypt:
