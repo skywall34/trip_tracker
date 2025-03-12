@@ -31,7 +31,7 @@ templ TripsPage() {
 
         <!-- Tabs -->
         <div class="flex border rounded-full overflow-hidden w-full max-w-sm mx-auto mb-6">
-            <button hx-get="/trips?&past=false" hx-target="#trips-list" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
+            <button hx-get="/trips?&past=false" hx-target="#trips-list" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
                 Upcoming
             </button>
             <button hx-get="/trips?&past=true" hx-target="#trips-list" class="w-1/2 bg-gray-200 text-gray-600 py-2 font-semibold transition hover:bg-gray-300 focus:outline-none">
@@ -179,7 +179,7 @@ templ CreateTripForm() {
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Add a New Trip</h2>
         
-        <form hx-post="/trips" hx-target="#trips-list" hx-swap="beforeend">
+        <form hx-post="/trips" hx-target="#trips-list" hx-swap="beforebegin">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-600">Departure</label>
@@ -218,6 +218,8 @@ templ CreateTripForm() {
                     <input type="text" name="gate" class="w-full border rounded-lg px-4 py-2 focus:outline-none" placeholder="Enter gate">
                 </div>
             </div>
+
+            <input type="hidden" name="timezone" id="timezone"> <!-- Hidden field for timezone -->
 
             <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition">
                 Submit Trip

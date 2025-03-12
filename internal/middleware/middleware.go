@@ -47,7 +47,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Nonce for inline Tailwind CSS (or similar).
 			Tw: generateRandomString(16),
 			// Precomputed hash for HTMX CSS.
-			HtmxCSSHash: "sha256-pgn1TCGZX6O77zDvy0oTODMOxemn0oj0LeCnQTRj7Kg=",
+			HtmxCSSHash: "sha256-bsV5JivYxvGywDAZ22EZJKBFip65Ng9xoJVLbBg7bdo=",
 			// Nonce for convertTimes.js
 			ConvertTS: generateRandomString(16),
 		}

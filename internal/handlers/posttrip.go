@@ -26,6 +26,30 @@ func NewPostTripHandler(params PostTripHandlerParams) (*PostTripHandler) {
 
 const layout = "2006-01-02T15:04"
 
+func parseLocalToUTC(input, timezone string)(time.Time, error) {
+	// Parse the user-provided time (local time format)
+	localTime, err := time.Parse(layout, input)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	// Load the provided timezone
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		fmt.Println("Error loading timezone, defaulting to UTC:", err)
+		loc = time.UTC
+	}
+
+	// Convert the local time to the correct timezone
+	localTime = time.Date(
+		localTime.Year(), localTime.Month(), localTime.Day(),
+		localTime.Hour(), localTime.Minute(), 0, 0, loc,
+	)
+
+	// Convert to UTC
+	return localTime.UTC(), nil
+}
+
 // TODO: Some of this input is going to have to come from the API
 func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 
@@ -38,6 +62,7 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	reservation := r.FormValue("reservation")
 	terminal := r.FormValue("terminal")
 	gate := r.FormValue("gate")
+	timezone := r.FormValue("timezone") // Hjidden field to get timezone of user
 
 	ctx := r.Context()
     userId, ok := ctx.Value(m.UserKey).(int)
@@ -47,12 +72,12 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	parsedDepartureTime, err := time.Parse(layout, departureTimeString)
+	parsedDepartureTime, err := parseLocalToUTC(departureTimeString, timezone)
 	if err != nil {
 		fmt.Println("Error parsing departure time string:", err)
 		return
 	}
-	parsedArrivalTime, err := time.Parse(layout, arrivalTimeString) 
+	parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, timezone)
 	if err != nil {
 		fmt.Println("Error parsing arrival time string:", err)
 		return
@@ -62,8 +87,8 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		UserId: int64(userId),
 		Departure: departure,
 		Arrival: arrival,
-		DepartureTime: uint32(parsedDepartureTime.UTC().Unix()), // Save the data as UTC for uniform datetime, Frontend takes care of timezones
-		ArrivalTime: uint32(parsedArrivalTime.UTC().Unix()),
+		DepartureTime: uint32(parsedDepartureTime.Unix()), // Save the data as UTC for uniform datetime, Frontend takes care of timezones
+		ArrivalTime: uint32(parsedArrivalTime.Unix()),
 		Airline: airline,
 		FlightNumber: flightNumber,
 		Reservation: reservation,
@@ -74,19 +99,10 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	// Insert
 	_, err = t.tripStore.CreateTrip(newTrip)
 	if err != nil {
-		// c := templates.CreateTripFailure()
-		// err = c.Render(r.Context(), w)
-
-		// if err != nil {
-		// 	http.Error(w, "Error Rendering Template", http.StatusInternalServerError)
-		// 	return
-		// }
 		http.Error(w, "Error creating user", http.StatusInternalServerError)
 		return
 	}
 
 	// HTMX Redirect Response
-    w.Header().Set("HX-Redirect", "/trips") // This makes HTMX handle the redirect
     w.WriteHeader(http.StatusSeeOther) // HTTP 303 See Other (optional but recommended)
-
 }

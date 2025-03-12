@@ -1,5 +1,10 @@
 // convertTimes takes the flight times and transforms input and output to match users' timezones
 document.addEventListener("DOMContentLoaded", function () {
+  let timezoneInput = document.getElementById("timezone");
+  if (timezoneInput) {
+    timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+  // Set the timezone when the page loads
   convertTimes(); // Run initially to update timestamps
 
   if (document.body) {
@@ -7,23 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
       convertTimes(); // Run again after HTMX swaps in new content
     });
 
+    // Ensure the timezone is set before sending the form via HTMX
     document.body.addEventListener("htmx:configRequest", function (event) {
       let form = event.detail.elt.closest("form");
-      if (!form) return;
-
-      // Find datetime-local inputs
-      let departureInput = form.querySelector('input[name="departuretime"]');
-      let arrivalInput = form.querySelector('input[name="arrivaltime"]');
-
-      if (departureInput && arrivalInput) {
-        let departureDate = new Date(departureInput.value);
-        let arrivalDate = new Date(arrivalInput.value);
-
-        if (!isNaN(departureDate) && !isNaN(arrivalDate)) {
-          // Convert to UTC and manually format for datetime-local input
-          departureInput.value = formatDatetimeLocal(departureDate);
-          arrivalInput.value = formatDatetimeLocal(arrivalDate);
-        }
+      if (!form) {
+        return;
+      }
+      let timezoneInput = document.getElementById("timezone");
+      if (timezoneInput) {
+        timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
     });
   } else {
