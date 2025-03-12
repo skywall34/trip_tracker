@@ -12,6 +12,7 @@ RUN CGO_ENABLED=1 go build -o trip_tracker
 
 # Stage 2: Run the application
 FROM alpine:latest
+RUN apk add --no-cache tzdata gcc musl-dev
 WORKDIR /root/
 COPY --from=builder /app/trip_tracker .
 COPY --from=builder /app/static ./static
