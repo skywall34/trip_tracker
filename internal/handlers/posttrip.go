@@ -65,12 +65,12 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	timezone := r.FormValue("timezone") // Hjidden field to get timezone of user
 
 	ctx := r.Context()
-        userId, ok := ctx.Value(m.UserKey).(int)
+	userId, ok := ctx.Value(m.UserKey).(int)
 	if !ok {
-            // redirect to home
-            http.Redirect(w, r, "/login", http.StatusSeeOther)
-            return
-        }
+		// redirect to home
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
 
 	parsedDepartureTime, err := parseLocalToUTC(departureTimeString, timezone)
 	if err != nil {
@@ -104,5 +104,5 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	}
 
 	// HTMX Redirect Response
-        w.WriteHeader(http.StatusSeeOther) // HTTP 303 See Other (optional but recommended)
+    w.WriteHeader(http.StatusSeeOther) // HTTP 303 See Other (optional but recommended)
 }
