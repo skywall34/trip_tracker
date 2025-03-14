@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/joho/godotenv"
 
@@ -28,6 +27,7 @@ func main() {
     userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
     tripStore := database.NewTripStore(database.NewTripStoreParams{DB: db})
     sessionStore := database.NewSessionStore(database.NewSessionStoreParams{DB: db})
+    //TODO: Chaining middleware seems to break css for some reason
     authMiddleware := m.NewAuthMiddleware(sessionStore, "session_id")
 
     mux := http.NewServeMux()
@@ -36,42 +36,74 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
     // Main
-    mux.Handle("/", authMiddleware.AddUserToContext(
-        m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetHomeHandler().ServeHTTP))))
+    mux.Handle("/", 
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetHomeHandler().ServeHTTP)))))
 
     // Page Routes
-    mux.Handle("GET /trips",  authMiddleware.AddUserToContext(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetTripHandler(
-        handlers.GetTripHandlerParams{
-            TripStore: tripStore,
-        }).ServeHTTP))))
-    mux.Handle("POST /trips",  authMiddleware.AddUserToContext(m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostTripHandler(
-        handlers.PostTripHandlerParams{
-            TripStore: tripStore,
-        }).ServeHTTP))))
-    mux.Handle("GET /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetLoginHandler().ServeHTTP)))
-    mux.Handle("POST /login",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostLoginHandler(
-        handlers.PostLoginHandlerParams{
-            UserStore: userStore,
-            SessionStore: sessionStore,
-        }).ServeHTTP)))
-    mux.Handle("POST /logout", m.CSPMiddleware(handlers.NewPostLogoutHandler(
-        handlers.PostLogoutHandlerParams{
-            SessionCookieName: "session_id",
-        }).ServeHTTP))
-    mux.Handle("GET /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewGetRegisterHandler().ServeHTTP)))
-    mux.Handle("POST /register",  m.CSPMiddleware(m.TextHTMLMiddleware(handlers.NewPostRegisterHandler(
-        handlers.PostRegisterHandlerParams{
-            UserStore: userStore,
-            SessionStore: sessionStore,
-        }).ServeHTTP)))
+    mux.Handle("GET /trips",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                    handlers.NewGetTripHandler(
+                        handlers.GetTripHandlerParams{
+                            TripStore: tripStore}).ServeHTTP)))))
 
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "3000"
+    mux.Handle("POST /trips",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewPostTripHandler(
+                            handlers.PostTripHandlerParams{
+                                TripStore: tripStore}).ServeHTTP)))))
+
+    mux.Handle("GET /login",  
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetLoginHandler().ServeHTTP))))
+
+    mux.Handle("POST /login",  
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(
+                handlers.NewPostLoginHandler(
+                    handlers.PostLoginHandlerParams{
+                        UserStore: userStore,
+                        SessionStore: sessionStore}).ServeHTTP))))
+
+    mux.Handle("POST /logout", 
+        m.CSPMiddleware(
+            m.LoggingMiddleware(handlers.NewPostLogoutHandler(
+                handlers.PostLogoutHandlerParams{
+                    SessionCookieName: "session_id",
+                }).ServeHTTP)))
+
+    mux.Handle("GET /register",  
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetRegisterHandler().ServeHTTP))))
+
+    mux.Handle("POST /register",  
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(handlers.NewPostRegisterHandler(
+                    handlers.PostRegisterHandlerParams{
+                        UserStore: userStore,
+                        SessionStore: sessionStore,
+                    }).ServeHTTP))))
+
+    server := http.Server {
+        Addr: ":3000",
+        Handler: mux,
     }
 
-    fmt.Printf("Server running on port %s\n", port)
-    if err := http.ListenAndServe(":"+port, mux); err != nil {
-        fmt.Printf("Error starting server: %s\n", err)
-    }
+    fmt.Println("Server running on port :3000")
+    server.ListenAndServe()
 }

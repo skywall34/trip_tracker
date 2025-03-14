@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 )
@@ -47,7 +48,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Nonce for inline Tailwind CSS (or similar).
 			Tw: generateRandomString(16),
 			// Precomputed hash for HTMX CSS.
-			HtmxCSSHash: "sha256-bsV5JivYxvGywDAZ22EZJKBFip65Ng9xoJVLbBg7bdo=",
+			HtmxCSSHash: "sha256-qzJemDm3CBL67MiPc7kAKsiOqgUx6EzCggwD+ReowE8=",
 			// Nonce for convertTimes.js
 			ConvertTS: generateRandomString(16),
 		}
@@ -58,7 +59,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' ; style-src 'nonce-%s' '%s';",
+			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' ; "+
+			"style-src 'self' 'nonce-%s' '%s';",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
 			nonceSet.ConvertTS,
@@ -79,7 +81,6 @@ func TextHTMLMiddleware(next http.HandlerFunc) http.HandlerFunc  {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		next.ServeHTTP(w, r)
 	})
-
 }
 
 func ApplicationJsonMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -121,7 +122,7 @@ func GetTwNonce(ctx context.Context) string {
 	return nonceSet.Tw
 }
 
-func GetConverTSNonce(ctx context.Context) string {
+func GetConvertTSNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.ConvertTS
 }
@@ -189,4 +190,15 @@ func GetUserUsingContext(ctx context.Context) int {
 		return -1
 	}
 	return userId
+}
+
+/***********************************Logging Middleware**********************************************/
+
+func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc  {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		next.ServeHTTP(w, r)
+		log.Println(r.Method, r.URL.Path, time.Since(start))
+	})
 }
