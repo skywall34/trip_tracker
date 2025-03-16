@@ -104,5 +104,5 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	}
 
 	// HTMX Redirect Response
-	w.WriteHeader(http.StatusSeeOther) // HTTP 303 See Other (optional but recommended)
+	w.WriteHeader(http.StatusOK)
 }

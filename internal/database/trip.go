@@ -79,3 +79,11 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
 
     return trips, nil
 }
+
+func (t *TripStore) DeleteTrip(id int) (error) {
+	_, err := t.db.Exec("DELETE FROM trips WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

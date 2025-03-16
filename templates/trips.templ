@@ -13,9 +13,6 @@ templ TripsPage() {
             <!-- Title and subtitle -->
             <h1 class="text-5xl sm:text-4xl font-bold text-gray-800 mb-2">Saving Your Trips Is Easier Now</h1>
 
-            <!-- Create Trip Form -->
-            @CreateTripForm()
-
             <!-- Search Bar -->
             <div class="flex justify-center mt-4">
                 <input
@@ -31,12 +28,23 @@ templ TripsPage() {
 
         <!-- Tabs -->
         <div class="flex border rounded-full overflow-hidden w-full max-w-sm mx-auto mb-6">
-            <button hx-get="/trips?&past=false" hx-target="#trips-list" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
+            <button hx-get="/trips?past=false" hx-target="#trips-list" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
                 Upcoming
             </button>
-            <button hx-get="/trips?&past=true" hx-target="#trips-list" class="w-1/2 bg-gray-200 text-gray-600 py-2 font-semibold transition hover:bg-gray-300 focus:outline-none">
+            <button hx-get="/trips?past=true" hx-target="#trips-list" class="w-1/2 bg-gray-200 text-gray-600 py-2 font-semibold transition hover:bg-gray-300 focus:outline-none">
                 Past
             </button>
+            <button id="add-trip-btn" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
+                <img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6">
+            </button>
+
+        </div>
+
+        <!-- Hidden Create Trip Form -->
+        <div id="create-trip-form" class="hidden fixed inset-0 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-md w-96">
+                @CreateTripForm()
+            </div>
         </div>
 			
         <!-- Trip Cards List TODO: Filter only by user and date range -->
@@ -56,73 +64,79 @@ templ RenderTrips(trips []models.Trip) {
 
     <div class="space-y-6">
         for _, trip := range trips {
-            <!-- Flight Card TODO: Reservation, Terminal, Gate -->
-            <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
-                <span></span>
-                <span>{
-                    fmt.Sprintf(
-                        "%dh %dm", 
-                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
-                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
-                    }
-                </span>
-            </div>
-            <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg">
-                <div class="flex justify-between items-cente">
-                    <!-- Departure Time stored in UTC-->
-                    <div class="text-center w-full">
-                        <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
-                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
-                            Loading...
-                        </span>
-                    </div>
-                    <span class="text-3xl font-bold text-green-600">→</span>
-                    <div class="text-center w-full">
-                        <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
-                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
-                            Loading...
-                        </span>
-                    </div>
+            <div class="relative" id={"trip-element-" + fmt.Sprint(trip.ID)}>
+                <!-- Flight Card TODO: Reservation, Terminal, Gate -->
+                <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
+                    <span></span>
+                    <span>{
+                        fmt.Sprintf(
+                            "%dh %dm", 
+                            int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
+                            int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
+                        }
+                    </span>
                 </div>
-                <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
-                    <span class="col-span-1">Flight</span>
-                    <span class="col-span-1">Reservation</span>
-                    <span class="col-span-1">Terminal</span>
-                    <span class="col-span-1">Gate</span>
-                </div>
-                <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
-                    <span class="col-span-1">{trip.FlightNumber}</span>
-                    <span class="col-span-1">{trip.Reservation}</span>
-                    <span class="col-span-1">{trip.Terminal}</span>
-                    <span class="col-span-1">{trip.Gate}</span>
-                </div>
-            </div>
-        
-            <!-- Check-In Section TODO: Status Backend -->
-            <div class="bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1">
-                <div class="flex justify-between">
-                    <div class="text-center w-full">
-                        <span class="block text-sm font-bold">Status</span>
-                        <span class="block text-sm font-bold">On Time</span>
+                <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg relative">
+                    <!-- Icon in Top-Right -->
+                    <button class="absolute top-3 right-3 text-gray-500 hover:text-gray-700" hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} hx-swap="outerHTML">
+                        <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-6 h-6">
+                    </button>
+                    <div class="flex justify-between items-center">
+                        <!-- Departure Time stored in UTC-->
+                        <div class="text-center w-full">
+                            <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
+                            <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
+                                Loading...
+                            </span>
+                        </div>
+                        <span class="text-3xl font-bold text-green-600">→</span>
+                        <div class="text-center w-full">
+                            <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
+                            <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
+                                Loading...
+                            </span>
+                        </div>
                     </div>
-                    <div class="text-center w-full">
-                        <span class="block text-sm font-bold">Check-In At</span>
-                        <span class="block text-sm font-bold time-convert" data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}>
-                            Loading...
-                        </span>
+                    <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
+                        <span class="col-span-1">Flight</span>
+                        <span class="col-span-1">Reservation</span>
+                        <span class="col-span-1">Terminal</span>
+                        <span class="col-span-1">Gate</span>
+                    </div>
+                    <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
+                        <span class="col-span-1">{trip.FlightNumber}</span>
+                        <span class="col-span-1">{trip.Reservation}</span>
+                        <span class="col-span-1">{trip.Terminal}</span>
+                        <span class="col-span-1">{trip.Gate}</span>
                     </div>
                 </div>
-                <div class="w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2">
-                    <div class="bg-green-500 h-full" style="width: 60%;"></div>
+            
+                <!-- Check-In Section TODO: Status Backend -->
+                <div class="bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1">
+                    <div class="flex justify-between">
+                        <div class="text-center w-full">
+                            <span class="block text-sm font-bold">Status</span>
+                            <span class="block text-sm font-bold">On Time</span>
+                        </div>
+                        <div class="text-center w-full">
+                            <span class="block text-sm font-bold">Check-In At</span>
+                            <span class="block text-sm font-bold time-convert" data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}>
+                                Loading...
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2">
+                        <div class="bg-green-500 h-full w-3/5"></div>
+                    </div>
                 </div>
-            </div>
 
-            if time.Now().Unix() > int64(trip.DepartureTime) - (24 * 60 * 60) && time.Now().Unix() < int64(trip.DepartureTime) - (90 * 60) {
-                <!-- Check-In Button Only If Within the time frame (24hrs before and up to 90 minutes before departure) -->
-                <button class="w-full bg-green-500 text-white py-2 mt-2 rounded-lg font-semibold hover:bg-green-600 transition">
-                    Check In
-                </button>
-            }
+                if time.Now().Unix() > int64(trip.DepartureTime) - (24 * 60 * 60) && time.Now().Unix() < int64(trip.DepartureTime) - (90 * 60) {
+                    <!-- Check-In Button Only If Within the time frame (24hrs before and up to 90 minutes before departure) -->
+                    <button class="w-full bg-green-500 text-white py-2 mt-2 rounded-lg font-semibold hover:bg-green-600 transition">
+                        Check In
+                    </button>
+                }
+            </div>
         }
     </div>
 }
@@ -131,43 +145,49 @@ templ RenderPastTrips(trips []models.Trip) {
 
     <div class="space-y-6">
         for _, trip := range trips {
-            <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
-                <span></span>
-                <span>{
-                    fmt.Sprintf(
-                        "%dh %dm", 
-                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
-                        int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
-                    }
-                </span>
-            </div>
-            <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg">
-                <div class="flex justify-between items-cente">
-                    <div class="text-center w-full">
-                        <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
-                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
-                            Loading...
-                        </span>
-                    </div>
-                    <span class="text-3xl font-bold text-green-600">→</span>
-                    <div class="text-center w-full">
-                        <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
-                        <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
-                            Loading...
-                        </span>
-                    </div>
+            <div class="relative" id={"trip-element-" + fmt.Sprint(trip.ID)}>
+                <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
+                    <span></span>
+                    <span>{
+                        fmt.Sprintf(
+                            "%dh %dm", 
+                            int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
+                            int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes()) % 60)
+                        }
+                    </span>
                 </div>
-                <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
-                    <span class="col-span-1">Flight</span>
-                    <span class="col-span-1">Reservation</span>
-                    <span class="col-span-1">Terminal</span>
-                    <span class="col-span-1">Gate</span>
-                </div>
-                <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
-                    <span class="col-span-1">{trip.FlightNumber}</span>
-                    <span class="col-span-1">{trip.Reservation}</span>
-                    <span class="col-span-1">{trip.Terminal}</span>
-                    <span class="col-span-1">{trip.Gate}</span>
+                <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg relative">
+                    <!-- Icon in Top-Right -->
+                    <button class="absolute top-3 right-3 text-gray-500 hover:text-gray-700" hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} hx-swap="outerHTML">
+                        <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-6 h-6">
+                    </button>
+                    <div class="flex justify-between items-center">
+                        <div class="text-center w-full">
+                            <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
+                            <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
+                                Loading...
+                            </span>
+                        </div>
+                        <span class="text-3xl font-bold text-green-600">→</span>
+                        <div class="text-center w-full">
+                            <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
+                            <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
+                                Loading...
+                            </span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
+                        <span class="col-span-1">Flight</span>
+                        <span class="col-span-1">Reservation</span>
+                        <span class="col-span-1">Terminal</span>
+                        <span class="col-span-1">Gate</span>
+                    </div>
+                    <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
+                        <span class="col-span-1">{trip.FlightNumber}</span>
+                        <span class="col-span-1">{trip.Reservation}</span>
+                        <span class="col-span-1">{trip.Terminal}</span>
+                        <span class="col-span-1">{trip.Gate}</span>
+                    </div>
                 </div>
             </div>
         }
@@ -223,6 +243,9 @@ templ CreateTripForm() {
 
             <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition">
                 Submit Trip
+            </button>
+            <button type="button" id="close-trip-form" class="mt-4 w-full bg-gray-300 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition">
+                Cancel
             </button>
         </form>
     </div>

@@ -20,6 +20,7 @@ type Nonces struct {
 	Htmx            string
 	ResponseTargets string
 	Tw              string
+	Modal			string
 	HtmxCSSHash     string
 	ConvertTS       string
 }
@@ -45,6 +46,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Nonce for inline HTMX scripts.
 			Htmx: generateRandomString(16),
 			ResponseTargets: generateRandomString(16),
+			// Nonce for replacing content instead of hx-on
+			Modal: generateRandomString(16),
 			// Nonce for inline Tailwind CSS (or similar).
 			Tw: generateRandomString(16),
 			// Precomputed hash for HTMX CSS.
@@ -59,11 +62,12 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' ; "+
+			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
 			"style-src 'self' 'nonce-%s' '%s';",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
 			nonceSet.ConvertTS,
+			nonceSet.Modal,
 			nonceSet.Tw,
 			nonceSet.HtmxCSSHash,
 		)
@@ -127,6 +131,10 @@ func GetConvertTSNonce(ctx context.Context) string {
 	return nonceSet.ConvertTS
 }
 
+func GetModalNonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.Modal
+}
 
 /***********************************Auth Middleware**********************************************/
 

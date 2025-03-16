@@ -62,6 +62,15 @@ func main() {
                             handlers.PostTripHandlerParams{
                                 TripStore: tripStore}).ServeHTTP)))))
 
+    mux.Handle("DELETE /trips",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewDeleteTripHandler(
+                            handlers.DeleteTripHandlerParams{
+                                TripStore: tripStore}).ServeHTTP)))))
+
     mux.Handle("GET /login",  
         m.CSPMiddleware(
             m.TextHTMLMiddleware(
