@@ -12,4 +12,8 @@ type Trip struct {
     Reservation string `json:"reservation"`
     Terminal string `json:"terminal"`
     Gate string `json:"gate"`
+    DepartureLat  float64 `json:"departure_lat"`
+    DepartureLon  float64 `json:"departure_lon"`
+    ArrivalLat float64 `json:"arrival_lat"`
+    ArrivalLon float64 `json:"arrival_lon"`
 }

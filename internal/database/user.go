@@ -68,5 +68,31 @@ func (u *UserStore) GetUsers(username string) ([]m.User, error) {
 	}
 
 	return users, nil
-}	
+}
+
+func (u *UserStore) GetUserGivenID(id int) (m.User, error) {
+	var user m.User
+	err := u.db.QueryRow(`SELECT 
+							id, 
+							username, 
+							password, 
+							first_name, 
+							last_name, 
+							email 
+						FROM 
+							users 
+						WHERE id = ?`, id).Scan(
+							&user.ID, 
+							&user.Username, 
+							&user.Password, 
+							&user.FirstName, 
+							&user.LastName, 
+							&user.Email)
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
 

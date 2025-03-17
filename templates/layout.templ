@@ -14,6 +14,8 @@ templ header(title string) {
         <script src="/static/js/modal.js" nonce={ middleware.GetModalNonce(ctx) }></script>
         <!--Script to Convert UTC to Local Time-->
         <script src="/static/js/convertTimes.js" nonce={ middleware.GetConvertTSNonce(ctx) }></script>
+        <script src="/static/js/leaflet.js" nonce={ middleware.GetLeafletNonce(ctx) }></script>
+        <script src="/static/js/map.js" nonce={ middleware.GetMapJSNonce(ctx) }></script>
 		<link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
     </head>
 }
@@ -28,7 +30,7 @@ templ nav() {
         <!--TODO: Logout Function-->
         <nav class="space-x-6 text-sm font-medium">
             <a href="/" class="hover:underline text-gray-700">Home</a>
-            <a href="/about" class="hover:underline text-gray-700">About</a>
+            <a href="/statistics" class="hover:underline text-gray-700">Statistics</a>
             <a href="/trips" class="hover:underline text-gray-700">Trips</a>
             if middleware.GetUserUsingContext(ctx) >= 0 {
                 <a hx-post="/logout" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition">

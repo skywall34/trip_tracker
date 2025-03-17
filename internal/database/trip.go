@@ -53,7 +53,31 @@ func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
 
 func (t *TripStore) GetTrip(id int) (m.Trip, error) {
 	var trip m.Trip
-	err := t.db.QueryRow("SELECT id, user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate FROM trips WHERE id = ?", id).Scan(&trip.ID, &trip.UserId, &trip.Departure, &trip.Arrival, &trip.DepartureTime, &trip.ArrivalTime, &trip.Airline, &trip.FlightNumber, &trip.Reservation, &trip.Terminal, &trip.Gate)
+	err := t.db.QueryRow(`
+		SELECT 
+			id, 
+			user_id, 
+			departure, 
+			arrival, 
+			departure_time, 
+			arrival_time, 
+			airline, 
+			flight_number, 
+			reservation, 
+			terminal, 
+			gate 
+		FROM trips WHERE id = ?`, id).Scan(
+			&trip.ID, 
+			&trip.UserId, 
+			&trip.Departure,
+			&trip.Arrival, 
+			&trip.DepartureTime, 
+			&trip.ArrivalTime, 
+			&trip.Airline, 
+			&trip.FlightNumber, 
+			&trip.Reservation,
+			&trip.Terminal, 
+			&trip.Gate)
 	if err != nil {
 		return trip, err
 	}
@@ -62,7 +86,27 @@ func (t *TripStore) GetTrip(id int) (m.Trip, error) {
 
 func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
     var trips []m.Trip
-    rows, err := t.db.Query("SELECT id, user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate FROM trips WHERE user_id = ?", userID)
+    rows, err := t.db.Query(`
+		SELECT 
+			t.id, 
+			t.user_id, 
+			t.departure, 
+			t.arrival, 
+			t.departure_time, 
+			t.arrival_time, 
+			t.airline, 
+			t.flight_number,
+			t.reservation,
+			t.terminal,
+			t.gate,
+			d.latitude, 
+			d.longitude, 
+			a.latitude, 
+			a.longitude
+        FROM trips t
+        JOIN airports d ON t.departure = d.iata_code
+        JOIN airports a ON t.arrival = a.iata_code
+        WHERE t.user_id = ?`, userID)
     if err != nil {
         return trips, err
     }
@@ -70,7 +114,23 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
 
     for rows.Next() {
         var trip m.Trip
-        err := rows.Scan(&trip.ID, &trip.UserId, &trip.Departure, &trip.Arrival, &trip.DepartureTime, &trip.ArrivalTime, &trip.Airline, &trip.FlightNumber, &trip.Reservation, &trip.Terminal, &trip.Gate)
+        err := rows.Scan(
+			&trip.ID, 
+			&trip.UserId, 
+			&trip.Departure, 
+			&trip.Arrival, 
+			&trip.DepartureTime, 
+			&trip.ArrivalTime, 
+			&trip.Airline, 
+			&trip.FlightNumber, 
+			&trip.Reservation, 
+			&trip.Terminal, 
+			&trip.Gate,
+			&trip.DepartureLat,
+			&trip.DepartureLon,
+			&trip.ArrivalLat,
+			&trip.ArrivalLon,
+		)
         if err != nil {
             return trips, err
         }

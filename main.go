@@ -108,6 +108,25 @@ func main() {
                         SessionStore: sessionStore,
                     }).ServeHTTP))))
 
+    mux.Handle("GET /statistics",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetTripMapHandler(
+                            handlers.GetTripMapHandlerParams{
+                                UserStore: userStore,
+                            }).ServeHTTP)))))
+
+    // API CALLS
+    mux.Handle("GET /api/trips",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetTripMapApiHandler(
+                        handlers.GetTripMapApiHandlerParams{
+                            TripStore: tripStore}).ServeHTTP))))
+
     server := http.Server {
         Addr: ":3000",
         Handler: mux,
