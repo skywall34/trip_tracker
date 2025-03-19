@@ -131,100 +131,18 @@ air
 
 1. **Clone the Repository**:
 
-   ```bash
-   git clone <repository_url>
-   cd trip-tracker/backend
-   ```
+```bash
+git clone <repository_url>
+cd trip-tracker/backend
+```
 
-2. **Initialize Go Modules**:
-   If the `go.mod` file is missing, initialize the Go module:
+2. **Run Air**
 
-   ```bash
-   go mod init github.com/skywall34/trip-tracker
-   ```
+```bash
+air
+```
 
-3. **Run the Server**:
-   Start the server using the following command:
-
-   ```bash
-   go run main.go
-   ```
-
-   By default, the server listens on port `3000`. If you want to use a different port, set the `PORT` environment variable:
-
-   ```bash
-   export PORT=4000
-   go run main.go
-   ```
-
-4. **Access the API**:
-   The API will be accessible at `http://localhost:<port>`. For example:
-   - `GET /api/trips` - Fetch a list of trips.
-   - `POST /api/trips` - Add a new trip.
-   - `PUT /api/trips/edit?id=<id>` - Edit an existing trip.
-   - `DELETE /api/trips/delete?id=<id>` - Delete a trip.
-
----
-
-## Example API Requests
-
-### Get All Trips
-
-- **Endpoint**: `GET /api/trips`
-- **Curl Command**:
-  ```bash
-  curl http://localhost:3000/api/trips
-  ```
-
-### Add a New Trip
-
-- **Endpoint**: `POST /api/trips`
-- **Curl Command**:
-  ```bash
-  curl -X POST http://localhost:3000/api/trips \
-    -H "Content-Type: application/json" \
-    -d '{
-      "departure": "JFK",
-      "arrival": "LHR",
-      "departure_time": 1672531200,
-      "arrival_time": 1672560000,
-      "airline": "British Airways",
-      "flight_number": "BA117"
-    }'
-  ```
-
-### Edit an Existing Trip
-
-- **Endpoint**: `PUT /api/trips/edit?id=1`
-- **Curl Command**:
-  ```bash
-  curl -X PUT http://localhost:3000/api/trips/edit?id=1 \
-    -H "Content-Type: application/json" \
-    -d '{
-      "departure": "JFK",
-      "arrival": "CDG",
-      "departure_time": 1672531200,
-      "arrival_time": 1672598400,
-      "airline": "Air France",
-      "flight_number": "AF11"
-    }'
-  ```
-
-### Delete a Trip
-
-- **Endpoint**: `DELETE /api/trips/delete?id=1`
-- **Curl Command**:
-  ```bash
-  curl -X DELETE http://localhost:3000/api/trips/delete?id=1
-  ```
-
----
-
-## Development Notes
-
-- The backend currently stores trips in memory using a `map[int]Trip`.
-- Changes to the data are not persistent; restarting the server will reset the trip data.
-- For production use, consider integrating a database like PostgreSQL.
+Air will auto track changes to the golang code and restart the code as specified in .air.toml
 
 ---
 
@@ -265,6 +183,12 @@ It will setup the following
 
 - The trip_tracker service with replicas
 - The traefik reverse proxy
+
+### Setting up your own hosted server
+
+For me I used Hostinger. They have good pricing and super easy to setup with some knowledge of LinuxOS (I personally used Ubuntu)
+
+I also used this [Youtube Video](https://www.youtube.com/watch?v=F-9KWQByeU0&ab_channel=DreamsofCode). Basically tells you how to setup a VPS from scratch. Highly recommend.
 
 ## License
 

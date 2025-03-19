@@ -1,5 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
+  let mapElement = document.getElementById("map");
+  if (!mapElement) {
+    return; // Exit if the map element does not exist
+  }
+
   let map = L.map("map").setView([20, 0], 2);
+  if (!map) {
+    return; // Exit if the map element does not exist
+  }
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 10,
   }).addTo(map);
