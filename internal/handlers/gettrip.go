@@ -25,22 +25,6 @@ func NewGetTripHandler(params GetTripHandlerParams) *GetTripHandler {
     }
 }
 
-/**
-INSERT INTO trips (user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate) VALUES
-(1, 'JFK', 'LHR', 1672531200, 1672560000, 'British Airways', 'BA117', 'ABC123', 'T7', 'B22'),
-(1, 'SFO', 'NRT', 1740481594, 1740567994, 'ANA', 'NH107', 'XYZ456', 'T3', 'C15'),
-(3, 'LAX', 'SYD', 1672693200, 1672756800, 'Qantas', 'QF12', 'QF789', 'T4', 'D5'),
-(2, 'ORD', 'CDG', 1672779600, 1672813200, 'Air France', 'AF65', 'AF001', 'T5', 'E8'),
-(5, 'MIA', 'YYZ', 1672866000, 1672876800, 'Air Canada', 'AC129', 'AC567', 'T2', 'F3'),
-(2, 'DFW', 'DXB', 1672952400, 1673016000, 'Emirates', 'EK222', 'EK999', 'T1', 'G12'),
-(4, 'SEA', 'PEK', 1673038800, 1673098800, 'Hainan Airlines', 'HU7962', 'HU123', 'T6', 'H9'),
-(8, 'BOS', 'KEF', 1673125200, 1673143200, 'Icelandair', 'FI632', 'FI888', 'T7', 'I7'),
-(9, 'ATL', 'JNB', 1673211600, 1673275200, 'Delta', 'DL200', 'DL777', 'T3', 'J4'),
-(6, 'DEN', 'MEX', 1673298000, 1673312400, 'Aeromexico', 'AM33', 'AM222', 'T4', 'K6'),
-(1, 'DEN', 'MEX', 1740308794, 1740395194, 'Aeromexico', 'AM33', 'AM333', 'T4', 'L2');
-**/
-
-
 func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
     filterPast := r.URL.Query().Get("past")

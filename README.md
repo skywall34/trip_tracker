@@ -251,6 +251,21 @@ air
 
 ---
 
+## Deployment
+
+We use docker and docker compose to run deployment.
+
+The following forces the docker to build the Dockerfile and run in detached mode
+
+```bash
+docker compose up --build -d
+```
+
+It will setup the following
+
+- The trip_tracker service with replicas
+- The traefik reverse proxy
+
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.

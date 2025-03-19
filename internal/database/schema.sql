@@ -19,10 +19,6 @@ CREATE TABLE IF NOT EXISTS trips (
     reservation TEXT,
     terminal TEXT,
     gate TEXT,
-    departure_lat REAL NOT NULL,
-    departure_lon REAL NOT NULL,
-    arrival_lat REAL NOT NULL,
-    arrival_lon REAL NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
