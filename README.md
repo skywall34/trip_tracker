@@ -53,6 +53,12 @@ Creates the shell and new database. I like to put this under the database folder
 sqlite3 database.db
 ```
 
+You can also load the schema.sql, which is store under the database folder
+
+```bash
+sqlite3 database.db < database/schema.sql
+```
+
 ## Installing Tailwind
 
 To generate the Tailwind style sheet, we use the Tailwind binary. To get started with TailWind CSS, make sure you have the correct binary in the root directory. follow the instructions in this guide. Make sure you download the correct binary for your operating system. https://tailwindcss.com/blog/standalone-cli

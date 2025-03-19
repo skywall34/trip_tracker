@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/skywall34/trip-tracker/internal/models"
 	m "github.com/skywall34/trip-tracker/internal/models"
 )
 
@@ -21,7 +20,7 @@ func NewUserStore(params NewUserStoreParams) *UserStore {
 	return &UserStore{db: params.DB}
 }
 
-func (u *UserStore) CreateUser(user models.User) (int64, error) {
+func (u *UserStore) CreateUser(user m.User) (int64, error) {
 	stmt, err := u.db.Prepare("INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
