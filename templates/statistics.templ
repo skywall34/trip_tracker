@@ -6,11 +6,14 @@ import (
 )
 
 // By default aggregations will be by month
-templ Statistics() {
+templ Statistics(firstName string) {
+
+    <div class="container mx-auto">
+        <h1 class="text-2xl font-bold text-center mt-5">{firstName}'s Trip Map</h1>
+        <div id="map" class="w-full h-[600px] rounded-lg shadow-md mt-5"></div>
+    </div>
 
     <div class="relative w-full h-screen">
-        <!-- Map Background -->
-        <div id="map" class="fixed inset-0 -z-10"></div>
 
         <!-- Overlay -->
         <div class="relativ z-10 p-4">
@@ -30,8 +33,8 @@ templ Statistics() {
 
             <!-- Toggle: Month/Year -->
             <div class="flex justify-center mb-4">
-                <button hx-get="/statistics?agg=m" hx-target="#aggregation" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Month</button>
-                <button hx-get="/statistics?agg=y" hx-target="#aggregation" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Year</button>
+                <button hx-get="/api/statistics?agg=m" hx-target="#aggregation" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Month</button>
+                <button hx-get="/api/statistics?agg=y" hx-target="#aggregation" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Year</button>
             </div>
 
             <!-- Aggregation -->

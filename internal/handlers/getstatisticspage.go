@@ -8,22 +8,22 @@ import (
 	"github.com/skywall34/trip-tracker/templates"
 )
 
-type GetTripMapHandler struct {
+type GetStatisticsPageHandler struct {
     userStore *db.UserStore
 }
 
-type GetTripMapHandlerParams struct {
+type GetStatisticsPageHandlerParams struct {
     UserStore *db.UserStore
 }
 
-func NewGetTripMapHandler(params GetTripMapHandlerParams) *GetTripMapHandler {
-    return &GetTripMapHandler{
+func NewGetStatisticsPageHandler(params GetStatisticsPageHandlerParams) *GetStatisticsPageHandler {
+    return &GetStatisticsPageHandler{
         userStore: params.UserStore,
     }
 }
 
 
-func (u *GetTripMapHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (u *GetStatisticsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
     userID, ok := ctx.Value(m.UserKey).(int)
@@ -39,7 +39,7 @@ func (u *GetTripMapHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c := templates.TripMap(user.FirstName)
+	c := templates.Statistics(user.FirstName)
 	err = templates.Layout(c, "Mia's Trips").Render(r.Context(), w)
 
 	if err != nil {

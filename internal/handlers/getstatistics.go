@@ -19,8 +19,8 @@ type GetStatisticsHandlerParams struct {
     TripStore *db.TripStore
 }
 
-func NewGetStatisticsHandlerParams(params GetTripHandlerParams) *GetTripHandler {
-    return &GetTripHandler{
+func NewGetStatisticsHandlerParams(params GetStatisticsHandlerParams) *GetStatisticsHandler {
+    return &GetStatisticsHandler{
         tripStore: params.TripStore,
     }
 }

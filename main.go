@@ -113,8 +113,8 @@ func main() {
             m.CSPMiddleware(
                 m.TextHTMLMiddleware(
                     m.LoggingMiddleware(
-                        handlers.NewGetTripMapHandler(
-                            handlers.GetTripMapHandlerParams{
+                        handlers.NewGetStatisticsPageHandler(
+                            handlers.GetStatisticsPageHandlerParams{
                                 UserStore: userStore,
                             }).ServeHTTP)))))
 
@@ -125,6 +125,14 @@ func main() {
                 m.LoggingMiddleware(
                     handlers.NewGetTripMapApiHandler(
                         handlers.GetTripMapApiHandlerParams{
+                            TripStore: tripStore}).ServeHTTP))))
+
+    mux.Handle("GET /api/statistics",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetStatisticsHandlerParams(
+                        handlers.GetStatisticsHandlerParams{
                             TripStore: tripStore}).ServeHTTP))))
 
     server := http.Server {
