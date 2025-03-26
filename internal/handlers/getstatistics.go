@@ -56,8 +56,10 @@ func (t *GetStatisticsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	c := templates.AggregationComponent(flights, airline, country)
-    templates.Layout(c, "Statistics").Render(r.Context(), w)
-
+	renderErr := templates.AggregationComponent(flights, airline, country).Render(r.Context(), w)
+	if renderErr != nil {
+		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+		return
+	}
 
 }
