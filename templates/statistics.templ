@@ -96,7 +96,7 @@ templ CountriesPerAggregation(countries []models.CountryAggregation) {
     <h3 class="text-md font-semibold mb-2">COUNTRIES AND REGIONS</h3>
     for _, country := range countries {
         <div class="flex justify-between mb-1">
-            <span>{country.Label}</span>
+            <span>{country.Country}</span>
             <div class="flex-1 mx-2 bg-gray-200 rounded-full">
                 <div class="h-2 rounded-full bg-gray-700" style="width: { country.Count | countryBarWidth }%;"></div>
             </div>

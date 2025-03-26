@@ -48,7 +48,7 @@ func Statistics(firstName string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "'s Trip Map</h1><div id=\"map\" class=\"w-full h-[600px] rounded-lg shadow-md mt-5\"></div></div><div class=\"relative w-full h-screen\"><!-- Map Background --><div id=\"map\" class=\"fixed inset-0 -z-10\"></div><!-- Overlay --><div class=\"relativ z-10 p-4\"><!-- Header --><div class=\"flex items-center mb-4\"><h1 class=\"text-3xl font-bold\">Statistics</h1></div><!-- Summary --><div class=\"bg-white rounded-2xl shadow-lg p-4 mb-4\"><h2 class=\"text-xl font-semibold mb-2\">Statistics</h2><div class=\"text-lg font-medium\"><span>Placeholder 295,232 miles</span> <span class=\"ml-4\">Placeholder 324 hours</span></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-4\"><button hx-get=\"/statistics?agg=m\" hx-target=\"#aggregation\" hx-trigger=\"load, click\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Month</button> <button hx-get=\"/statistics?agg=y\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Year</button></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-white rounded-2xl shadow-lg p-4\"><!-- This will be populated by HTMX /statistics, calling AggregationComponent --></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "'s Trip Map</h1><div id=\"map\" class=\"w-full h-[600px] rounded-lg shadow-md mt-5\"></div></div><div class=\"relative w-full h-screen\"><!-- Overlay --><div class=\"relativ z-10 p-4\"><!-- Header --><div class=\"flex items-center mb-4\"><h1 class=\"text-3xl font-bold\">Statistics</h1></div><!-- Summary TODO: Create sql query for total miles and hours--><div class=\"bg-white rounded-2xl shadow-lg p-4 mb-4\"><h2 class=\"text-xl font-semibold mb-2\">Statistics</h2><div class=\"text-lg font-medium\"><span>Placeholder 295,232 miles</span> <span class=\"ml-4\">Placeholder 324 hours</span></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-4\"><button hx-get=\"/api/statistics?agg=m\" hx-target=\"#aggregation\" hx-trigger=\"load, click\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Month</button> <button hx-get=\"/api/statistics?agg=y\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Year</button></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-white rounded-2xl shadow-lg p-4\"><!-- This will be populated by HTMX /statistics, calling AggregationComponent --></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -142,7 +142,7 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(flight.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 71, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 69, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -155,7 +155,7 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 73, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 71, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -209,7 +209,7 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(airline.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 86, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 84, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -222,7 +222,7 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(airline.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 90, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 88, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -270,9 +270,9 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
-			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(country.Label)
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(country.Country)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 101, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 99, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -285,7 +285,7 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(country.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 105, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 103, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
