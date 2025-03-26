@@ -6,7 +6,7 @@ import (
 )
 
 // By default aggregations will be by month
-templ Statistics(flights []models.FlightAggregation, airlines []models.AirlineAggregation, countries []models.CountryAggregation) {
+templ Statistics() {
 
     <div class="relative w-full h-screen">
         <!-- Map Background -->
@@ -30,13 +30,13 @@ templ Statistics(flights []models.FlightAggregation, airlines []models.AirlineAg
 
             <!-- Toggle: Month/Year -->
             <div class="flex justify-center mb-4">
-                <button hx-get="/statistics?agg=m" hx-target="#aggregation" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Month</button>
+                <button hx-get="/statistics?agg=m" hx-target="#aggregation" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Month</button>
                 <button hx-get="/statistics?agg=y" hx-target="#aggregation" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">Year</button>
             </div>
 
             <!-- Aggregation -->
             <div id="aggregation" class="bg-white rounded-2xl shadow-lg p-4">
-                @AggregationComponent(flights, airlines, countries)
+                <!-- This will be populated by HTMX /statistics, calling AggregationComponent -->
             </div>
 
         </div>
@@ -78,7 +78,7 @@ templ AirlinesPerAggregation(airlines []models.AirlineAggregation) {
     <h3 class="text-md font-semibold mb-2">AIRLINES</h3>
     for _, airline := range airlines {
         <div class="flex justify-between mb-1">
-            <span>{airline.Name}</span>
+            <span>{airline.Label}</span>
             <div class="flex-1 mx-2 bg-gray-200 rounded-full">
                 <div class="h-2 rounded-full bg-gray-700" style="width: { airline.Count | airlineBarWidth }%;"></div>
             </div>
@@ -93,7 +93,7 @@ templ CountriesPerAggregation(countries []models.CountryAggregation) {
     <h3 class="text-md font-semibold mb-2">COUNTRIES AND REGIONS</h3>
     for _, country := range countries {
         <div class="flex justify-between mb-1">
-            <span>{country.Name}</span>
+            <span>{country.Label}</span>
             <div class="flex-1 mx-2 bg-gray-200 rounded-full">
                 <div class="h-2 rounded-full bg-gray-700" style="width: { country.Count | countryBarWidth }%;"></div>
             </div>

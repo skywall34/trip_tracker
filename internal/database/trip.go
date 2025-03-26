@@ -140,6 +140,128 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
     return trips, nil
 }
 
+
+func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.FlightAggregation, error) {
+	var flights []m.FlightAggregation
+
+	rows, err := t.db.Query(`
+		SELECT 
+			strftime('%m', datetime(departure_time, 'unixepoch')) AS label,
+			COUNT(*) AS count
+		FROM trips
+		WHERE user_id = ? 
+		AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
+		GROUP BY month
+		ORDER BY month`, user_id, year)
+
+	if err != nil {
+		return flights, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var flight m.FlightAggregation
+		err := rows.Scan(
+			&flight.Label, 
+			&flight.Count,
+		)
+		if err != nil {
+			return flights, err
+		}
+		flights = append(flights, flight)
+	}
+
+	return flights, nil
+
+}
+
+func (t *TripStore) getAirlinesCountForYear(user_id int, year string) ([]m.AirlineAggregation, error) {
+	var airlines []m.AirlineAggregation
+
+	rows, err := t.db.Query(`
+	SELECT 
+		airline,                                                       
+		COUNT(*) AS flight_count
+	FROM trips
+	WHERE user_id = ?
+		AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
+	GROUP BY airline
+	ORDER BY flight_count DESC`, user_id, year)
+
+	if err != nil {
+		return airlines, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var airline m.AirlineAggregation
+		err := rows.Scan(
+			&airline.Label,
+			&airline.Count,
+		)
+		if err != nil {
+			return airlines, err
+		}
+		airlines = append(airlines, airline)
+	}
+
+	return airlines, nil
+}
+
+func (t *TripStore) getCountriesCountForYear(user_id int, year string) ([]m.CountryAggregation, error) {
+	var countries []m.CountryAggregation
+
+	rows, err := t.db.Query(`
+	SELECT 
+		strftime('%m', datetime(departure_time, 'unixepoch')) AS label,
+		COUNT(DISTINCT arrival) AS country_count
+	FROM trips
+	WHERE user_id = ?
+		AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
+	GROUP BY month
+	ORDER BY month`, user_id, year)
+
+	if err != nil {
+		return countries, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var country m.CountryAggregation
+		err := rows.Scan(
+			&country.Label,
+			&country.Count,
+		)
+		if err != nil {
+			return countries, err
+		}
+		countries = append(countries, country)
+	}
+
+	return countries, nil
+}
+
+
+func (t *TripStore) GetTripsPerAggregation(user_id int, year string, agg string) ([]m.FlightAggregation, []m.AirlineAggregation, []m.CountryAggregation, error) {
+	// TODO: switch case for agg
+	flights, err := t.getFlightsPerMonthForYear(user_id, year)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	
+	airlines, err := t.getAirlinesCountForYear(user_id, year)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	countries, err := t.getCountriesCountForYear(user_id, year)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return flights, airlines, countries, nil
+}
+
 func (t *TripStore) DeleteTrip(id int) (error) {
 	_, err := t.db.Exec("DELETE FROM trips WHERE id = ?", id)
 	if err != nil {

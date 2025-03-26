@@ -14,7 +14,7 @@ import (
 )
 
 // By default aggregations will be by month
-func Statistics(flights []models.FlightAggregation, airlines []models.AirlineAggregation, countries []models.CountryAggregation) templ.Component {
+func Statistics() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -35,15 +35,7 @@ func Statistics(flights []models.FlightAggregation, airlines []models.AirlineAgg
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative w-full h-screen\"><!-- Map Background --><div id=\"map\" class=\"fixed inset-0 -z-10\"></div><!-- Overlay --><div class=\"relativ z-10 p-4\"><!-- Header --><div class=\"flex items-center mb-4\"><h1 class=\"text-3xl font-bold\">Statistics</h1></div><!-- Summary --><div class=\"bg-white rounded-2xl shadow-lg p-4 mb-4\"><h2 class=\"text-xl font-semibold mb-2\">Statistics</h2><div class=\"text-lg font-medium\"><span>Placeholder 295,232 miles</span> <span class=\"ml-4\">Placeholder 324 hours</span></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-4\"><button hx-get=\"/statistics?agg=m\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Month</button> <button hx-get=\"/statistics?agg=y\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Year</button></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-white rounded-2xl shadow-lg p-4\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = AggregationComponent(flights, airlines, countries).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative w-full h-screen\"><!-- Map Background --><div id=\"map\" class=\"fixed inset-0 -z-10\"></div><!-- Overlay --><div class=\"relativ z-10 p-4\"><!-- Header --><div class=\"flex items-center mb-4\"><h1 class=\"text-3xl font-bold\">Statistics</h1></div><!-- Summary --><div class=\"bg-white rounded-2xl shadow-lg p-4 mb-4\"><h2 class=\"text-xl font-semibold mb-2\">Statistics</h2><div class=\"text-lg font-medium\"><span>Placeholder 295,232 miles</span> <span class=\"ml-4\">Placeholder 324 hours</span></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-4\"><button hx-get=\"/statistics?agg=m\" hx-target=\"#aggregation\" hx-trigger=\"load, click\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Month</button> <button hx-get=\"/statistics?agg=y\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Year</button></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-white rounded-2xl shadow-lg p-4\"><!-- This will be populated by HTMX /statistics, calling AggregationComponent --></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -72,7 +64,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"flights-per-agg\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div id=\"flights-per-agg\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +72,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div id=\"airlines-per-agg\" class=\"mt-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div id=\"airlines-per-agg\" class=\"mt-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -88,7 +80,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><div id=\"countries-per-agg\" class=\"mt-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div id=\"countries-per-agg\" class=\"mt-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -96,7 +88,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -125,12 +117,12 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"flex items-end gap-2 h-40\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"flex items-end gap-2 h-40\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, flight := range flights {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"flex flex-col items-center\"><div class=\"text-sm mb-1\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"flex flex-col items-center\"><div class=\"text-sm mb-1\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -143,7 +135,7 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div><div class=\"bg-black w-4\" style=\"height: { flight.Count * 10 }px;\"></div><div class=\"text-xs mt-1\">'")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div><div class=\"bg-black w-4\" style=\"height: { flight.Count * 10 }px;\"></div><div class=\"text-xs mt-1\">'")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -156,12 +148,12 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -192,25 +184,25 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<h3 class=\"text-md font-semibold mb-2\">AIRLINES</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<h3 class=\"text-md font-semibold mb-2\">AIRLINES</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, airline := range airlines {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"flex justify-between mb-1\"><span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"flex justify-between mb-1\"><span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(airline.Name)
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(airline.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 81, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 81, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</span><div class=\"flex-1 mx-2 bg-gray-200 rounded-full\"><div class=\"h-2 rounded-full bg-gray-700\" style=\"width: { airline.Count | airlineBarWidth }%;\"></div></div><span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</span><div class=\"flex-1 mx-2 bg-gray-200 rounded-full\"><div class=\"h-2 rounded-full bg-gray-700\" style=\"width: { airline.Count | airlineBarWidth }%;\"></div></div><span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -223,7 +215,7 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</span></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -255,25 +247,25 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<h3 class=\"text-md font-semibold mb-2\">COUNTRIES AND REGIONS</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<h3 class=\"text-md font-semibold mb-2\">COUNTRIES AND REGIONS</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, country := range countries {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"flex justify-between mb-1\"><span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"flex justify-between mb-1\"><span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(country.Name)
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(country.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 96, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 96, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</span><div class=\"flex-1 mx-2 bg-gray-200 rounded-full\"><div class=\"h-2 rounded-full bg-gray-700\" style=\"width: { country.Count | countryBarWidth }%;\"></div></div><span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</span><div class=\"flex-1 mx-2 bg-gray-200 rounded-full\"><div class=\"h-2 rounded-full bg-gray-700\" style=\"width: { country.Count | countryBarWidth }%;\"></div></div><span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -286,7 +278,7 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</span></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</span></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
