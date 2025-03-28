@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -58,7 +59,7 @@ func (t *GetStatisticsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	renderErr := templates.AggregationComponent(flights, airline, country).Render(r.Context(), w)
 	if renderErr != nil {
-		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+		log.Printf("render error: %v", renderErr)
 		return
 	}
 
