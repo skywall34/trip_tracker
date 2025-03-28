@@ -164,17 +164,23 @@ func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.Fli
 				strftime('%m', datetime(departure_time, 'unixepoch')) AS month,
 				COUNT(*) AS trip_count
 			FROM trips
-			WHERE user_id = 1
-			AND strftime('%Y', datetime(departure_time, 'unixepoch')) = '2025'
+			WHERE user_id = ?
+			AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
 			GROUP BY month
+		),
+		total_trips AS (
+			SELECT COUNT(ID) AS total
+			FROM trips
+			WHERE user_id = ?
+			AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
 		)
 		SELECT 
 			m.month AS label,
-			COALESCE(tc.trip_count, 0) AS count
+			COALESCE(tc.trip_count, 0) AS count,
+			(SELECT total FROM total_trips) AS total
 		FROM months m
 		LEFT JOIN trip_counts tc ON m.month = tc.month
-		ORDER BY m.month
-	`, user_id, year)
+		ORDER BY m.month`, user_id, year, user_id, year)
 
 	if err != nil {
 		return flights, err
@@ -186,6 +192,7 @@ func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.Fli
 		err := rows.Scan(
 			&flight.Label, 
 			&flight.Count,
+			&flight.Total,
 		)
 		if err != nil {
 			return flights, err

@@ -3,7 +3,6 @@ package templates
 import (
     "github.com/skywall34/trip-tracker/internal/models"
     "strconv"
-    "fmt"
 )
 
 // By default aggregations will be by month
@@ -70,13 +69,13 @@ func getBarHeightClass(count int, total int) string {
     percent := float64(count) / float64(total)
     switch {
         case percent >= 0.9:
-            return "bg-black w-full h-5"
+            return "bg-black w-full h-6"
         case percent >= 0.75:
-            return "bg-black w-full h-4"
+            return "bg-black w-full h-3"
         case percent >= 0.5:
             return "bg-black w-full h-3"
         case percent >= 0.25:
-            return "bg-black w-full h-2"
+            return "bg-black w-full h-1"
         default:
             return "bg-black w-full h-1"
     }
@@ -88,7 +87,8 @@ templ FlightsPerAggregation(flights []models.FlightAggregation) {
         for _, flight := range flights {
             <div class="flex-1 flex flex-col items-center">
                 <div class="text-sm mb-1">{strconv.Itoa(flight.Count) }</div>
-                <div class={getBarHeightClass(flight.Count, len(flights))}  title={strconv.Itoa(flight.Count)}></div>
+                <!-- TODO: Total should be single not per flight-->
+                <div class={getBarHeightClass(flight.Count, flight.Total)}  title={strconv.Itoa(flight.Count)}></div>
                 <div class="text-xs mt-1">'{flight.Label}</div>
             </div>
         }

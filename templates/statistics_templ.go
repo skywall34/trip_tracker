@@ -9,7 +9,6 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"fmt"
 	"github.com/skywall34/trip-tracker/internal/models"
 	"strconv"
 )
@@ -43,7 +42,7 @@ func Statistics(firstName string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(firstName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 13, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 12, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -118,15 +117,15 @@ func getBarHeightClass(count int, total int) string {
 	percent := float64(count) / float64(total)
 	switch {
 	case percent >= 0.9:
-		return "bg-black w-full h-5" + fmt.Sprintf("%f", percent)
+		return "bg-black w-full h-6"
 	case percent >= 0.75:
-		return "bg-black w-full h-4" + fmt.Sprintf("%f", percent)
+		return "bg-black w-full h-3"
 	case percent >= 0.5:
-		return "bg-black w-full h-3" + fmt.Sprintf("%f", percent)
+		return "bg-black w-full h-3"
 	case percent >= 0.25:
-		return "bg-black w-full h-2" + fmt.Sprintf("%f", percent)
+		return "bg-black w-full h-1"
 	default:
-		return "bg-black w-full h-1 " + fmt.Sprintf("%f ", percent) + strconv.Itoa(count) + strconv.Itoa(total)
+		return "bg-black w-full h-1"
 	}
 }
 
@@ -163,17 +162,17 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(flight.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 90, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 89, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div><!-- TODO: Total should be single not per flight-->")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var6 = []any{getBarHeightClass(flight.Count, len(flights))}
+			var templ_7745c5c3_Var6 = []any{getBarHeightClass(flight.Count, flight.Total)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
