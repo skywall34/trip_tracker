@@ -101,28 +101,88 @@ func getBarWidth(count int, numAirlines int) string { // or get the actual max f
 
 
 templ AirlinesPerAggregation(airlines []models.AirlineAggregation) {
+    {{ 
+        // Compute the maximum count to scale bar widths
+        maxCount := 0
+        for _, c := range airlines {
+        if c.Count > maxCount {
+            maxCount = c.Count
+        }
+        }
+        var rowHeight = 32
+        var chartWidth = 600
+        var barMaxWidth = 360  // Maximum width for the largest bar
+        var chartHeight = len(airlines) * rowHeight
+    }}
     <h3 class="text-md font-semibold mb-2">AIRLINES</h3>
-    for _, airline := range airlines {
-        <div class="flex justify-between mb-1">
-            <span>{airline.Label}</span>
-            <div class="flex-1 mx-2 bg-gray-200 rounded-full">
-                <div class="h-2 rounded-full bg-gray-700" style={getBarWidth(airline.Count, len(airlines))}></div>
-            </div>
-            <span>{strconv.Itoa(airline.Count)}</span>
-        </div>
-    }
+
+    <svg class="w-full h-auto" viewBox={"0 0 " + strconv.Itoa(chartWidth) + " " + strconv.Itoa(chartHeight)} preserveAspectRatio="xMinYMin meet">
+
+        for i, airline := range airlines {
+            {{  
+                y := i * rowHeight
+                // Compute bar width proportional to maxCount
+                barWidth := 0
+                if maxCount > 0 {
+                  barWidth = int(float64(airline.Count) / float64(maxCount) * float64(barMaxWidth))
+                }
+                // Positions for text and rectangle
+                countX := 140 + barWidth + 8
+                textY := y + 20
+                rectY := y + 8
+            }}
+            <g>
+                <!-- Country name -->
+                <text x="0" y={strconv.Itoa(textY)} class="text-sm fill-gray-800">{airline.Label}</text>
+                <!-- Bar rectangle -->
+                <rect x="140" y={strconv.Itoa(rectY)} width={strconv.Itoa(barWidth)} height="16" rx="4" class="fill-gray-700" />
+                <!-- Count label -->
+                <text x={strconv.Itoa(countX)} y={strconv.Itoa(textY)} class="text-sm fill-gray-600">{strconv.Itoa(airline.Count)}</text>
+            </g>
+        }
+    </svg>
 }
 
 
 templ CountriesPerAggregation(countries []models.CountryAggregation) {
+    {{ 
+        // Compute the maximum count to scale bar widths
+        maxCount := 0
+        for _, c := range countries {
+        if c.Count > maxCount {
+            maxCount = c.Count
+        }
+        }
+        var rowHeight = 32
+        var chartWidth = 600
+        var barMaxWidth = 360  // Maximum width for the largest bar
+        var chartHeight = len(countries) * rowHeight
+    }}
     <h3 class="text-md font-semibold mb-2">COUNTRIES AND REGIONS</h3>
-    for _, country := range countries {
-        <div class="flex justify-between mb-1">
-            <span>{country.Country}</span>
-            <div class="flex-1 mx-2 bg-gray-200 rounded-full">
-                <div class="h-2 rounded-full bg-gray-700" style={getBarWidth(country.Count, len(countries))}></div>
-            </div>
-            <span>{strconv.Itoa(country.Count)}</span>
-        </div>
-    }
+
+    <svg class="w-full h-auto" viewBox={"0 0 " + strconv.Itoa(chartWidth) + " " + strconv.Itoa(chartHeight)} preserveAspectRatio="xMinYMin meet">
+
+        for i, country := range countries {
+            {{  
+                y := i * rowHeight
+                // Compute bar width proportional to maxCount
+                barWidth := 0
+                if maxCount > 0 {
+                  barWidth = int(float64(country.Count) / float64(maxCount) * float64(barMaxWidth))
+                }
+                // Positions for text and rectangle
+                countX := 140 + barWidth + 8
+                textY := y + 20
+                rectY := y + 8
+            }}
+            <g>
+                <!-- Country name -->
+                <text x="0" y={strconv.Itoa(textY)} class="text-sm fill-gray-800">{country.Country}</text>
+                <!-- Bar rectangle -->
+                <rect x="140" y={strconv.Itoa(rectY)} width={strconv.Itoa(barWidth)} height="16" rx="4" class="fill-gray-700" />
+                <!-- Count label -->
+                <text x={strconv.Itoa(countX)} y={strconv.Itoa(textY)} class="text-sm fill-gray-600">{strconv.Itoa(country.Count)}</text>
+            </g>
+        }
+    </svg>
 }

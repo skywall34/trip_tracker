@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+  let createTripElement = document.getElementById("create-trip");
+  if (!createTripElement) {
+    return; // Exit if the map element does not exist
+  }
+
   const addTripBtn = document.getElementById("add-trip-btn");
   const createTripForm = document.getElementById("create-trip-form");
   const closeTripForm = document.getElementById("close-trip-form");

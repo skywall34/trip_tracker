@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }).addTo(map);
 
   L.Icon.Default.mergeOptions({
-    iconUrl: "../../images/marker.png",
-    iconRetinaUrl: "../../images/marker.png",
+    iconUrl: "../../images/marker-icon.png",
+    iconRetinaUrl: "../../images/marker-icon.png",
     shadowUrl: "../../images/marker-shadow.png",
   });
 

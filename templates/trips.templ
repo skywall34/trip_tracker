@@ -196,7 +196,7 @@ templ RenderPastTrips(trips []models.Trip) {
 
 
 templ CreateTripForm() {
-    <div class="bg-white p-6 rounded-lg shadow-md">
+    <div id="create-trip" class="bg-white p-6 rounded-lg shadow-md">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Add a New Trip</h2>
         
         <form hx-post="/trips" hx-target="#trips-list" hx-swap="beforebegin">
