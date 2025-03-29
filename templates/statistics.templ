@@ -6,7 +6,7 @@ import (
 )
 
 // By default aggregations will be by month
-templ Statistics(firstName string) {
+templ Statistics(firstName string, tsAggregation models.TimeSpaceAggregation) {
 
     <div class="container mx-auto">
         <h1 class="text-2xl font-bold text-center mt-5">{firstName}'s Trip Map</h1>
@@ -26,8 +26,8 @@ templ Statistics(firstName string) {
             <div class="bg-white rounded-2xl shadow-lg p-4 mb-4">
                 <h2 class="text-xl font-semibold mb-2">Statistics</h2>
                 <div class="text-lg font-medium">
-                    <span>Placeholder 295,232 miles</span>
-                    <span class="ml-4">Placeholder 324 hours</span>
+                    <span>{strconv.Itoa(tsAggregation.TotalKm)} Kilometers</span>
+                    <span class="ml-4">{strconv.Itoa(tsAggregation.TotalHours)} hours</span>
                 </div>
             </div>
 

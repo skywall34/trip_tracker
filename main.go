@@ -19,7 +19,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-    db, err := database.InitDB("./internal/database/database.db")
+    db, err := database.InitDB("file:./internal/database/database.db?_enable_math_functions=1")
     if err != nil {
         log.Fatal(err)
     }
@@ -116,6 +116,7 @@ func main() {
                         handlers.NewGetStatisticsPageHandler(
                             handlers.GetStatisticsPageHandlerParams{
                                 UserStore: userStore,
+                                TripStore: tripStore,
                             }).ServeHTTP)))))
 
     // API CALLS

@@ -301,3 +301,64 @@ func (t *TripStore) DeleteTrip(id int) (error) {
 	}
 	return nil
 }
+
+type Trip struct {
+    ID int64 `json:"id"`
+    UserId int64 `json:"user_id"`
+    Departure string `json:"departure"`
+    Arrival string `json:"arrival"`
+    DepartureTime uint32 `json:"departure_time"`
+    ArrivalTime uint32 `json:"arrival_time"`
+    Airline string `json:"airline"`
+    FlightNumber string `json:"flight_number"`
+    Reservation string `json:"reservation"`
+    Terminal string `json:"terminal"`
+    Gate string `json:"gate"`
+    DepartureLat  float64 `json:"departure_lat"`
+    DepartureLon  float64 `json:"departure_lon"`
+    ArrivalLat float64 `json:"arrival_lat"`
+    ArrivalLon float64 `json:"arrival_lon"`
+}
+
+
+func (t *TripStore) GetTotalMileageAndTime(user_id int) (m.TimeSpaceAggregation, error) {
+	var tsAggregation m.TimeSpaceAggregation
+	row := t.db.QueryRow(`
+		WITH trip_data AS (
+			SELECT 
+				t.departure_time, 
+				t.arrival_time, 
+				d.latitude AS departure_lat, 
+				d.longitude AS departure_lon, 
+				a.latitude AS arrival_lat, 
+				a.longitude AS arrival_lon
+			FROM trips t
+			JOIN airports d ON t.departure = d.iata_code
+			JOIN airports a ON t.arrival = a.iata_code
+			WHERE t.user_id = 12
+		)
+		SELECT
+		SUM((arrival_time - departure_time) / 3600.0) AS total_hours,
+		CAST(
+			SUM(
+			6371 * 2 * ASIN(
+				SQRT(
+				POWER(SIN(((arrival_lat - departure_lat) * 3.141592653589793 / 180) / 2), 2) +
+				COS(departure_lat * 3.141592653589793 / 180) * COS(arrival_lat * 3.141592653589793 / 180) *
+				POWER(SIN(((arrival_lon - departure_lon) * 3.141592653589793 / 180) / 2), 2)
+				)
+			)
+			) AS INTEGER
+		) AS total_km
+		FROM trip_data;`, user_id)
+
+	err := row.Scan(
+		&tsAggregation.TotalHours,
+		&tsAggregation.TotalKm,
+	)
+	if err != nil {
+		return tsAggregation, err
+	}
+
+	return tsAggregation, nil
+}

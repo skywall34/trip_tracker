@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
@@ -10,15 +11,18 @@ import (
 
 type GetStatisticsPageHandler struct {
     userStore *db.UserStore
+	tripStore *db.TripStore
 }
 
 type GetStatisticsPageHandlerParams struct {
     UserStore *db.UserStore
+	TripStore *db.TripStore
 }
 
 func NewGetStatisticsPageHandler(params GetStatisticsPageHandlerParams) *GetStatisticsPageHandler {
     return &GetStatisticsPageHandler{
         userStore: params.UserStore,
+		tripStore: params.TripStore,
     }
 }
 
@@ -39,7 +43,16 @@ func (u *GetStatisticsPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	c := templates.Statistics(user.FirstName)
+	// Get the total trips for the user
+	// TODO: Get the mileage, and hours for each flight
+	tsAggregation, err := u.tripStore.GetTotalMileageAndTime(userID)
+	if err != nil {
+		log.Printf("Error getting totals: %v", err)
+		http.Error(w, "Error getting Totals", http.StatusInternalServerError)
+		return
+	}
+
+	c := templates.Statistics(user.FirstName, tsAggregation)
 	err = templates.Layout(c, "Mia's Trips").Render(r.Context(), w)
 
 	if err != nil {
