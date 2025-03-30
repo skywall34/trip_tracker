@@ -463,21 +463,19 @@ func (t *TripStore) GetTotalMileageAndTime(user_id int) (m.TimeSpaceAggregation,
 			FROM trips t
 			JOIN airports d ON t.departure = d.iata_code
 			JOIN airports a ON t.arrival = a.iata_code
-			WHERE t.user_id = 12
+			WHERE t.user_id = ?
 		)
 		SELECT
-		SUM((arrival_time - departure_time) / 3600.0) AS total_hours,
-		CAST(
-			SUM(
-			6371 * 2 * ASIN(
-				SQRT(
-				POWER(SIN(((arrival_lat - departure_lat) * 3.141592653589793 / 180) / 2), 2) +
-				COS(departure_lat * 3.141592653589793 / 180) * COS(arrival_lat * 3.141592653589793 / 180) *
-				POWER(SIN(((arrival_lon - departure_lon) * 3.141592653589793 / 180) / 2), 2)
+			COALESCE(SUM((arrival_time - departure_time) / 3600.0), 0) AS total_hours,
+			COALESCE(CAST(SUM(
+				6371 * 2 * ASIN(
+					SQRT(
+						POWER(SIN(((arrival_lat - departure_lat) * 3.141592653589793 / 180) / 2), 2) +
+						COS(departure_lat * 3.141592653589793 / 180) * COS(arrival_lat * 3.141592653589793 / 180) *
+						POWER(SIN(((arrival_lon - departure_lon) * 3.141592653589793 / 180) / 2), 2)
+					)
 				)
-			)
-			) AS INTEGER
-		) AS total_km
+			) AS INTEGER), 0) AS total_km
 		FROM trip_data;`, user_id)
 
 	err := row.Scan(
