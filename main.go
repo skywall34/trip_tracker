@@ -10,6 +10,7 @@ import (
 	"github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/internal/handlers"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
+	"github.com/skywall34/trip-tracker/internal/models"
 )
 
 func main() {
@@ -22,6 +23,11 @@ func main() {
     db, err := database.InitDB("file:./internal/database/database.db?_enable_math_functions=1")
     if err != nil {
         log.Fatal(err)
+    }
+
+    // Load the countries from a JSON file into memory
+    if err := models.LoadCountriesFromFile("./static/data/countries.json"); err != nil {
+        log.Fatalf("Failed to load countries: %v", err)
     }
 
     userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
@@ -118,6 +124,17 @@ func main() {
                                 UserStore: userStore,
                                 TripStore: tripStore,
                             }).ServeHTTP)))))
+
+    mux.Handle("GET /worldmap",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetWorldMapHandler(
+                            handlers.GetWorldMapHandlerParams{
+                                TripStore: tripStore,
+                            }).ServeHTTP)))))
+                    
 
     // API CALLS
     mux.Handle("GET /api/trips",  

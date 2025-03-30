@@ -803,9 +803,6 @@ svg.leaflet-zoom-animated {
       max-width: 96rem;
     }
   }
-  .mx-2 {
-    margin-inline: calc(var(--spacing) * 2);
-  }
   .mx-auto {
     margin-inline: auto;
   }
@@ -1026,9 +1023,6 @@ svg.leaflet-zoom-animated {
   }
   .bg-gray-300 {
     background-color: var(--color-gray-300);
-  }
-  .bg-gray-700 {
-    background-color: var(--color-gray-700);
   }
   .bg-green-500 {
     background-color: var(--color-green-500);
@@ -1307,6 +1301,20 @@ svg.leaflet-zoom-animated {
     @media (width >= 64rem) {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+}
+@layer utilities {
+  .country {
+    fill: #e5e7eb;
+    stroke: white;
+    stroke-width: 0.5;
+    transition: fill 0.3s ease;
+  }
+  .country:hover {
+    fill: #86efac;
+  }
+  .visited {
+    fill: #34d399;
   }
 }
 @property --tw-rotate-x {

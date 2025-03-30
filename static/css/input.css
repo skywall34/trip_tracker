@@ -1,2 +1,19 @@
 @import "./leaflet.css";
 @import "tailwindcss";
+
+@layer utilities {
+  .country {
+    fill: #e5e7eb; /* gray-200 */
+    stroke: white;
+    stroke-width: 0.5;
+    transition: fill 0.3s ease;
+  }
+
+  .country:hover {
+    fill: #86efac; /* green-300 */
+  }
+
+  .visited {
+    fill: #34d399; /* green-400 */
+  }
+}

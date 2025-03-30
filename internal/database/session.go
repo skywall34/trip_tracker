@@ -21,7 +21,7 @@ func NewSessionStore(params NewSessionStoreParams) *SessionStore {
 }
 
 
-func (s *SessionStore) CreateSession(userId string) (string, error) {
+func (s *SessionStore) CreateSession(userID string) (string, error) {
 	sessionId := uuid.New().String()
 
 	stmt, err := s.db.Prepare("INSERT INTO sessions (session_id, user_id) VALUES (?, ?)")
@@ -30,7 +30,7 @@ func (s *SessionStore) CreateSession(userId string) (string, error) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sessionId, userId)
+	_, err = stmt.Exec(sessionId, userID)
 	if err != nil {
 		return "", err
 	}

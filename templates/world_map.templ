@@ -1,0 +1,30 @@
+package templates
+
+import (
+    "github.com/skywall34/trip-tracker/internal/models"
+)
+
+// WorldMap displays a map with countries visited
+templ WorldMap(countries []models.Country) {
+    <div class="container mx-auto">
+        <h1 class="text-2xl font-bold text-center mt-5">World Travel Map</h1>
+    </div>
+
+    <div class="bg-white shadow-md rounded-2xl p4">
+        <svg viewBox="0 0 2000 1001" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+            for _, country := range countries {
+                {{
+                    var visitedClass string
+                    if country.Visited {
+                        // If the country has been visited, set the class to "visited"
+                        visitedClass = "country visited"
+                    } else {
+                        // Otherwise, just set it to "country"
+                        visitedClass = "country"
+                    }
+                }}
+                <path id={country.ISOCode} class={visitedClass} title={country.ISOCode} d={country.Path} />
+            }
+          </svg>
+    </div>
+}

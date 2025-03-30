@@ -141,7 +141,7 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
     return trips, nil
 }
 
-func (t *TripStore) getFlightsForYears(user_id int) ([]m.FlightAggregation, error) {
+func (t *TripStore) getFlightsForYears(userID int) ([]m.FlightAggregation, error) {
 	var flights []m.FlightAggregation
 	var total int
 
@@ -167,7 +167,7 @@ func (t *TripStore) getFlightsForYears(user_id int) ([]m.FlightAggregation, erro
 			COALESCE(trips_by_year.count, 0) AS count
 		FROM years
 		LEFT JOIN trips_by_year ON years.label = trips_by_year.label
-		ORDER BY CAST(years.label as INTEGER);`, user_id)
+		ORDER BY CAST(years.label as INTEGER);`, userID)
 
 	if err != nil {
 		return flights, err
@@ -197,7 +197,7 @@ func (t *TripStore) getFlightsForYears(user_id int) ([]m.FlightAggregation, erro
 }
 
 
-func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.FlightAggregation, error) {
+func (t *TripStore) getFlightsPerMonthForYear(userID int, year string) ([]m.FlightAggregation, error) {
 	var flights []m.FlightAggregation
 
 	rows, err := t.db.Query(`
@@ -236,7 +236,7 @@ func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.Fli
 			(SELECT total FROM total_trips) AS total
 		FROM months m
 		LEFT JOIN trip_counts tc ON m.month = tc.month
-		ORDER BY m.month`, user_id, year, user_id, year)
+		ORDER BY m.month`, userID, year, userID, year)
 
 	if err != nil {
 		return flights, err
@@ -261,7 +261,7 @@ func (t *TripStore) getFlightsPerMonthForYear(user_id int, year string) ([]m.Fli
 
 
 // TODO: Maybe add an argument to filter by year for airlines and countries as well
-func (t *TripStore) getAirlinesCount(user_id int) ([]m.AirlineAggregation, error) {
+func (t *TripStore) getAirlinesCount(userID int) ([]m.AirlineAggregation, error) {
 	var airlines []m.AirlineAggregation
 
 	rows, err := t.db.Query(`
@@ -271,7 +271,7 @@ func (t *TripStore) getAirlinesCount(user_id int) ([]m.AirlineAggregation, error
 		FROM trips
 		WHERE user_id = ?
 		GROUP BY airline
-		ORDER BY flight_count DESC`, user_id)
+		ORDER BY flight_count DESC`, userID)
 	
 	if err != nil {
 		return airlines, err
@@ -293,7 +293,7 @@ func (t *TripStore) getAirlinesCount(user_id int) ([]m.AirlineAggregation, error
 	return airlines, nil
 }
 
-func (t *TripStore) getAirlinesCountForYear(user_id int, year string) ([]m.AirlineAggregation, error) {
+func (t *TripStore) getAirlinesCountForYear(userID int, year string) ([]m.AirlineAggregation, error) {
 	var airlines []m.AirlineAggregation
 
 	rows, err := t.db.Query(`
@@ -304,7 +304,7 @@ func (t *TripStore) getAirlinesCountForYear(user_id int, year string) ([]m.Airli
 	WHERE user_id = ?
 		AND strftime('%Y', datetime(departure_time, 'unixepoch')) = ?
 	GROUP BY airline
-	ORDER BY flight_count DESC`, user_id, year)
+	ORDER BY flight_count DESC`, userID, year)
 
 	if err != nil {
 		return airlines, err
@@ -326,7 +326,7 @@ func (t *TripStore) getAirlinesCountForYear(user_id int, year string) ([]m.Airli
 	return airlines, nil
 }
 
-func (t *TripStore) getCountriesCount(user_id int) ([]m.CountryAggregation, error) {
+func (t *TripStore) getCountriesCount(userID int) ([]m.CountryAggregation, error) {
 	var countries []m.CountryAggregation
 
 	rows, err := t.db.Query(`
@@ -338,7 +338,7 @@ func (t *TripStore) getCountriesCount(user_id int) ([]m.CountryAggregation, erro
 	JOIN airports d ON t.arrival = d.iata_code
 	WHERE user_id = ?
 	GROUP BY label
-	ORDER BY label`, user_id)
+	ORDER BY label`, userID)
 
 	if err != nil {
 		return countries, err
@@ -361,7 +361,7 @@ func (t *TripStore) getCountriesCount(user_id int) ([]m.CountryAggregation, erro
 	return countries, nil
 }
 
-func (t *TripStore) getCountriesCountForYear(user_id int, year string) ([]m.CountryAggregation, error) {
+func (t *TripStore) getCountriesCountForYear(userID int, year string) ([]m.CountryAggregation, error) {
 	var countries []m.CountryAggregation
 
 	rows, err := t.db.Query(`
@@ -374,7 +374,7 @@ func (t *TripStore) getCountriesCountForYear(user_id int, year string) ([]m.Coun
 	WHERE user_id = ?
 		AND strftime('%Y', datetime(t.departure_time, 'unixepoch')) = ?
 	GROUP BY label
-	ORDER BY label`, user_id, year)
+	ORDER BY label`, userID, year)
 
 	if err != nil {
 		return countries, err
@@ -398,7 +398,7 @@ func (t *TripStore) getCountriesCountForYear(user_id int, year string) ([]m.Coun
 }
 
 
-func (t *TripStore) GetTripsPerAggregation(user_id int, year string, agg string) ([]m.FlightAggregation, []m.AirlineAggregation, []m.CountryAggregation, error) {
+func (t *TripStore) GetTripsPerAggregation(userID int, year string, agg string) ([]m.FlightAggregation, []m.AirlineAggregation, []m.CountryAggregation, error) {
 
 	if agg != "m" && agg != "y" {
 		return nil, nil, nil, errors.New("proper aggregation not given")
@@ -409,29 +409,29 @@ func (t *TripStore) GetTripsPerAggregation(user_id int, year string, agg string)
 	var err error
 
 	if agg == "m" {
-		flights, err = t.getFlightsPerMonthForYear(user_id, year)
+		flights, err = t.getFlightsPerMonthForYear(userID, year)
 		if err != nil {
 			return nil, nil, nil, err
 		}
 
-		airlines, err = t.getAirlinesCountForYear(user_id, year)
+		airlines, err = t.getAirlinesCountForYear(userID, year)
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		countries, err = t.getCountriesCountForYear(user_id, year)
+		countries, err = t.getCountriesCountForYear(userID, year)
 		if err != nil {
 			return nil, nil, nil, err
 		}
 	} else {
-		flights, err = t.getFlightsForYears(user_id)
+		flights, err = t.getFlightsForYears(userID)
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		airlines, err = t.getAirlinesCount(user_id)
+		airlines, err = t.getAirlinesCount(userID)
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		countries, err = t.getCountriesCount(user_id)
+		countries, err = t.getCountriesCount(userID)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -449,7 +449,7 @@ func (t *TripStore) DeleteTrip(id int) (error) {
 }
 
 
-func (t *TripStore) GetTotalMileageAndTime(user_id int) (m.TimeSpaceAggregation, error) {
+func (t *TripStore) GetTotalMileageAndTime(userID int) (m.TimeSpaceAggregation, error) {
 	var tsAggregation m.TimeSpaceAggregation
 	row := t.db.QueryRow(`
 		WITH trip_data AS (
@@ -476,7 +476,7 @@ func (t *TripStore) GetTotalMileageAndTime(user_id int) (m.TimeSpaceAggregation,
 					)
 				)
 			) AS INTEGER), 0) AS total_km
-		FROM trip_data;`, user_id)
+		FROM trip_data;`, userID)
 
 	err := row.Scan(
 		&tsAggregation.TotalHours,
@@ -487,4 +487,28 @@ func (t *TripStore) GetTotalMileageAndTime(user_id int) (m.TimeSpaceAggregation,
 	}
 
 	return tsAggregation, nil
+}
+
+func (t *TripStore) GetVisitedCountryMap(userID int) (map[string]bool, error) {
+	visited := make(map[string]bool)
+
+	rows, err := t.db.Query(`
+		SELECT DISTINCT d.country
+		FROM trips t
+		JOIN airports d ON t.arrival = d.iata_code
+		WHERE t.user_id = ?`, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var isoCode string
+		if err := rows.Scan(&isoCode); err != nil {
+			return nil, err
+		}
+		visited[isoCode] = true
+	}
+
+	return visited, nil
 }
