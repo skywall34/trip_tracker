@@ -8,7 +8,7 @@ RUN go mod download
 COPY . .
 # Binary was compiled with 'CGO_ENABLED=0', go-sqlite3 requires cgo to work. This is a stub
 # This is since we're using github.com/mattn/go-sqlite3, using a pure GO SQLite driver might work better
-RUN CGO_ENABLED=1 go build -o trip_tracker
+RUN CGO_ENABLED=1 CGO_CFLAGS="-DSQLITE_ENABLE_MATH_FUNCTIONS" go build -tags sqlite_math_functions -o trip_tracker
 
 # Stage 2: Run the application
 FROM alpine:latest
