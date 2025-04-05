@@ -9,7 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/skywall34/trip-tracker/internal/api"
 	"github.com/skywall34/trip-tracker/internal/models"
 	"time"
 )
@@ -79,7 +81,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("2 Jan 2006"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 61, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 63, Col: 40}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -92,7 +94,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().AddDate(1, 0, 0).Format("2 Jan 2006"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 61, Col: 93}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 63, Col: 93}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -110,7 +112,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("trip-element-" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 67, Col: 75}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 69, Col: 75}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -127,7 +129,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime)) * time.Second).Hours()),
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes())%60))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 75, Col: 127}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 77, Col: 127}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -140,7 +142,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("/trips?id=" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 81, Col: 138}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 83, Col: 138}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -153,7 +155,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("#trip-element-" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 81, Col: 189}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 83, Col: 189}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -166,7 +168,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Departure)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 87, Col: 97}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 89, Col: 97}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +181,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 88, Col: 159}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 90, Col: 159}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -192,7 +194,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Arrival)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 94, Col: 94}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 96, Col: 94}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -205,7 +207,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 95, Col: 157}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 97, Col: 157}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -218,7 +220,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(trip.FlightNumber)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 107, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 109, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -231,7 +233,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Reservation)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 108, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 110, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -244,7 +246,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Terminal)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 109, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 111, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -257,7 +259,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Gate)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 110, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 112, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -270,7 +272,7 @@ func RenderTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime)-(24*60*60), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 123, Col: 172}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 125, Col: 172}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -332,7 +334,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs("trip-element-" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 148, Col: 75}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 150, Col: 75}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
@@ -349,7 +351,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime)) * time.Second).Hours()),
 					int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Minutes())%60))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 155, Col: 127}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 157, Col: 127}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
@@ -362,7 +364,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var21 string
 			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs("/trips?id=" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 161, Col: 138}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 163, Col: 138}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 			if templ_7745c5c3_Err != nil {
@@ -375,7 +377,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs("#trip-element-" + fmt.Sprint(trip.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 161, Col: 189}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 163, Col: 189}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 			if templ_7745c5c3_Err != nil {
@@ -388,7 +390,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Departure)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 166, Col: 97}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 168, Col: 97}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
@@ -401,7 +403,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 167, Col: 159}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 169, Col: 159}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -414,7 +416,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Arrival)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 173, Col: 94}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 175, Col: 94}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
@@ -427,7 +429,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var26 string
 			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 174, Col: 157}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 176, Col: 157}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 			if templ_7745c5c3_Err != nil {
@@ -440,7 +442,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var27 string
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(trip.FlightNumber)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 186, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 188, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 			if templ_7745c5c3_Err != nil {
@@ -453,7 +455,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Reservation)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 187, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 189, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {
@@ -466,7 +468,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var29 string
 			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Terminal)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 188, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 190, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 			if templ_7745c5c3_Err != nil {
@@ -479,7 +481,7 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 			var templ_7745c5c3_Var30 string
 			templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(trip.Gate)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 189, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 191, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 			if templ_7745c5c3_Err != nil {
@@ -493,6 +495,158 @@ func RenderPastTrips(trips []models.Trip) templ.Component {
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func CreateTripPage() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var31 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var31 == nil {
+			templ_7745c5c3_Var31 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<div class=\"flex-1 w-full max-w-6xl mx-auto px-4 py-8\"><div class=\"text-center mb-8 mt-4\"><!-- Search Bar --><div class=\"flex justify-center mt-4\"><form hx-get=\"/api/flights\" hx-target=\"#results\" class=\"flex w-2/3 sm:w-1/2\"><input type=\"text\" name=\"flight_iata\" placeholder=\"Search for a flight\" class=\"flex-grow rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none\"> <button type=\"submit\" class=\"rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition\">Search</button></form></div><!-- Somewhere on the page --><div id=\"results\"></div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func TripForm(flights api.FlightsAPIResponse) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var32 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var32 == nil {
+			templ_7745c5c3_Var32 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		for _, flight := range flights.Data {
+
+			// Helper to safely dereference *string
+			str := func(ptr *string) string {
+				if ptr != nil {
+					return *ptr
+				}
+				return ""
+			}
+
+			vals := map[string]string{
+				"departure":     flight.Departure.IATA,
+				"arrival":       flight.Arrival.IATA,
+				"departuretime": flight.Departure.Scheduled.Format("2006-01-02T15:04"),
+				"arrivaltime":   flight.Arrival.Scheduled.Format("2006-01-02T15:04"),
+				"airline":       flight.Airline.Name,
+				"flightnumber":  flight.FlightInfo.Number,
+				"reservation":   "",
+				"terminal":      str(flight.Departure.Terminal),
+				"gate":          str(flight.Departure.Gate),
+				"timezone":      flight.Departure.Timezone,
+			}
+
+			hxValsJSONBytes, err := json.Marshal(vals)
+			if err != nil {
+				panic("failed to marshal hx-vals JSON: " + err.Error())
+			}
+			hxValsJSON := string(hxValsJSONBytes)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"bg-white shadow-md rounded p-4 flex justify-between items-center\"><div><h3 class=\"text-xl font-semibold\">Flight ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var33 string
+			templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(flight.FlightInfo.IATA)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 263, Col: 80}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</h3><p class=\"text-gray-600\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var34 string
+			templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Departure.Airport)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 264, Col: 66}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, " → ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var35 string
+			templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Arrival.Airport)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 264, Col: 95}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, ", ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var36 string
+			templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Departure.Scheduled.Format("Jan 2, 2006 3:04 PM"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 264, Col: 155}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "</p></div><button hx-post=\"/trips\" hx-vals=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var37 string
+			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(hxValsJSON)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 268, Col: 35}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "\" hx-swap=\"none\" class=\"bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition\">Add to My Flights</button></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})
@@ -514,12 +668,12 @@ func CreateTripForm() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var31 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var31 == nil {
-			templ_7745c5c3_Var31 = templ.NopComponent
+		templ_7745c5c3_Var38 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var38 == nil {
+			templ_7745c5c3_Var38 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<div id=\"create-trip\" class=\"bg-white p-6 rounded-lg shadow-md\"><h2 class=\"text-xl font-bold text-gray-800 mb-4\">Add a New Trip</h2><form hx-post=\"/trips\" hx-target=\"#trips-list\" hx-swap=\"beforebegin\"><div class=\"grid grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600\">Departure</label> <input type=\"text\" name=\"departure\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter departure location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival</label> <input type=\"text\" name=\"arrival\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter arrival location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Departure Time</label> <input type=\"datetime-local\" name=\"departuretime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival Time</label> <input type=\"datetime-local\" name=\"arrivaltime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Airline</label> <input type=\"text\" name=\"airline\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter airline name\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Flight Number</label> <input type=\"text\" name=\"flightnumber\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter flight number\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Reservation</label> <input type=\"text\" name=\"reservation\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter reservation code\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Terminal</label> <input type=\"text\" name=\"terminal\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter terminal\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Gate</label> <input type=\"text\" name=\"gate\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter gate\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><!-- Hidden field for timezone --><button type=\"submit\" class=\"mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition\">Submit Trip</button> <button type=\"button\" id=\"close-trip-form\" class=\"mt-4 w-full bg-gray-300 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition\">Cancel</button></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "<div id=\"create-trip\" class=\"bg-white p-6 rounded-lg shadow-md\"><h2 class=\"text-xl font-bold text-gray-800 mb-4\">Add a New Trip</h2><form hx-post=\"/trips\" hx-target=\"#trips-list\" hx-swap=\"beforebegin\"><div class=\"grid grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600\">Departure</label> <input type=\"text\" name=\"departure\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter departure location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival</label> <input type=\"text\" name=\"arrival\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter arrival location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Departure Time</label> <input type=\"datetime-local\" name=\"departuretime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival Time</label> <input type=\"datetime-local\" name=\"arrivaltime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Airline</label> <input type=\"text\" name=\"airline\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter airline name\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Flight Number</label> <input type=\"text\" name=\"flightnumber\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter flight number\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Reservation</label> <input type=\"text\" name=\"reservation\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter reservation code\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Terminal</label> <input type=\"text\" name=\"terminal\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter terminal\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Gate</label> <input type=\"text\" name=\"gate\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter gate\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><!-- Hidden field for timezone --><button type=\"submit\" class=\"mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition\">Submit Trip</button> <button type=\"button\" id=\"close-trip-form\" class=\"mt-4 w-full bg-gray-300 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition\">Cancel</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

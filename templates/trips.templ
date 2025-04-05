@@ -2,6 +2,8 @@ package templates
 
 import (
     "github.com/skywall34/trip-tracker/internal/models"
+    "github.com/skywall34/trip-tracker/internal/api"
+    "encoding/json"
     "time"
     "fmt"
 )
@@ -192,6 +194,85 @@ templ RenderPastTrips(trips []models.Trip) {
             </div>
         }
     </div>
+}
+
+templ CreateTripPage() {
+    <div class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+		<div class="text-center mb-8 mt-4">
+            <!-- Search Bar -->
+            <div class="flex justify-center mt-4">
+                <form 
+                    hx-get="/api/flights" 
+                    hx-target="#results" 
+                    class="flex w-2/3 sm:w-1/2"
+                >
+                    <input
+                        type="text"
+                        name="flight_iata"
+                        placeholder="Search for a flight"
+                        class="flex-grow rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none"
+                    />
+                    <button 
+                        type="submit"
+                        class="rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition"
+                    >
+                        Search
+                    </button>
+                </form>
+            </div>
+
+            <!-- Somewhere on the page -->
+            <div id="results"></div>
+        </div>
+    </div>
+}
+
+templ TripForm(flights api.FlightsAPIResponse) {
+    for _, flight := range flights.Data {
+        {{
+            // Helper to safely dereference *string
+            str := func(ptr *string) string {
+                if ptr != nil {
+                    return *ptr
+                }
+                return ""
+            }
+
+            vals := map[string]string{
+                "departure":     flight.Departure.IATA,
+                "arrival":       flight.Arrival.IATA,
+                "departuretime": flight.Departure.Scheduled.Format("2006-01-02T15:04"),
+                "arrivaltime":   flight.Arrival.Scheduled.Format("2006-01-02T15:04"),
+                "airline":       flight.Airline.Name,
+                "flightnumber":  flight.FlightInfo.Number,
+                "reservation":   "",
+                "terminal":      str(flight.Departure.Terminal),
+                "gate":          str(flight.Departure.Gate),
+                "timezone":      flight.Departure.Timezone,
+            }
+
+            hxValsJSONBytes, err := json.Marshal(vals)
+            if err != nil {
+                panic("failed to marshal hx-vals JSON: " + err.Error())
+            }
+            hxValsJSON := string(hxValsJSONBytes)
+        }}
+
+        <div class="bg-white shadow-md rounded p-4 flex justify-between items-center">
+            <div>
+                <h3 class="text-xl font-semibold">Flight {flight.FlightInfo.IATA}</h3>
+                <p class="text-gray-600">{flight.Departure.Airport} → {flight.Arrival.Airport}, {flight.Departure.Scheduled.Format("Jan 2, 2006 3:04 PM")}</p>
+            </div>
+            <button 
+                hx-post="/trips"
+                hx-vals={hxValsJSON}
+                hx-swap="none"
+                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+            >
+                Add to My Flights
+            </button>
+        </div>
+    }
 }
 
 

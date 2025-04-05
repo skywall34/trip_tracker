@@ -134,9 +134,24 @@ func main() {
                             handlers.GetWorldMapHandlerParams{
                                 TripStore: tripStore,
                             }).ServeHTTP)))))
+
+    mux.Handle("GET /createtrip",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetCreateTripHandler().ServeHTTP)))))     
                     
 
     // API CALLS
+    mux.Handle("GET /api/flights",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetFlightHandler().ServeHTTP)))))                         
+
+
     mux.Handle("GET /api/trips",  
         authMiddleware.AddUserToContext(
             m.CSPMiddleware(

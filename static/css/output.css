@@ -923,6 +923,9 @@ svg.leaflet-zoom-animated {
   .flex-1 {
     flex: 1;
   }
+  .flex-grow {
+    flex-grow: 1;
+  }
   .rotate-0 {
     rotate: 0deg;
   }
@@ -981,6 +984,9 @@ svg.leaflet-zoom-animated {
   }
   .overflow-hidden {
     overflow: hidden;
+  }
+  .rounded {
+    border-radius: 0.25rem;
   }
   .rounded-2xl {
     border-radius: var(--radius-2xl);
