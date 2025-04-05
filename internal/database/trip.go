@@ -331,8 +331,7 @@ func (t *TripStore) getCountriesCount(userID int) ([]m.CountryAggregation, error
 
 	rows, err := t.db.Query(`
 	SELECT 
-		strftime('%Y', datetime(t.departure_time, 'unixepoch')) AS label,
-		d.country AS country,
+		d.country AS label,
 		COUNT(DISTINCT t.arrival) AS country_count
 	FROM trips t
 	JOIN airports d ON t.arrival = d.iata_code
@@ -349,7 +348,6 @@ func (t *TripStore) getCountriesCount(userID int) ([]m.CountryAggregation, error
 		var country m.CountryAggregation
 		err := rows.Scan(
 			&country.Label,
-			&country.Country,
 			&country.Count,
 		)
 		if err != nil {
@@ -366,8 +364,7 @@ func (t *TripStore) getCountriesCountForYear(userID int, year string) ([]m.Count
 
 	rows, err := t.db.Query(`
 	SELECT 
-		strftime('%m', datetime(t.departure_time, 'unixepoch')) AS label,
-		d.country AS country,
+		d.country AS label,
 		COUNT(DISTINCT t.arrival) AS country_count
 	FROM trips t
 	JOIN airports d ON t.arrival = d.iata_code
@@ -385,7 +382,6 @@ func (t *TripStore) getCountriesCountForYear(userID int, year string) ([]m.Count
 		var country m.CountryAggregation
 		err := rows.Scan(
 			&country.Label,
-			&country.Country,
 			&country.Count,
 		)
 		if err != nil {

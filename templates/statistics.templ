@@ -27,7 +27,7 @@ templ Statistics(firstName string, tsAggregation models.TimeSpaceAggregation) {
                 <h2 class="text-xl font-semibold mb-2">Statistics</h2>
                 <div class="text-lg font-medium">
                     <span>{strconv.Itoa(tsAggregation.TotalKm)} Kilometers</span>
-                    <span class="ml-4">{strconv.Itoa(tsAggregation.TotalHours)} hours</span>
+                    <span class="ml-4">{strconv.FormatFloat(float64(tsAggregation.TotalHours), 'f', -1, 32)} hours</span>
                 </div>
             </div>
 
@@ -177,7 +177,7 @@ templ CountriesPerAggregation(countries []models.CountryAggregation) {
             }}
             <g>
                 <!-- Country name -->
-                <text x="0" y={strconv.Itoa(textY)} class="text-sm fill-gray-800">{country.Country}</text>
+                <text x="0" y={strconv.Itoa(textY)} class="text-sm fill-gray-800">{country.Label}</text>
                 <!-- Bar rectangle -->
                 <rect x="140" y={strconv.Itoa(rectY)} width={strconv.Itoa(barWidth)} height="16" rx="4" class="fill-gray-700" />
                 <!-- Count label -->

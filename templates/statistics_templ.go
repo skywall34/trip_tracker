@@ -66,9 +66,9 @@ func Statistics(firstName string, tsAggregation models.TimeSpaceAggregation) tem
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(tsAggregation.TotalHours))
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.FormatFloat(float64(tsAggregation.TotalHours), 'f', -1, 32))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 30, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 30, Col: 107}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -505,9 +505,9 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var24 string
-			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(country.Country)
+			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(country.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 180, Col: 98}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 180, Col: 96}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
