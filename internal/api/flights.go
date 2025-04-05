@@ -3,11 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -94,46 +92,44 @@ const FlightsAPIURL = "https://api.aviationstack.com/v1/flights"
 
 
 // We'll use this function to get current status of flights
-func GetFlights(client *http.Client, dep string, arr string, limit int, offset int) (flights FlightsAPIResponse){
+// flight_iata example: "DL171"
+// Limit will always be one
+func GetFlight(flightIATA string) ( *FlightsAPIResponse, error ){
 	accessKey := os.Getenv("API_ACCESS_KEY")
 	params := url.Values{}
 	params.Add("access_key", accessKey)
-	params.Add("limit", strconv.Itoa(limit))
-	params.Add("offset", strconv.Itoa(offset))
-	// Airpot IATA code
-	params.Add("dep_iata", dep)
-	params.Add("arr_iata", arr)
+	params.Add("flight_iata", flightIATA) // flight IATA code to get the status of a specific flight
+	params.Add("limit", "1") // Limit to 1 to get the most recent flight status
 
 	// Construct full URL with query parameters
 	fullURL := fmt.Sprintf("%s?%s", FlightsAPIURL, params.Encode())
 
-	// Create the request
-	req, err := http.NewRequest("GET", fullURL, nil)
-	if err != nil {
-		log.Fatalf("Error creating request: %v", err)
-	}
-
 	// Send the request
-	resp, err := client.Do(req)
+	resp, err := http.Get(fullURL) // Using http.Get for simplicity since we don't need custom headers here
 	if err != nil {
-		log.Fatalf("Request failed: %v", err)
+		return nil, fmt.Errorf("request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
 	// Check for non-200 response codes
 	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Unexpected response code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("unexpected response code: %d", resp.StatusCode)
 	}
 
 	// Decode JSON response
 	var apiResponse FlightsAPIResponse
+
 	err = json.NewDecoder(resp.Body).Decode(&apiResponse)
 	if err != nil {
-		log.Fatalf("Error decoding JSON: %v", err)
+		return nil, fmt.Errorf("error decoding JSON: %v", err)
+	}
+
+	if len(apiResponse.Data) == 0 {
+		return nil, fmt.Errorf("no flights found for IATA %s", flightIATA)
 	}
 
 	// Print the response
 	fmt.Printf("Response: %+v\n", apiResponse)
 
-	return apiResponse
+	return &apiResponse, nil
 }
