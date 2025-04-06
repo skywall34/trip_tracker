@@ -513,7 +513,7 @@ func CreateTripPage() templ.Component {
 			templ_7745c5c3_Var31 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<div class=\"flex-1 w-full max-w-6xl mx-auto px-4 py-8\"><div class=\"text-center mb-8 mt-4\"><!-- Search Bar --><div class=\"flex justify-center mt-4\"><form hx-get=\"/api/flights\" hx-target=\"#results\" class=\"flex w-2/3 sm:w-1/2\"><input type=\"text\" name=\"flight_iata\" placeholder=\"Search for a flight\" class=\"flex-grow rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none\"> <button type=\"submit\" class=\"rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition\">Search</button></form></div><button id=\"add-trip-btn\" class=\"p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition\">Manually Add Trip</button><!-- Inline Create Trip Form (initially hidden, does not block layout) --><div id=\"create-trip-form\" class=\"hidden mt-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<div class=\"flex-1 w-full max-w-6xl mx-auto px-4 py-8\"><div class=\"text-center mb-8 mt-4\"><!-- Search Bar + Departure Time Filter --><div class=\"flex flex-col sm:flex-row justify-center items-center gap-2 mt-4\"><form hx-get=\"/api/flights\" hx-target=\"#results\" class=\"flex flex-col sm:flex-row items-center gap-2 w-full sm:w-2/3\"><input type=\"text\" name=\"flight_iata\" placeholder=\"Flight IATA code (e.g. UA100)\" class=\"flex-grow rounded-lg px-4 py-2 border border-gray-300 focus:outline-none w-full\"> <button type=\"submit\" class=\"bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition\">Search</button></form></div><button id=\"add-trip-btn\" class=\"p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition\">Manually Add Trip</button><!-- Inline Create Trip Form (initially hidden, does not block layout) --><div id=\"create-trip-form\" class=\"hidden mt-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -561,16 +561,14 @@ func TripForm(flights api.FlightsAPIResponse) templ.Component {
 			}
 
 			vals := map[string]string{
-				"departure":     flight.Departure.IATA,
-				"arrival":       flight.Arrival.IATA,
-				"departuretime": flight.Departure.Scheduled.Format("2006-01-02T15:04"),
-				"arrivaltime":   flight.Arrival.Scheduled.Format("2006-01-02T15:04"),
-				"airline":       flight.Airline.Name,
-				"flightnumber":  flight.FlightInfo.Number,
-				"reservation":   "",
-				"terminal":      str(flight.Departure.Terminal),
-				"gate":          str(flight.Departure.Gate),
-				"timezone":      flight.Departure.Timezone,
+				"departure":    flight.Departure.IATA,
+				"arrival":      flight.Arrival.IATA,
+				"airline":      flight.Airline.Name,
+				"flightnumber": flight.FlightInfo.Number,
+				"reservation":  "",
+				"terminal":     str(flight.Departure.Terminal),
+				"gate":         str(flight.Departure.Gate),
+				"timezone":     flight.Departure.Timezone,
 			}
 
 			hxValsJSONBytes, err := json.Marshal(vals)
@@ -578,72 +576,20 @@ func TripForm(flights api.FlightsAPIResponse) templ.Component {
 				panic("failed to marshal hx-vals JSON: " + err.Error())
 			}
 			hxValsJSON := string(hxValsJSONBytes)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"bg-white shadow-md rounded p-4 flex justify-between items-center\"><div><h3 class=\"text-xl font-semibold\">Flight ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<form hx-post=\"/trips\" hx-vals=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var33 string
-			templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(flight.FlightInfo.IATA)
+			templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(hxValsJSON)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 281, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 277, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</h3><p class=\"text-gray-600\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var34 string
-			templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Departure.Airport)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 282, Col: 66}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, " → ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var35 string
-			templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Arrival.Airport)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 282, Col: 95}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, ", ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var36 string
-			templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Departure.Scheduled.Format("Jan 2, 2006 3:04 PM"))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 282, Col: 155}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "</p></div><button hx-post=\"/trips\" hx-vals=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var37 string
-			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(hxValsJSON)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 286, Col: 35}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "\" hx-swap=\"none\" class=\"bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition\">Add to My Flights</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" hx-swap=\"none\"><div class=\"grid grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600\">Departure Time</label> <input type=\"datetime-local\" name=\"departuretime\" required class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival Time</label> <input type=\"datetime-local\" name=\"arrivaltime\" required class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\"></div><div><button type=\"submit\" class=\"bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition\">Add to My Flights</button></div></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -668,12 +614,12 @@ func CreateTripForm() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var38 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var38 == nil {
-			templ_7745c5c3_Var38 = templ.NopComponent
+		templ_7745c5c3_Var34 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var34 == nil {
+			templ_7745c5c3_Var34 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "<div id=\"create-trip\" class=\"bg-white p-6 rounded-lg shadow-md\"><h2 class=\"text-xl font-bold text-gray-800 mb-4\">Add a New Trip</h2><form hx-post=\"/trips\" hx-target=\"#trips-list\" hx-swap=\"beforebegin\"><div class=\"grid grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600\">Departure</label> <input type=\"text\" name=\"departure\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter departure location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival</label> <input type=\"text\" name=\"arrival\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter arrival location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Departure Time</label> <input type=\"datetime-local\" name=\"departuretime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival Time</label> <input type=\"datetime-local\" name=\"arrivaltime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Airline</label> <input type=\"text\" name=\"airline\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter airline name\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Flight Number</label> <input type=\"text\" name=\"flightnumber\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter flight number\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Reservation</label> <input type=\"text\" name=\"reservation\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter reservation code\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Terminal</label> <input type=\"text\" name=\"terminal\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter terminal\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Gate</label> <input type=\"text\" name=\"gate\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter gate\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><!-- Hidden field for timezone --><button type=\"submit\" class=\"mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition\">Submit Trip</button> <button type=\"button\" id=\"close-trip-form\" class=\"mt-4 w-full bg-gray-300 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition\">Cancel</button></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<div id=\"create-trip\" class=\"bg-white p-6 rounded-lg shadow-md\"><h2 class=\"text-xl font-bold text-gray-800 mb-4\">Add a New Trip</h2><form hx-post=\"/trips\" hx-target=\"#trips-list\" hx-swap=\"beforebegin\"><div class=\"grid grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600\">Departure</label> <input type=\"text\" name=\"departure\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter departure location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival</label> <input type=\"text\" name=\"arrival\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter arrival location\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Departure Time</label> <input type=\"datetime-local\" name=\"departuretime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Arrival Time</label> <input type=\"datetime-local\" name=\"arrivaltime\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Airline</label> <input type=\"text\" name=\"airline\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter airline name\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Flight Number</label> <input type=\"text\" name=\"flightnumber\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter flight number\" required></div><div><label class=\"block text-sm font-semibold text-gray-600\">Reservation</label> <input type=\"text\" name=\"reservation\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter reservation code\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Terminal</label> <input type=\"text\" name=\"terminal\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter terminal\"></div><div><label class=\"block text-sm font-semibold text-gray-600\">Gate</label> <input type=\"text\" name=\"gate\" class=\"w-full border rounded-lg px-4 py-2 focus:outline-none\" placeholder=\"Enter gate\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><!-- Hidden field for timezone --><button type=\"submit\" class=\"mt-4 w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition\">Submit Trip</button> <button type=\"button\" id=\"close-trip-form\" class=\"mt-4 w-full bg-gray-300 text-white py-2 rounded-lg font-semibold hover:bg-gray-600 transition\">Cancel</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -207,28 +207,28 @@ templ RenderPastTrips(trips []models.Trip) {
 templ CreateTripPage() {
     <div class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
 		<div class="text-center mb-8 mt-4">
-            <!-- Search Bar -->
-            <div class="flex justify-center mt-4">
+            <!-- Search Bar + Departure Time Filter -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-2 mt-4">
                 <form 
                     hx-get="/api/flights" 
                     hx-target="#results" 
-                    class="flex w-2/3 sm:w-1/2"
+                    class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-2/3"
                 >
                     <input
                         type="text"
                         name="flight_iata"
-                        placeholder="Search for a flight"
-                        class="flex-grow rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none"
+                        placeholder="Flight IATA code (e.g. UA100)"
+                        class="flex-grow rounded-lg px-4 py-2 border border-gray-300 focus:outline-none w-full"
                     />
+
                     <button 
                         type="submit"
-                        class="rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition"
+                        class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition"
                     >
                         Search
                     </button>
                 </form>
             </div>
-
             
             <button id="add-trip-btn" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
                 Manually Add Trip
@@ -259,8 +259,6 @@ templ TripForm(flights api.FlightsAPIResponse) {
             vals := map[string]string{
                 "departure":     flight.Departure.IATA,
                 "arrival":       flight.Arrival.IATA,
-                "departuretime": flight.Departure.Scheduled.Format("2006-01-02T15:04"),
-                "arrivaltime":   flight.Arrival.Scheduled.Format("2006-01-02T15:04"),
                 "airline":       flight.Airline.Name,
                 "flightnumber":  flight.FlightInfo.Number,
                 "reservation":   "",
@@ -276,20 +274,36 @@ templ TripForm(flights api.FlightsAPIResponse) {
             hxValsJSON := string(hxValsJSONBytes)
         }}
 
-        <div class="bg-white shadow-md rounded p-4 flex justify-between items-center">
-            <div>
-                <h3 class="text-xl font-semibold">Flight {flight.FlightInfo.IATA}</h3>
-                <p class="text-gray-600">{flight.Departure.Airport} → {flight.Arrival.Airport}, {flight.Departure.Scheduled.Format("Jan 2, 2006 3:04 PM")}</p>
+        <form hx-post="/trips" hx-vals={hxValsJSON} hx-swap="none">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Departure Time</label>
+                    <input
+                        type="datetime-local"
+                        name="departuretime"
+                        required
+                        class="w-full border rounded-lg px-4 py-2 focus:outline-none"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-600">Arrival Time</label>
+                    <input
+                        type="datetime-local"
+                        name="arrivaltime"
+                        required
+                        class="w-full border rounded-lg px-4 py-2 focus:outline-none"
+                    />
+                </div>
+                <div>
+                    <button
+                        type="submit"
+                        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                    >
+                        Add to My Flights
+                    </button>
+                </div>
             </div>
-            <button 
-                hx-post="/trips"
-                hx-vals={hxValsJSON}
-                hx-swap="none"
-                class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-            >
-                Add to My Flights
-            </button>
-        </div>
+        </form>
     }
 }
 
