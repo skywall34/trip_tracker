@@ -21,6 +21,7 @@ type Nonces struct {
 	ResponseTargets string
 	Tw              string
 	Modal			string
+	TabsJS		    string
 	MapJS           string
 	Leaflet         string
 	HtmxCSSHash     string
@@ -50,6 +51,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			ResponseTargets: generateRandomString(16),
 			// Nonce for replacing content instead of hx-on
 			Modal: generateRandomString(16),
+			TabsJS: generateRandomString(16), // For tab functionality in templ UI
 			// Mapping JS function (Leaflet.js)
 			Leaflet: generateRandomString(16),
 			MapJS: generateRandomString(16),
@@ -67,7 +69,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
+			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
 			"style-src 'self' 'nonce-%s' '%s';" + 
 			"img-src 'self' https://*.tile.openstreetmap.org data:; " + 
     		"connect-src 'self' https://*.tile.openstreetmap.org;",
@@ -75,6 +77,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.ResponseTargets,
 			nonceSet.ConvertTS,
 			nonceSet.Modal,
+			nonceSet.TabsJS,
 			nonceSet.Leaflet,
 			nonceSet.MapJS,
 			nonceSet.Tw,
@@ -153,6 +156,11 @@ func GetLeafletNonce(ctx context.Context) string {
 func GetMapJSNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.MapJS
+}
+
+func GetTabsJSNonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.TabsJS
 }
 /***********************************Auth Middleware**********************************************/
 

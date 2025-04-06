@@ -12,6 +12,7 @@ templ header(title string) {
 		<script src="/static/js/htmx.min.js" nonce={ middleware.GetHtmxNonce(ctx) }></script>
         <script src="/static/js/response-targets.js" nonce={ middleware.GetResponseTargetsNonce(ctx) }></script>
         <script src="/static/js/modal.js" nonce={ middleware.GetModalNonce(ctx) }></script>
+        <script src="/static/js/tabs.js" nonce={ middleware.GetTabsJSNonce(ctx) }></script>
         <!--Script to Convert UTC to Local Time-->
         <script src="/static/js/convertTimes.js" nonce={ middleware.GetConvertTSNonce(ctx) }></script>
         <script src="/static/js/leaflet.js" nonce={ middleware.GetLeafletNonce(ctx) }></script>

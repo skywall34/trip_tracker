@@ -28,17 +28,33 @@ templ TripsPage() {
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex border rounded-full overflow-hidden w-full max-w-sm mx-auto mb-6">
-            <button hx-get="/trips?past=false" hx-target="#trips-list" hx-trigger="load, click" class="w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none">
-                Upcoming
-            </button>
-            <button hx-get="/trips?past=true" hx-target="#trips-list" class="w-1/2 bg-gray-200 text-gray-600 py-2 font-semibold transition hover:bg-gray-300 focus:outline-none">
-                Past
-            </button>
-            <button id="add-trip-btn" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
-                <a href="/createtrip"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
-            </button>
+        <div class="relative w-full max-w-sm mx-auto mb-6">
+            <!-- Animated slider -->
+            <div id="tab-slider" class="absolute top-0 left-0 w-1/2 h-full bg-gray-200 rounded-full transition-all duration-300 ease-in-out z-0"></div>
+        
+            <!-- Buttons go on top -->
+            <div class="flex border rounded-full overflow-hidden relative z-10">
+                <button 
+                    id="tab-upcoming" 
+                    hx-get="/trips?past=false" 
+                    hx-target="#trips-list" 
+                    hx-trigger="load, click"
+                    class="w-1/2 py-2 font-semibold transition text-gray-700 focus:outline-none relative z-20"
+                >
+                    Upcoming
+                </button>
+                <button 
+                    id="tab-past" 
+                    hx-get="/trips?past=true" 
+                    hx-target="#trips-list"
+                    class="w-1/2 py-2 font-semibold transition text-gray-700 focus:outline-none relative z-20"
+                >
+                    Past
+                </button>
+                <button id="add-trip-btn" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition ml-2">
+                    <a href="/createtrip"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
+                </button>
+            </div>
         </div>
 			
         <!-- Trip Cards List TODO: Filter only by user and date range -->
