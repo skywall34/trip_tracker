@@ -64,12 +64,6 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	gate := r.FormValue("gate")
 	timezone := r.FormValue("timezone") // Hjidden field to get timezone of user
 
-	fmt.Println("PostTripHandler called with values: " )
-	fmt.Println("departure: ", departure)
-	fmt.Println("arrival: ", arrival)
-	fmt.Println("departureTimeString: ", departureTimeString)
-	fmt.Println("arrivalTimeString: ", arrivalTimeString)
-
 	ctx := r.Context()
 	userId, ok := ctx.Value(m.UserKey).(int)
 	if !ok {
@@ -101,8 +95,6 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		Terminal: terminal,
 		Gate: gate,
 	}
-
-	fmt.Println("Creating new trip with values: ", newTrip)
 
 	// Insert
 	_, err = t.tripStore.CreateTrip(newTrip)
