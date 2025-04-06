@@ -37,16 +37,8 @@ templ TripsPage() {
                 Past
             </button>
             <button id="add-trip-btn" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
-                <img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6">
+                <a href="/createtrip"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
             </button>
-
-        </div>
-
-        <!-- Hidden Create Trip Form -->
-        <div id="create-trip-form" class="hidden fixed inset-0 flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg shadow-md w-96">
-                @CreateTripForm()
-            </div>
         </div>
 			
         <!-- Trip Cards List TODO: Filter only by user and date range -->
@@ -219,6 +211,16 @@ templ CreateTripPage() {
                         Search
                     </button>
                 </form>
+            </div>
+
+            
+            <button id="add-trip-btn" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition">
+                Manually Add Trip
+            </button>
+
+            <!-- Inline Create Trip Form (initially hidden, does not block layout) -->
+            <div id="create-trip-form" class="hidden mt-6">
+                @CreateTripForm()
             </div>
 
             <!-- Somewhere on the page -->
