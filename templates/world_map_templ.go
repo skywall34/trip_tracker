@@ -34,19 +34,15 @@ func WorldMap(countries []models.Country) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container mx-auto\"><h1 class=\"text-2xl font-bold text-center mt-5\">World Travel Map</h1></div><div class=\"bg-white shadow-md rounded-2xl p4\"><svg viewBox=\"0 0 2000 1001\" xmlns=\"http://www.w3.org/2000/svg\" class=\"w-full h-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"space-y-6\"><div class=\"container mx-auto\"><h1 class=\"text-2xl font-bold text-center mt-5\">World Travel Map</h1></div><div class=\"bg-white shadow-md rounded-2xl p4\"><svg viewBox=\"0 0 2000 1001\" class=\"block mx-auto w-full max-w-5xl h-auto\" xmlns=\"http://www.w3.org/2000/svg\"><g transform=\"translate(300, 0) scale(1.2)\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, country := range countries {
 
-			var visitedClass string
+			visitedClass := "country"
 			if country.Visited {
-				// If the country has been visited, set the class to "visited"
-				visitedClass = "country visited"
-			} else {
-				// Otherwise, just set it to "country"
-				visitedClass = "country"
+				visitedClass += " visited"
 			}
 			var templ_7745c5c3_Var2 = []any{visitedClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -60,7 +56,7 @@ func WorldMap(countries []models.Country) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(country.ISOCode)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 26, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 23, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -86,7 +82,7 @@ func WorldMap(countries []models.Country) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(country.ISOCode)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 26, Col: 86}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 23, Col: 94}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -99,7 +95,7 @@ func WorldMap(countries []models.Country) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(country.Path)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 26, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/world_map.templ`, Line: 23, Col: 111}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -110,7 +106,7 @@ func WorldMap(countries []models.Country) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</svg></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</g></svg></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
