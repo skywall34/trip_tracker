@@ -5,6 +5,7 @@ services:
       - "--label-enable"
       - "--interval"
       - "30"
+      - "--rolling-restart"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/mshin/.docker/config.json:/config.json:ro
