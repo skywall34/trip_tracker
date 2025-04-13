@@ -6,7 +6,7 @@ set -e
 PAT_TOKEN=$1
 
 # === CONFIG ===
-IMAGE_NAME="trip_tracker"
+IMAGE_NAME="triptracker"
 TAG="prod"
 REGISTRY="ghcr.io"  # Change to ghcr.io or your registry
 USERNAME="skywall34"  # Change to your Docker Hub or registry username

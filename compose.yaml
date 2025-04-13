@@ -1,6 +1,6 @@
 services:
   watchtower:
-    image: containerrr/watchtower
+    image: containrrr/watchtower
     command:
       - "--label-enable"
       - "--interval"
@@ -28,7 +28,7 @@ services:
       # So that Traefik can listen to Docker events
       - /var/run/docker.sock:/var/run/docker.sock
   triptracker:
-    image: ghcr.io/mshin/trip_tracker:prod
+    image: ghcr.io/mshin/triptracker:prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.triptracker.rule=Host(`fromnto.cloud`)"
