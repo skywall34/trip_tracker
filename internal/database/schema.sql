@@ -24,11 +24,14 @@ CREATE TABLE IF NOT EXISTS trips (
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    `password` TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
+    username TEXT UNIQUE,                     -- Nullable for Google users
+    `password` TEXT,                            -- Nullable for Google users
+    first_name TEXT,
+    last_name TEXT,
+    email TEXT UNIQUE NOT NULL,
+    google_id TEXT UNIQUE,                   -- New: stores Google account ID
+    auth_provider TEXT DEFAULT 'local',      -- 'local' or 'google'
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS sessions (

@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/skywall34/trip-tracker/internal/api"
 	"github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/internal/handlers"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
@@ -35,6 +36,9 @@ func main() {
     sessionStore := database.NewSessionStore(database.NewSessionStoreParams{DB: db})
     //TODO: Chaining middleware seems to break css for some reason
     authMiddleware := m.NewAuthMiddleware(sessionStore, "session_id")
+    
+    // Google OAuth Initilization to Add the Environemnt Variables
+    googleOauthConfig := api.NewGoogleOauthConfig()
 
     mux := http.NewServeMux()
 
@@ -167,6 +171,21 @@ func main() {
                     handlers.NewGetStatisticsHandlerParams(
                         handlers.GetStatisticsHandlerParams{
                             TripStore: tripStore}).ServeHTTP))))
+
+    // Google Auth
+    mux.HandleFunc("/auth/google/login", 
+        api.NewGoogleLoginHandlerParams(
+            api.GoogleLoginHandlerParams{
+                GoogleOauthConfig: googleOauthConfig,
+            }).ServeHTTP)
+
+    mux.HandleFunc("/auth/google/callback", 
+        api.NewGoogleCallbackHandlerParams(
+            api.GoogleCallbackHandlerParams{
+                UserStore: userStore,
+                SessionStore: sessionStore,
+                GoogleOauthConfig: googleOauthConfig,
+            }).ServeHTTP)
 
     server := http.Server {
         Addr: ":3000",
