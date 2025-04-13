@@ -1,4 +1,12 @@
 services:
+  watchtower:
+    image: containerrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   reverse-proxy:
     image: traefik:v3.1
     command:
@@ -20,12 +28,13 @@ services:
       # So that Traefik can listen to Docker events
       - /var/run/docker.sock:/var/run/docker.sock
   triptracker:
-    build: .
+    image: ghcr.io/mshin/trip_tracker:prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.triptracker.rule=Host(`fromnto.cloud`)"
       - "traefik.http.routers.triptracker.entrypoints=websecure"
       - "traefik.http.routers.triptracker.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - ./internal/database/database.db:/root/internal/database/database.db # Mount SQLite3 database file
     deploy:
