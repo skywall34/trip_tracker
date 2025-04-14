@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
@@ -45,16 +44,12 @@ func (t *GetWorldMapHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("Visited Countries for User ID %d: %v\n", userId, visited)
-
     // Deep copy of models.CountryMap so we don't overwrite global state
     userCountries := make([]models.Country, len(models.CountryMap))
     for i, c := range models.CountryMap {
         userCountries[i] = c
         userCountries[i].Visited = visited[c.ISOCode]
     }
-
-	fmt.Printf("User Countries: %v\n", userCountries[0:5]) // Print first 5 for brevity
 
 	c := templates.WorldMap(userCountries)
     templates.Layout(c, "World Map").Render(r.Context(), w)

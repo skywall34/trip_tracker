@@ -8,14 +8,20 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!map) {
     return; // Exit if the map element does not exist
   }
+
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 10,
   }).addTo(map);
 
-  L.Icon.Default.mergeOptions({
-    iconUrl: "../../images/marker-icon.png",
-    iconRetinaUrl: "../../images/marker-icon.png",
-    shadowUrl: "../../images/marker-shadow.png",
+  const customIcon = new L.Icon({
+    iconUrl: "/static/images/marker-icon.png",
+    iconRetinaUrl: "/static/images/marker-icon-2x.png",
+    shadowUrl: "/static/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41],
   });
 
   fetch("/api/trips")
@@ -30,12 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
           .bindPopup(`${trip.airline} Flight ${trip.flight_number}`);
 
         // Add departure marker
-        L.marker(departure)
+        L.marker(departure, { icon: customIcon })
           .addTo(map)
           .bindPopup(`Departure: ${trip.departure_airport}`);
 
         // Add arrival marker
-        L.marker(arrival)
+        L.marker(arrival, { icon: customIcon })
           .addTo(map)
           .bindPopup(`Arrival: ${trip.arrival_airport}`);
       });
