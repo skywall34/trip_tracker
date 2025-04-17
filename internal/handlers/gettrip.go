@@ -42,7 +42,7 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     // if htmx is requesting, return only the fragment
     if headerVal == "true" {
 
-        userTrips, err := t.tripStore.GetTripsGivenUser(userId)
+        userTrips, userConnectingTrips, err := t.tripStore.GetConnectingTripsGivenUser(userId)
         if err != nil {
             http.Error(w, "Error getting trips", http.StatusInternalServerError)
             return
@@ -56,6 +56,7 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
         if filterPast == "true" {
             var pastTrips []models.Trip
+            var pastConnectingTrips []models.ConnectingTrip
 
             // Filter only the past trips before now
             for _, trip := range userTrips {
@@ -63,22 +64,36 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
                     pastTrips = append(pastTrips, trip)
                 }
             }
-            renderErr := templates.RenderPastTrips(pastTrips).Render(r.Context(), w)
+
+            // Filter the connecting trips to only include those that are past
+            for _, connectingTrip := range userConnectingTrips {
+                if connectingTrip.FromTrip.DepartureTime < uint32(currentUnixTime) {
+                    pastConnectingTrips = append(pastConnectingTrips, connectingTrip)
+                }
+            }
+
+            renderErr := templates.RenderPastTrips(pastTrips, pastConnectingTrips).Render(r.Context(), w)
             if renderErr != nil {
                 http.Error(w, "Error rendering template", http.StatusInternalServerError)
                 return
             }
         } else {
-            // We want upcoming, which are trips that are coming in the future (up to 1 week)
+            // We want upcoming, which are trips that are coming in the future (up to 1 year)
             var filteredTrips []models.Trip
+            var filteredConnectingTrips []models.ConnectingTrip
+            oneYearFromNow := currentUnixTime + (365 * 24 * 60 * 60) 
             for _, trip := range userTrips {
                 // get the unix time for 1 year from now
-                oneWeekFromNow := currentUnixTime + (365 * 24 * 60 * 60) 
-                if trip.DepartureTime > uint32(currentUnixTime) && trip.DepartureTime < uint32(oneWeekFromNow) {
+                if trip.DepartureTime > uint32(currentUnixTime) && trip.DepartureTime < uint32(oneYearFromNow) {
                     filteredTrips = append(filteredTrips, trip)
                 }
             }
-            renderErr := templates.RenderTrips(filteredTrips).Render(r.Context(), w)
+            for _, connectingTrip := range userConnectingTrips {
+                if connectingTrip.FromTrip.DepartureTime > uint32(currentUnixTime) && connectingTrip.FromTrip.DepartureTime < uint32(oneYearFromNow) {
+                    filteredConnectingTrips = append(filteredConnectingTrips, connectingTrip)
+                }
+            }
+            renderErr := templates.RenderTrips(filteredTrips, filteredConnectingTrips).Render(r.Context(), w)
             if renderErr != nil {
                 http.Error(w, "Error rendering template", http.StatusInternalServerError)
                 return

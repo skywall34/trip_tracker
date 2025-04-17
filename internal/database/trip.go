@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"sort"
 
 	_ "github.com/mattn/go-sqlite3"
 	m "github.com/skywall34/trip-tracker/internal/models"
@@ -140,6 +141,66 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
 
     return trips, nil
 }
+
+func (t *TripStore) GetConnectingTripsGivenUser(userID int) ([]m.Trip, []m.ConnectingTrip, error) {
+	trips, err := t.GetTripsGivenUser(userID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Group trips by departure airport
+	airportToTrips := make(map[string][]m.Trip)
+	for _, trip := range trips {
+		airportToTrips[trip.Departure] = append(airportToTrips[trip.Departure], trip)
+	}
+
+	// Sort each departure airport group by departure time
+	for airport, list := range airportToTrips {
+		sort.Slice(list, func(i, j int) bool {
+			return list[i].DepartureTime < list[j].DepartureTime
+		})
+		airportToTrips[airport] = list
+	}
+
+	// Track flights that are part of connections
+	connectedIDs := make(map[int64]bool)
+	var connectingFlights []m.ConnectingTrip
+
+	for _, from := range trips {
+		candidates := airportToTrips[from.Arrival]
+		windowStart := from.ArrivalTime
+		windowEnd := from.ArrivalTime + 86400 // 24 hours
+
+		for _, to := range candidates {
+			if from.ID == to.ID {
+				continue
+			}
+			if to.DepartureTime > windowEnd {
+				break // no point continuing
+			}
+			if to.DepartureTime > windowStart {
+				connectingFlights = append(connectingFlights, m.ConnectingTrip{
+					FromTrip: from,
+					ToTrip:   to,
+				})
+				connectedIDs[from.ID] = true
+				connectedIDs[to.ID] = true
+			}
+		}
+	}
+
+	// Collect non-connecting flights
+	var standaloneFlights []m.Trip
+	for _, trip := range trips {
+		if !connectedIDs[trip.ID] {
+			standaloneFlights = append(standaloneFlights, trip)
+		}
+	}
+
+	return standaloneFlights, connectingFlights, nil
+}
+
+
 
 func (t *TripStore) getFlightsForYears(userID int) ([]m.FlightAggregation, error) {
 	var flights []m.FlightAggregation

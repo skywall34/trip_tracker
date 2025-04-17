@@ -71,7 +71,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		cspHeader := fmt.Sprintf(
 			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
 			"style-src 'self' 'nonce-%s' '%s';" + 
-			"img-src 'self' https://*.tile.openstreetmap.org data:; " + 
+			"img-src 'self' https://*.tile.openstreetmap.org https://developers.google.com data:; " + 
     		"connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://oauth2.googleapis.com;",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
