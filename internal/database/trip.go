@@ -55,7 +55,7 @@ func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
 
 func (t *TripStore) GetTrip(id int) (m.Trip, error) {
 	var trip m.Trip
-	err := t.db.QueryRow(`
+	var q = `
 		SELECT 
 			id, 
 			user_id, 
@@ -65,10 +65,13 @@ func (t *TripStore) GetTrip(id int) (m.Trip, error) {
 			arrival_time, 
 			airline, 
 			flight_number, 
-			reservation, 
-			terminal, 
-			gate 
-		FROM trips WHERE id = ?`, id).Scan(
+			COALESCE(t.reservation, '') AS reservation,
+        	COALESCE(t.terminal,    '') AS terminal,
+        	COALESCE(t.gate,        '') AS gate,
+		FROM trips WHERE id = ?
+	`
+
+	err := t.db.QueryRow(q, id).Scan(
 			&trip.ID, 
 			&trip.UserId, 
 			&trip.Departure,
@@ -88,27 +91,30 @@ func (t *TripStore) GetTrip(id int) (m.Trip, error) {
 
 func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
     var trips []m.Trip
-    rows, err := t.db.Query(`
-		SELECT 
-			t.id, 
-			t.user_id, 
-			t.departure, 
-			t.arrival, 
-			t.departure_time, 
-			t.arrival_time, 
-			t.airline, 
-			t.flight_number,
-			t.reservation,
-			t.terminal,
-			t.gate,
-			d.latitude, 
-			d.longitude, 
-			a.latitude, 
-			a.longitude
-        FROM trips t
-        JOIN airports d ON t.departure = d.iata_code
-        JOIN airports a ON t.arrival = a.iata_code
-        WHERE t.user_id = ?`, userID)
+
+    const q = `
+    SELECT 
+        t.id, 
+        t.user_id, 
+        t.departure, 
+        t.arrival, 
+        t.departure_time, 
+        t.arrival_time, 
+        t.airline, 
+        t.flight_number,
+		COALESCE(t.reservation, '') AS reservation,
+        COALESCE(t.terminal,    '') AS terminal,
+        COALESCE(t.gate,        '') AS gate,
+        d.latitude, 
+        d.longitude, 
+        a.latitude, 
+        a.longitude
+    FROM trips t
+    JOIN airports d ON t.departure = d.iata_code
+    JOIN airports a ON t.arrival   = a.iata_code
+    WHERE t.user_id = ?`
+
+    rows, err := t.db.Query(q, userID)
     if err != nil {
         return trips, err
     }

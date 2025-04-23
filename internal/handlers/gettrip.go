@@ -44,6 +44,7 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
         userTrips, userConnectingTrips, err := t.tripStore.GetConnectingTripsGivenUser(userId)
         if err != nil {
+            fmt.Printf("Error getting trips for user %d: %v\n", userId, err)
             http.Error(w, "Error getting trips", http.StatusInternalServerError)
             return
         }
