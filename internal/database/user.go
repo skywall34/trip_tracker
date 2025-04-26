@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	m "github.com/skywall34/trip-tracker/internal/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // TODO: Password Hashing
@@ -93,5 +94,28 @@ func (u *UserStore) GetUserGivenID(id int) (m.User, error) {
 	}
 
 	return user, nil
+}
+
+
+func (u *UserStore) UpdatePassword(userID int, newPassword string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	q := `
+		UPDATE users SET password = ? WHERE id = ?
+	`
+
+	stmt, err := u.db.Prepare(q)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(q, hashedPassword, userID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
