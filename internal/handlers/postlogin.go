@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/templates"
@@ -37,6 +38,11 @@ func comparePasswords(password, hashedPassword string) (bool, error) {
 }
 
 func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	// Creating a duration to prevent timing attacks
+	// https://en.wikipedia.org/wiki/Timing_attack#:~:text=In%20cryptography%2C%20a%20timing%20attack,of%20the%20timing%20measurements%2C%20etc.
+	const duration = 1 * time.Second
+	startTime := time.Now()
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")
@@ -79,6 +85,12 @@ func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	})
 
 	fmt.Println("User logged in, session cookie set.")
+
+	// Measure login time, if less than duration invoke time.Sleep to ensure handler
+	// responds exactly after that duration
+	if time.Since(startTime) < duration {
+		time.Sleep(duration - time.Since(startTime))
+	}
 
 	// Redirect user after setting cookie
 	w.Header().Set("HX-Redirect", "/")

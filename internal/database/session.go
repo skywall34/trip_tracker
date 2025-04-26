@@ -37,6 +37,20 @@ func (s *SessionStore) CreateSession(userID string) (string, error) {
 	return sessionId, err
 }
 
+func (s *SessionStore) DeleteSession(sessionID string) error {
+	stmt, err := s.db.Prepare("DELETE FROM sessions WHERE session_id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(sessionID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *SessionStore) GetUserFromSession(sessionID string) (int, error) {
 	var id string
 	err := s.db.QueryRow("SELECT user_id FROM sessions WHERE session_id = ?", sessionID).Scan(&id)
