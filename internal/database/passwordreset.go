@@ -38,7 +38,7 @@ func (rs *PasswordResetStore) GenerateResetToken(userID int) (string, error) {
 	hash := sha256.Sum256([]byte(token))
 	tokenHash := hex.EncodeToString(hash[:])
 
-	expiry := time.Now().Add(1 * time.Hour)
+	expiry := time.Now().UTC().Add(1 * time.Hour)
 
 	q := `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) VALUES (?, ?, ?)`
 
@@ -69,7 +69,7 @@ func (rs *PasswordResetStore) ValidateResetToken(token string) (*m.User, error) 
 	tokenQ := `
 		SELECT id, user_id, token_hash, expires_at, used 
 		FROM password_reset_tokens
-		WHERE token_hash = ? and used = false and expires_at > NOW()
+		WHERE token_hash = ? and used = 0 and expires_at > datetime('now')
 	`
 
 	// Look up the token hash
@@ -84,7 +84,7 @@ func (rs *PasswordResetStore) ValidateResetToken(token string) (*m.User, error) 
 		return nil, err
 	}
 
-	userQ := `SELECT id, username, password, first_name, last_name, email FROM users WHERE username = ?`
+	userQ := `SELECT id, username, password, first_name, last_name, email FROM users WHERE id = ?`
 	
 	// Fetch the user
 	// Can't import from user because of circular dependency
@@ -101,7 +101,7 @@ func (rs *PasswordResetStore) MarkTokenUsed(token string) error {
 	tokenHash := hex.EncodeToString(hash[:])
 
 	q := `
-		UPDATE password_reset_tokens SET user = 1 WHERE token_hash = ?
+		UPDATE password_reset_tokens SET used = 1 WHERE token_hash = ?
 	`
 
 	stmt, err := rs.db.Prepare(q)
@@ -110,7 +110,7 @@ func (rs *PasswordResetStore) MarkTokenUsed(token string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(q, tokenHash)
+	_, err = stmt.Exec(tokenHash)
 	if err != nil {
 		return err
 	}

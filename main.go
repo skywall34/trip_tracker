@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 
@@ -43,12 +44,14 @@ func main() {
 
     // Email Service for Resetting Passwords
     // Placeholders for now
+    gmailUser := os.Getenv("GMAIL_SERVICE_APP_USERNAME")
+    gmailPsw := os.Getenv("GMAIL_SERVICE_APP_PASSWORD")
     emailService := models.EmailService{
         SMTPHost: "smtp.gmail.com",
         SMTPPort: 587,
-        Username: "your_email@gmail.com",
-        Password: "your_app_password", // use App Password, not real password
-        From:     "your_email@gmail.com",
+        Username: gmailUser,
+        Password: gmailPsw, // use App Password, not real password
+        From:     gmailUser,
     }
 
     mux := http.NewServeMux()
@@ -155,10 +158,15 @@ func main() {
             m.CSPMiddleware(
                 m.TextHTMLMiddleware(
                     m.LoggingMiddleware(
-                        handlers.NewGetCreateTripHandler().ServeHTTP)))))     
-                    
+                        handlers.NewGetCreateTripHandler().ServeHTTP)))))
 
-    // API CALLS
+    mux.Handle("GET /reset-password",  
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetResetPasswordHandlerParams().ServeHTTP))))   
+                    
+    // API CALLS TODO: Possibly version
     mux.Handle("GET /api/flights",  
         authMiddleware.AddUserToContext(
             m.CSPMiddleware(

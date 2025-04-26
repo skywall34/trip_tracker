@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	m "github.com/skywall34/trip-tracker/internal/models"
@@ -32,6 +33,7 @@ func NewPostForgotPasswordHandler(params PostForgotPasswordHandlerParams) (*Post
 
 func (h *PostForgotPasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
+	linkTemplate := os.Getenv("EMAIL_RESET_LINK_TEMPLATE")
 
 	user, err := h.userStore.GetUserGivenEmail(email) // TODO: Implement
 	if err != nil {
@@ -47,7 +49,7 @@ func (h *PostForgotPasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Req
 	}
 
 	// Send the email TODO: Implement
-	resetLink := fmt.Sprintf("http://localhost/reset-password?token=%s", token)
+	resetLink := fmt.Sprintf("%s?token=%s", linkTemplate, token)
 	err = h.emailService.SendPassswordResetEmail(user.Email, resetLink)
 	if err != nil {
 		http.Error(w, "Failed to send email", http.StatusInternalServerError)

@@ -140,7 +140,7 @@ func (u *UserStore) UpdatePassword(userID int, newPassword string) error {
 		return err
 	}
 
-	_, err = stmt.Exec(q, hashedPassword, userID)
+	_, err = stmt.Exec(hashedPassword, userID)
 	if err != nil {
 		return err
 	}
