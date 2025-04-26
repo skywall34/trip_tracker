@@ -76,7 +76,7 @@ func (h *PostRegisterHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	sessionID, err := h.sessionStore.CreateSession(strconv.FormatInt(newUserID, 10))
+	sessionID, err := h.sessionStore.CreateSession(strconv.Itoa(newUserID))
 
 	if err != nil {
 		log.Fatal("Error Creating session: ", err)

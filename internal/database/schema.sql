@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
   user_id INTEGER NOT NULL,
   token_hash TEXT NOT NULL,
   expires_at TIMESTAMP NOT NULL,
-  used BOOLEAN DEFAULT FALSE,
+  used INTEGER DEFAULT 0, -- SQLITE does not support BOOLEAN
   CONSTRAINT fk_password_reset_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

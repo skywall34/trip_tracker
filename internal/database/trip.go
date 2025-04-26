@@ -169,7 +169,7 @@ func (t *TripStore) GetConnectingTripsGivenUser(userID int) ([]m.Trip, []m.Conne
 	}
 
 	// Track flights that are part of connections
-	connectedIDs := make(map[int64]bool)
+	connectedIDs := make(map[int]bool)
 	var connectingFlights []m.ConnectingTrip
 
 	for _, from := range trips {

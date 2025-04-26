@@ -122,7 +122,7 @@ func (h *GoogleCallbackHandler)ServeHTTP(w http.ResponseWriter, r *http.Request)
         }
     }
 
-    sessionID, err = h.sessionStore.CreateSession(strconv.FormatInt(user.ID, 10))
+    sessionID, err = h.sessionStore.CreateSession(strconv.Itoa(user.ID))
     if err != nil {
         http.Error(w, "Failed to create session: "+err.Error(), http.StatusInternalServerError)
         return

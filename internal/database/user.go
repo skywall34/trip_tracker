@@ -21,7 +21,8 @@ func NewUserStore(params NewUserStoreParams) *UserStore {
 	return &UserStore{db: params.DB}
 }
 
-func (u *UserStore) CreateUser(user m.User) (int64, error) {
+// TODO: Check to make sure user has not already been created with email
+func (u *UserStore) CreateUser(user m.User) (int, error) {
 	stmt, err := u.db.Prepare("INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
@@ -38,7 +39,7 @@ func (u *UserStore) CreateUser(user m.User) (int64, error) {
 		return 0, err
 	}
 
-	return id, nil
+	return int(id), nil
 }
 
 func (u *UserStore) GetUser(username string) (m.User, error) {
@@ -82,6 +83,33 @@ func (u *UserStore) GetUserGivenID(id int) (m.User, error) {
 						FROM 
 							users 
 						WHERE id = ?`, id).Scan(
+							&user.ID, 
+							&user.Username, 
+							&user.Password, 
+							&user.FirstName, 
+							&user.LastName, 
+							&user.Email)
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+
+func (u *UserStore) GetUserGivenEmail(email string) (m.User, error) {
+	var user m.User
+	err := u.db.QueryRow(`SELECT 
+							id, 
+							username, 
+							password, 
+							first_name, 
+							last_name, 
+							email 
+						FROM 
+							users 
+						WHERE email = ?`, email).Scan(
 							&user.ID, 
 							&user.Username, 
 							&user.Password, 

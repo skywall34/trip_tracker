@@ -12,21 +12,21 @@ import (
 )
 
 // Handles the functions accessinng table password_reset_tokens
-type ResetTokenStore struct {
+type PasswordResetStore struct {
 	db *sql.DB
 }
 
-type ResetTokenStoreParams struct {
+type PasswordResetStoreParams struct {
 	DB *sql.DB
 }
 
-func NewResetTokenStore(params ResetTokenStoreParams) *ResetTokenStore {
-	return &ResetTokenStore{db: params.DB}
+func NewResetTokenStore(params PasswordResetStoreParams) *PasswordResetStore {
+	return &PasswordResetStore{db: params.DB}
 }
 
 
 
-func (rs *ResetTokenStore) GenerateResetToken(userID int) (string, error) {
+func (rs *PasswordResetStore) GenerateResetToken(userID int) (string, error) {
 	rawToken := make([]byte, 32)
 	_, err := rand.Read(rawToken)
 	if err != nil {
@@ -59,8 +59,8 @@ func (rs *ResetTokenStore) GenerateResetToken(userID int) (string, error) {
 }
 
 
-func (rs *ResetTokenStore) ValidateResetToken(token string) (*m.User, error) {
-	var resetToken m.ResetToken	
+func (rs *PasswordResetStore) ValidateResetToken(token string) (*m.User, error) {
+	var passwordReset m.PasswordReset	
 	var user m.User
 
 	hash := sha256.Sum256([]byte(token))
@@ -79,7 +79,7 @@ func (rs *ResetTokenStore) ValidateResetToken(token string) (*m.User, error) {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(tokenHash).Scan(&resetToken.ID, &resetToken.UserId, &resetToken.TokenHash, &resetToken.ExpiresAt, &resetToken.Used)
+	err = stmt.QueryRow(tokenHash).Scan(&passwordReset.ID, &passwordReset.UserId, &passwordReset.TokenHash, &passwordReset.ExpiresAt, &passwordReset.Used)
 	if err != nil {
 		return nil, err
 	}
@@ -88,10 +88,31 @@ func (rs *ResetTokenStore) ValidateResetToken(token string) (*m.User, error) {
 	
 	// Fetch the user
 	// Can't import from user because of circular dependency
-	err = rs.db.QueryRow(userQ, resetToken.UserId).Scan(&user.ID, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.Email)
+	err = rs.db.QueryRow(userQ, passwordReset.UserId).Scan(&user.ID, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.Email)
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 
+}
+
+func (rs *PasswordResetStore) MarkTokenUsed(token string) error {
+	hash := sha256.Sum256([]byte(token))
+	tokenHash := hex.EncodeToString(hash[:])
+
+	q := `
+		UPDATE password_reset_tokens SET user = 1 WHERE token_hash = ?
+	`
+
+	stmt, err := rs.db.Prepare(q)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(q, tokenHash)
+	if err != nil {
+		return err
+	}
+	return nil
 }

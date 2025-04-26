@@ -84,7 +84,7 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	}
 
 	newTrip := models.Trip{
-		UserId: int64(userId),
+		UserId: userId,
 		Departure: departure,
 		Arrival: arrival,
 		DepartureTime: uint32(parsedDepartureTime.Unix()), // Save the data as UTC for uniform datetime, Frontend takes care of timezones
