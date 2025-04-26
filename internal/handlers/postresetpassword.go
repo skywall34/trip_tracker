@@ -7,26 +7,26 @@ import (
 )
 
 
-type ResetPasswordHandler struct {
+type PostResetPasswordHandler struct {
 	userStore *db.UserStore
 	passwordResetStore *db.PasswordResetStore
 }
 
-type ResetPasswordHandlerParams struct {
+type PostResetPasswordHandlerParams struct {
 	UserStore *db.UserStore
 	PasswordResetStore *db.PasswordResetStore
 
 }
 
-func NewResetPasswordHandler(params ResetPasswordHandlerParams) (*ResetPasswordHandler) {
-	return &ResetPasswordHandler{
+func NewPostResetPasswordHandler(params PostResetPasswordHandlerParams) (*PostResetPasswordHandler) {
+	return &PostResetPasswordHandler{
 		userStore: params.UserStore,
 		passwordResetStore: params.PasswordResetStore,
 	}
 }
 
 
-func (h *ResetPasswordHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
+func (h *PostResetPasswordHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 
 	password := r.FormValue("password")
 	confirmPassword := r.FormValue("confirm_password")

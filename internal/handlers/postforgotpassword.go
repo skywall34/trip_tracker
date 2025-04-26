@@ -9,20 +9,20 @@ import (
 )
 
 
-type ForgotPasswordHandler struct {
+type PostForgotPasswordHandler struct {
 	userStore *db.UserStore
 	passwordResetStore *db.PasswordResetStore
 	emailService m.EmailService
 }
 
-type ForgotPasswordHandlerParams struct {
+type PostForgotPasswordHandlerParams struct {
 	UserStore *db.UserStore
 	PasswordResetStore *db.PasswordResetStore
 	EmailService m.EmailService
 }
 
-func NewForgotPasswordHandler(params ForgotPasswordHandlerParams) (*ForgotPasswordHandler) {
-	return &ForgotPasswordHandler{
+func NewPostForgotPasswordHandler(params PostForgotPasswordHandlerParams) (*PostForgotPasswordHandler) {
+	return &PostForgotPasswordHandler{
 		userStore: params.UserStore,
 		passwordResetStore: params.PasswordResetStore,
 		emailService: params.EmailService,
@@ -30,7 +30,7 @@ func NewForgotPasswordHandler(params ForgotPasswordHandlerParams) (*ForgotPasswo
 }
 
 
-func (h *ForgotPasswordHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
+func (h *PostForgotPasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 
 	user, err := h.userStore.GetUserGivenEmail(email) // TODO: Implement

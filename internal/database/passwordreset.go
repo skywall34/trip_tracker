@@ -20,7 +20,7 @@ type PasswordResetStoreParams struct {
 	DB *sql.DB
 }
 
-func NewResetTokenStore(params PasswordResetStoreParams) *PasswordResetStore {
+func NewPasswordResetStore(params PasswordResetStoreParams) *PasswordResetStore {
 	return &PasswordResetStore{db: params.DB}
 }
 

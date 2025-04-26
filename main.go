@@ -34,11 +34,22 @@ func main() {
     userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
     tripStore := database.NewTripStore(database.NewTripStoreParams{DB: db})
     sessionStore := database.NewSessionStore(database.NewSessionStoreParams{DB: db})
+    passwordResetStore := database.NewPasswordResetStore(database.PasswordResetStoreParams{DB: db})
     //TODO: Chaining middleware seems to break css for some reason
     authMiddleware := m.NewAuthMiddleware(sessionStore, "session_id")
     
     // Google OAuth Initilization to Add the Environemnt Variables
     googleOauthConfig := api.NewGoogleOauthConfig()
+
+    // Email Service for Resetting Passwords
+    // Placeholders for now
+    emailService := models.EmailService{
+        SMTPHost: "smtp.gmail.com",
+        SMTPPort: 587,
+        Username: "your_email@gmail.com",
+        Password: "your_app_password", // use App Password, not real password
+        From:     "your_email@gmail.com",
+    }
 
     mux := http.NewServeMux()
 
@@ -171,6 +182,25 @@ func main() {
                     handlers.NewGetStatisticsHandlerParams(
                         handlers.GetStatisticsHandlerParams{
                             TripStore: tripStore}).ServeHTTP))))
+
+    mux.Handle("POST /api/forgot-password", 
+        m.CSPMiddleware(
+            m.LoggingMiddleware(
+                handlers.NewPostForgotPasswordHandler(
+                    handlers.PostForgotPasswordHandlerParams{
+                        UserStore: userStore,
+                        PasswordResetStore: passwordResetStore,
+                        EmailService: emailService,
+                    }).ServeHTTP)))   
+
+    mux.Handle("POST /api/reset-password", 
+        m.CSPMiddleware(
+            m.LoggingMiddleware(
+                handlers.NewPostResetPasswordHandler(
+                    handlers.PostResetPasswordHandlerParams{
+                        UserStore: userStore,
+                        PasswordResetStore: passwordResetStore,
+                    }).ServeHTTP)))   
 
     // Google Auth
     mux.HandleFunc("/auth/google/login", 
