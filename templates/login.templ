@@ -20,18 +20,17 @@ templ Login() {
             <button type="submit" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
                 Sign In
             </button>
+
+            <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+                <a href="/register" class="text-green-600 font-semibold hover:underline">Register</a>
+                <a href="/forgot-password" class="text-green-600 font-semibold hover:underline">Forgot Password?</a>
+            </div>
         </form>
 
         <a href="/auth/google/login">
             <img class="h-10" src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
        alt="Sign in with Google"/>
         </a>
-
-        <p class="mt-4 text-gray-600">
-            Don't have an account yet?
-            <a href="/register" class="text-green-600 font-semibold hover:underline">Register</a>
-        </p>
-
     </div>
 }
 

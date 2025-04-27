@@ -160,6 +160,12 @@ func main() {
                     m.LoggingMiddleware(
                         handlers.NewGetCreateTripHandler().ServeHTTP)))))
 
+    mux.Handle("GET /forgot-password", 
+        m.CSPMiddleware(
+            m.TextHTMLMiddleware(
+                m.LoggingMiddleware(
+                    handlers.NewGetForgotPasswordHandler().ServeHTTP))))
+
     mux.Handle("GET /reset-password",  
         m.CSPMiddleware(
             m.TextHTMLMiddleware(
