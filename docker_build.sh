@@ -14,7 +14,7 @@ FULL_IMAGE_NAME="$REGISTRY/$USERNAME/$IMAGE_NAME:$TAG"
 
 # === BUILD ===
 echo "Building Docker image..."
-docker build -t "$IMAGE_NAME:$TAG" .
+docker build --no-cache -t "$IMAGE_NAME:$TAG" .
 
 # === TAG ===
 echo "Tagging image as $FULL_IMAGE_NAME"

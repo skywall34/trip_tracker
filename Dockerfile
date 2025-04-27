@@ -1,5 +1,5 @@
 # Stage 1: Building the application
-FROM golang:1.24.1-alpine AS builder
+FROM golang:1.24.2-alpine AS builder
 # Install c compiler
 RUN apk add --no-cache gcc musl-dev
 WORKDIR /app
