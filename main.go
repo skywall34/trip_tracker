@@ -232,6 +232,9 @@ func main() {
             }).ServeHTTP)
 
     appPort := os.Getenv("APP_PORT")
+    if appPort == "" {
+        appPort = "3000"
+    }
 
     server := http.Server {
         Addr: fmt.Sprintf(":%s", appPort),
