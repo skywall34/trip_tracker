@@ -231,11 +231,13 @@ func main() {
                 GoogleOauthConfig: googleOauthConfig,
             }).ServeHTTP)
 
+    appPort := os.Getenv("APP_PORT")
+
     server := http.Server {
-        Addr: ":3000",
+        Addr: fmt.Sprintf(":%s", appPort),
         Handler: mux,
     }
 
-    fmt.Println("Server running on port :3000")
+    fmt.Printf("Server running on port :%s\n", appPort)
     server.ListenAndServe()
 }
