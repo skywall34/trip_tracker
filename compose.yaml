@@ -39,6 +39,9 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - ./internal/database/database.db:/root/internal/database/database.db # Mount SQLite3 database file
+      - ./.env:/root/.env:ro
+    environment:
+      - DOTENV_PATH=/root/.env
     deploy:
       mode: replicated
       replicas: 3

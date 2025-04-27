@@ -90,14 +90,14 @@ templates.Layout(c, "Trips").Render(r.Context(), w)
 
 ### Static JS
 
-We have a few JS files in the application. Apart from the htmx.min.js file required to run the project there are few which fulfill a specific task in the application
+We have a few JS files in the application. Apart from the `htmx.min.js` file required to run the project there are few which fulfill a specific task in the application.
 
-convertTimes.js: Standardizes inputs into UTC for uniform time metrics (Handling time zones)
-leaflet.js: Downloaded from Leaflet, this is used to render the world map (statistics page)
-map.js: Uses the leaflet.js and runs configuration such as size and markers
-modal.js: JS logic to show/hide the hidden trip-form element on the trips page
-response-targets.js: HTMX logic to allow swapping of elements in different targets
-tabs.js: CSS logic to mimic sliding animations
+- convertTimes.js: Standardizes inputs into UTC for uniform time metrics (Handling time zones)
+- leaflet.js: Downloaded from Leaflet, this is used to render the world map (statistics page)
+- map.js: Uses the leaflet.js and runs configuration such as size and markers
+- modal.js: JS logic to show/hide the hidden trip-form element on the trips page
+- response-targets.js: HTMX logic to allow swapping of elements in different targets
+- tabs.js: CSS logic to mimic sliding animations
 
 ### External APIs
 

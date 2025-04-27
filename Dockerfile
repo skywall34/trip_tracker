@@ -17,7 +17,6 @@ WORKDIR /root/
 COPY --from=builder /app/trip_tracker .
 COPY --from=builder /app/static ./static
 COPY --from=builder /app/templates ./templates
-COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/internal/database/database.db ./internal/database/database.db
 EXPOSE 3000
 CMD ["./trip_tracker"]

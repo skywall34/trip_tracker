@@ -17,10 +17,14 @@ import (
 
 func main() {
 
-    err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+    dotenvPath := os.Getenv("DOTENV_PATH")
+    if dotenvPath == "" {
+        dotenvPath = ".env" // default if not set
+    }
+
+    if err := godotenv.Load(dotenvPath); err != nil {
+        log.Fatalf("Error loading .env file %s", err)
+    }
 
     db, err := database.InitDB("file:./internal/database/database.db?_enable_math_functions=1")
     if err != nil {
