@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"sort"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -23,7 +24,13 @@ func NewTripStore(params NewTripStoreParams) *TripStore {
 }
 
 func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
-	stmt, err := t.db.Prepare("INSERT INTO trips (user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	q := `
+		INSERT INTO trips 
+		(user_id, departure, arrival, departure_time, arrival_time, airline, flight_number, reservation, terminal, gate)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`
+
+	stmt, err := t.db.Prepare(q)
 	if err != nil {
 		return 0, err
 	}
@@ -53,41 +60,26 @@ func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
 	return id, nil
 }
 
-func (t *TripStore) GetTrip(id int) (m.Trip, error) {
-	var trip m.Trip
-	var q = `
-		SELECT 
-			id, 
-			user_id, 
-			departure, 
-			arrival, 
-			departure_time, 
-			arrival_time, 
-			airline, 
-			flight_number, 
-			COALESCE(t.reservation, '') AS reservation,
-        	COALESCE(t.terminal,    '') AS terminal,
-        	COALESCE(t.gate,        '') AS gate,
-		FROM trips WHERE id = ?
-	`
 
-	err := t.db.QueryRow(q, id).Scan(
-			&trip.ID, 
-			&trip.UserId, 
-			&trip.Departure,
-			&trip.Arrival, 
-			&trip.DepartureTime, 
-			&trip.ArrivalTime, 
-			&trip.Airline, 
-			&trip.FlightNumber, 
-			&trip.Reservation,
-			&trip.Terminal, 
-			&trip.Gate)
-	if err != nil {
-		return trip, err
+func SetTimezonesForTrips(trips []m.Trip) ([]m.Trip, error) {
+	for i := range trips {
+		arrivalTZ, ok1 := m.AirportTimezoneLookup[trips[i].Arrival]
+		departureTZ, ok2 := m.AirportTimezoneLookup[trips[i].Departure]
+
+		if ok1 {
+			trips[i].ArrivalTimezone = &arrivalTZ
+		} else {
+			log.Printf("No timezone found for arrival airport: %s", trips[i].Arrival)
+		}
+		if ok2 {
+			trips[i].DepartureTimezone = &departureTZ
+		} else {
+			log.Printf("No timezone found for departure airport: %s", trips[i].Departure)
+		}
 	}
-	return trip, nil
+	return trips, nil
 }
+
 
 func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
     var trips []m.Trip
@@ -144,6 +136,11 @@ func (t *TripStore) GetTripsGivenUser(userID int) ([]m.Trip, error) {
         }
         trips = append(trips, trip)
     }
+
+	trips, err = SetTimezonesForTrips(trips)
+	if err != nil {
+		return trips, err
+	}
 
     return trips, nil
 }

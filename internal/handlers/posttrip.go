@@ -91,9 +91,9 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		ArrivalTime: uint32(parsedArrivalTime.Unix()),
 		Airline: airline,
 		FlightNumber: flightNumber,
-		Reservation: reservation,
-		Terminal: terminal,
-		Gate: gate,
+		Reservation: &reservation,
+		Terminal: &terminal,
+		Gate: &gate,
 	}
 
 	// Insert

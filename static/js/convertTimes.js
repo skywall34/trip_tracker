@@ -42,13 +42,14 @@ function formatDatetimeLocal(date) {
 
 function convertTimes() {
   document.querySelectorAll(".time-convert").forEach((element) => {
-    let utcTime = element.getAttribute("data-utc");
+    const utcTime = element.getAttribute("data-utc");
+    const timeZone = element.getAttribute("data-tz"); // NEW
 
-    if (utcTime) {
-      let localDate = new Date(utcTime);
+    if (utcTime && timeZone) {
+      const localDate = new Date(utcTime);
 
       if (!isNaN(localDate.getTime())) {
-        let formattedTime = localDate.toLocaleString(undefined, {
+        const formattedTime = localDate.toLocaleString(undefined, {
           year: "numeric",
           month: "short",
           day: "numeric",
@@ -56,7 +57,9 @@ function convertTimes() {
           minute: "2-digit",
           second: "2-digit",
           timeZoneName: "short",
+          timeZone: timeZone, // 👈 key fix
         });
+
         element.innerText = formattedTime;
       } else {
         console.error("Invalid Date Format:", utcTime);

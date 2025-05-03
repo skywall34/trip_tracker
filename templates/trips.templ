@@ -73,17 +73,29 @@ templ renderFlightSegment(trip models.Trip) {
         <div class="flex justify-between items-center">
             <!-- Departure Time stored in UTC-->
             <div class="text-center w-full">
-                <span class="block text-lg font-bold text-green-700"> {trip.Departure} </span>
-                <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)}>
-                    Loading...
-                </span>
+                <span class="block text-lg font-bold text-green-700">{trip.Departure}</span>
+                if trip.DepartureTimezone != nil {
+                    <span class="block text-xl font-semibold time-convert" 
+                        data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)} 
+                        data-tz={*trip.DepartureTimezone}>
+                        Loading...
+                    </span>
+                } else {
+                    <span class="block text-xl font-semibold">N/A</span>
+                }
             </div>
             <span class="text-3xl font-bold text-green-600">→</span>
             <div class="text-center w-full">
                 <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
-                <span class="block text-xl font-semibold time-convert" data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)}>
-                    Loading...
-                </span>
+                if trip.ArrivalTimezone != nil {
+                    <span class="block text-xl font-semibold time-convert" 
+                        data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)} 
+                        data-tz={*trip.ArrivalTimezone}>
+                        Loading...
+                    </span>
+                } else {
+                    <span class="block text-xl font-semibold">N/A</span>
+                }
             </div>
         </div>
         <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
@@ -94,9 +106,21 @@ templ renderFlightSegment(trip models.Trip) {
         </div>
         <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
             <span class="col-span-1">{trip.FlightNumber}</span>
-            <span class="col-span-1">{trip.Reservation}</span>
-            <span class="col-span-1">{trip.Terminal}</span>
-            <span class="col-span-1">{trip.Gate}</span>
+            if trip.Reservation != nil {
+                <span class="col-span-1">{ *trip.Reservation }</span>
+            } else {
+                <span class="col-span-1">N/A</span>
+            }
+            if trip.Terminal != nil {
+                <span class="col-span-1">{ *trip.Terminal }</span>
+            } else {
+                <span class="col-span-1">N/A</span>
+            }
+            if trip.Gate != nil {
+                <span class="col-span-1">{ *trip.Gate }</span>
+            } else {
+                <span class="col-span-1">N/A</span>
+            }
         </div>
     </div>
 }
@@ -126,7 +150,7 @@ templ RenderTrips(trips []models.Trip, connectingTrips []models.ConnectingTrip) 
                 
                 @renderFlightSegment(trip)
             
-                <!-- Check-In Section TODO: Status Backend -->
+                <!-- Check In Section TODO: Status Backend -->
                 <div class="bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1">
                     <div class="flex justify-between">
                         <div class="text-center w-full">
@@ -134,10 +158,16 @@ templ RenderTrips(trips []models.Trip, connectingTrips []models.ConnectingTrip) 
                             <span class="block text-sm font-bold">On Time</span>
                         </div>
                         <div class="text-center w-full">
-                            <span class="block text-sm font-bold">Check-In At</span>
-                            <span class="block text-sm font-bold time-convert" data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}>
-                                Loading...
-                            </span>
+                            <span class="block text-sm font-bold">Check In At</span>
+                            if trip.DepartureTimezone != nil {
+                                <span class="block text-sm font-bold time-convert" 
+                                    data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}
+                                    data-tz={*trip.DepartureTimezone}>
+                                    Loading...
+                                </span>
+                            } else {
+                                <span class="block text-sm font-bold">N/A</span>
+                            }
                         </div>
                     </div>
                     <div class="w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2">
