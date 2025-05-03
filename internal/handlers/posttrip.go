@@ -62,7 +62,7 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	reservation := r.FormValue("reservation")
 	terminal := r.FormValue("terminal")
 	gate := r.FormValue("gate")
-	timezone := r.FormValue("timezone") // Hjidden field to get timezone of user
+	timezone := r.FormValue("timezone") // Hidden field to get timezone of user
 
 	ctx := r.Context()
 	userId, ok := ctx.Value(m.UserKey).(int)
@@ -104,5 +104,6 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	}
 
 	// HTMX Redirect Response
+	w.Header().Set("HX-Redirect", "/trips")
 	w.WriteHeader(http.StatusOK)
 }

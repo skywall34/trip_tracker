@@ -35,6 +35,9 @@ func main() {
     if err := models.LoadCountriesFromFile("./static/data/countries.json"); err != nil {
         log.Fatalf("Failed to load countries: %v", err)
     }
+    if err := models.LoadAirportTimezonesFromFile("./static/data/airport2timezone.json"); err != nil {
+        log.Fatalf("Failed to load airport timezones: %v", err)
+    }
 
     userStore := database.NewUserStore(database.NewUserStoreParams{DB: db})
     tripStore := database.NewTripStore(database.NewTripStoreParams{DB: db})

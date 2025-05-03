@@ -38,12 +38,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add departure marker
         L.marker(departure, { icon: customIcon })
           .addTo(map)
-          .bindPopup(`Departure: ${trip.departure_airport}`);
+          .bindPopup(`Departure: ${trip.departure}`);
 
         // Add arrival marker
         L.marker(arrival, { icon: customIcon })
           .addTo(map)
-          .bindPopup(`Arrival: ${trip.arrival_airport}`);
+          .bindPopup(`Arrival: ${trip.arrival}`);
       });
     });
 });
