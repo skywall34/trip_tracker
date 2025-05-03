@@ -23,6 +23,8 @@ type Nonces struct {
 	Modal			string
 	TabsJS		    string
 	MapJS           string
+	Map3dJS         string
+	ThreeJS         string
 	Leaflet         string
 	HtmxCSSHash     string
 	ConvertTS       string
@@ -55,6 +57,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Mapping JS function (Leaflet.js)
 			Leaflet: generateRandomString(16),
 			MapJS: generateRandomString(16),
+			Map3dJS: generateRandomString(16),
+			ThreeJS: generateRandomString(16),
 			// Nonce for inline Tailwind CSS (or similar).
 			Tw: generateRandomString(16),
 			// Precomputed hash for HTMX CSS.
@@ -69,7 +73,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
+			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
 			"style-src 'self' 'nonce-%s' '%s';" + 
 			"img-src 'self' https://*.tile.openstreetmap.org https://developers.google.com data:; " + 
     		"connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://oauth2.googleapis.com;",
@@ -80,6 +84,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.TabsJS,
 			nonceSet.Leaflet,
 			nonceSet.MapJS,
+			nonceSet.Map3dJS,
+			nonceSet.ThreeJS,
 			nonceSet.Tw,
 			nonceSet.HtmxCSSHash,
 		)
@@ -156,6 +162,16 @@ func GetLeafletNonce(ctx context.Context) string {
 func GetMapJSNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.MapJS
+}
+
+func GetMap3DJSNonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.ThreeJS
+}
+
+func GetThreeJSNonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.ThreeJS
 }
 
 func GetTabsJSNonce(ctx context.Context) string {

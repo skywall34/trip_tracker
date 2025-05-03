@@ -160,6 +160,13 @@ func main() {
                                 TripStore: tripStore,
                             }).ServeHTTP)))))
 
+    mux.Handle("GET /worldmap3d",  
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetWorldMap3dHandlerHandler().ServeHTTP)))))
+
     mux.Handle("GET /createtrip",  
         authMiddleware.AddUserToContext(
             m.CSPMiddleware(

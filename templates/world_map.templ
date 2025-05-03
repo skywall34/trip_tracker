@@ -2,6 +2,7 @@ package templates
 
 import (
     "github.com/skywall34/trip-tracker/internal/models"
+    "github.com/skywall34/trip-tracker/internal/middleware"
 )
 
 // WorldMap displays a map with countries visited
@@ -27,3 +28,8 @@ templ WorldMap(countries []models.Country) {
         </div>
     </div>
 } 
+
+
+templ WorldMap3D() {
+	<script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetThreeJSNonce(ctx) }></script>
+}

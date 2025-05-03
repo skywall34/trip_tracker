@@ -17,6 +17,15 @@ templ header(title string) {
         <script src="/static/js/convertTimes.js" nonce={ middleware.GetConvertTSNonce(ctx) }></script>
         <script src="/static/js/leaflet.js" nonce={ middleware.GetLeafletNonce(ctx) }></script>
         <script src="/static/js/map.js" nonce={ middleware.GetMapJSNonce(ctx) }></script>
+        <script type="importmap" nonce={ middleware.GetThreeJSNonce(ctx) }>
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/"
+            }
+        }
+        </script>
+        <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
 		<link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
     </head>
 }
