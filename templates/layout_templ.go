@@ -234,7 +234,7 @@ func nav() templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<header class=\"bg-white shadow-md px-8 py-4 flex items-center justify-between\"><div class=\"text-xl font-bold text-green-700\"><a href=\"/\">Mia's Trips</a></div><!--TODO: Logout Function--><nav class=\"space-x-6 text-sm font-medium\"><a href=\"/\" class=\"hover:underline text-gray-700\">Home</a> <a href=\"/statistics\" class=\"hover:underline text-gray-700\">Statistics</a> <a href=\"/worldmap3d\" class=\"hover:underline text-gray-700\">World Map</a> <a href=\"/trips\" class=\"hover:underline text-gray-700\">Trips</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<header class=\"bg-white shadow-md px-8 py-4 flex items-center justify-between\"><div class=\"text-xl font-bold text-green-700\"><a href=\"/\">Mia's Trips</a></div><!--TODO: Logout Function--><nav class=\"space-x-6 text-sm font-medium\"><a href=\"/\" class=\"hover:underline text-gray-700\">Home</a> <a href=\"/statistics\" class=\"hover:underline text-gray-700\">Statistics</a> <a href=\"/worldmap\" class=\"hover:underline text-gray-700\">World Map</a> <a href=\"/trips\" class=\"hover:underline text-gray-700\">Trips</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
