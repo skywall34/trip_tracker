@@ -60,6 +60,48 @@ func (t *TripStore) CreateTrip(newTrip m.Trip) (int64, error) {
 	return id, nil
 }
 
+func (t *TripStore) EditTrip(newTrip m.Trip) (error) {
+
+	q := `
+		UPDATE trips
+		SET 
+		departure = ?,
+		arrival = ?, 
+		departure_time = ?, 
+		arrival_time = ?, 
+		airline = ?, 
+		flight_number = ?, 
+		reservation = ?, 
+		terminal = ?, 
+		gate = ?
+		WHERE id = ?
+	`
+
+	stmt, err := t.db.Prepare(q)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(
+		newTrip.Departure, 
+		newTrip.Arrival, 
+		newTrip.DepartureTime, 
+		newTrip.ArrivalTime, 
+		newTrip.Airline, 
+		newTrip.FlightNumber, 
+		newTrip.Reservation, 
+		newTrip.Terminal, 
+		newTrip.Gate,
+		newTrip.UserId,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 
 func SetTimezonesForTrips(trips []m.Trip) ([]m.Trip, error) {
 	for i := range trips {
