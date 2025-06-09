@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
-	"github.com/skywall34/trip-tracker/internal/models"
 )
 
 
@@ -25,30 +23,16 @@ func NewEditTripHandler(params EditTripHandlerParams) (*EditTripHandler) {
 	}
 }
 
-
-func (t *EditTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
-
+// Get the single trip, edit it in code, then reupload to DB as edited trip
+// TODO: Bug -> Editing the trip with the same timestamps changes the time of the trip (timezone issue)
+func (t *EditTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	tripID := r.URL.Query().Get("id")
 	numTripID, err := strconv.Atoi(tripID)
 	if err != nil {
-		http.Error(w, "Error parsing tripID ", http.StatusInternalServerError)
+		http.Error(w, "Error parsing tripID", http.StatusInternalServerError)
 		return
 	}
 
-	departure := r.FormValue("departure")
-	arrival := r.FormValue("arrival")
-	departureTimeString := r.FormValue("departuretime") // Will receive as datetime (2024-05-06T14:30:25)
-	arrivalTimeString := r.FormValue("arrivaltime") // Will receive as datetime (2024-05-06T14:30:25)
-	airline := r.FormValue("airline")
-	flightNumber := r.FormValue("flightnumber")
-	reservation := r.FormValue("reservation")
-	terminal := r.FormValue("terminal")
-	gate := r.FormValue("gate")
-	timezone := r.FormValue("timezone") // Hidden field to get timezone of user
-
-	// We would get the form values
-
-	// Get the trip, we need to take in the params of what the user wants to change
 	ctx := r.Context()
 	userID, ok := ctx.Value(m.UserKey).(int)
 	if !ok {
@@ -56,41 +40,86 @@ func (t *EditTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parsedDepartureTime, err := parseLocalToUTC(departureTimeString, timezone)
+	// First, get the existing trip from the database
+	existingTrip, err := t.tripStore.GetTripGivenId(numTripID, userID)
 	if err != nil {
-		fmt.Println("Error parsing departure time string:", err)
-		return
-	}
-	parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, timezone)
-	if err != nil {
-		fmt.Println("Error parsing arrival time string:", err)
+		http.Error(w, "Trip not found", http.StatusNotFound)
 		return
 	}
 
-	newTrip := models.Trip{
-		ID: numTripID,
-		UserId: userID,
-		Departure: departure,
-		Arrival: arrival,
-		DepartureTime: uint32(parsedDepartureTime.Unix()), // Save the data as UTC for uniform datetime, Frontend takes care of timezones
-		ArrivalTime: uint32(parsedArrivalTime.Unix()),
-		Airline: airline,
-		FlightNumber: flightNumber,
-		Reservation: &reservation,
-		Terminal: &terminal,
-		Gate: &gate,
+	// Parse form values and only update if they're provided
+	if departure := r.FormValue("departure"); departure != "" {
+		existingTrip.Departure = departure
 	}
 
-	err = t.tripStore.EditTrip(newTrip)
+	if arrival := r.FormValue("arrival"); arrival != "" {
+		existingTrip.Arrival = arrival
+	}
+
+	if departureTimeString := r.FormValue("departuretime"); departureTimeString != "" {
+		timezone := r.FormValue("timezone")
+		parsedDepartureTime, err := parseLocalToUTC(departureTimeString, timezone)
+		if err != nil {
+			http.Error(w, "Error parsing departure time", http.StatusBadRequest)
+			return
+		}
+		existingTrip.DepartureTime = uint32(parsedDepartureTime.Unix())
+	}
+
+	if arrivalTimeString := r.FormValue("arrivaltime"); arrivalTimeString != "" {
+		timezone := r.FormValue("timezone")
+		parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, timezone)
+		if err != nil {
+			http.Error(w, "Error parsing arrival time", http.StatusBadRequest)
+			return
+		}
+		existingTrip.ArrivalTime = uint32(parsedArrivalTime.Unix())
+	}
+
+	if airline := r.FormValue("airline"); airline != "" {
+		existingTrip.Airline = airline
+	}
+
+	if flightNumber := r.FormValue("flightnumber"); flightNumber != "" {
+		existingTrip.FlightNumber = flightNumber
+	}
+
+	// Handle optional fields (pointers) - update even if empty to allow clearing
+	if r.PostForm.Has("reservation") {
+		reservation := r.FormValue("reservation")
+		if reservation != "" {
+			existingTrip.Reservation = &reservation
+		} else {
+			existingTrip.Reservation = nil
+		}
+	}
+
+	if r.PostForm.Has("terminal") {
+		terminal := r.FormValue("terminal")
+		if terminal != "" {
+			existingTrip.Terminal = &terminal
+		} else {
+			existingTrip.Terminal = nil
+		}
+	}
+
+	if r.PostForm.Has("gate") {
+		gate := r.FormValue("gate")
+		if gate != "" {
+			existingTrip.Gate = &gate
+		} else {
+			existingTrip.Gate = nil
+		}
+	}
+
+	// Update the trip in the database
+	err = t.tripStore.EditTrip(existingTrip)
 	if err != nil {
 		http.Error(w, "Error editing trip", http.StatusInternalServerError)
 		return
 	}
 
 	// HTMX Redirect Response
-	// We just need the refreshed page with the udpated trip
 	w.Header().Set("HX-Redirect", "/trips")
 	w.WriteHeader(http.StatusOK)
-
-
 }

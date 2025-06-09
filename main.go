@@ -176,12 +176,22 @@ func main() {
                     m.LoggingMiddleware(
                         handlers.NewGetWorldMap3dHandlerHandler().ServeHTTP)))))
 
-    mux.Handle("GET /createtrip",  
+    mux.Handle("GET /createtripform",  
         authMiddleware.AddUserToContext(
             m.CSPMiddleware(
                 m.TextHTMLMiddleware(
                     m.LoggingMiddleware(
                         handlers.NewGetCreateTripHandler().ServeHTTP)))))
+
+    mux.Handle("GET /edittripform",  // Edit trip
+        authMiddleware.AddUserToContext(
+            m.CSPMiddleware(
+                m.TextHTMLMiddleware(
+                    m.LoggingMiddleware(
+                        handlers.NewGetEditTripHandlerParmas(
+                            handlers.GetEditTripHandlerParams{
+                                TripStore: tripStore,
+                        }).ServeHTTP)))))
 
     mux.Handle("GET /forgot-password", 
         m.CSPMiddleware(

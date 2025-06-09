@@ -52,7 +52,7 @@ templ TripsPage() {
                     Past
                 </button>
                 <button id="add-trip-btn" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition ml-2">
-                    <a href="/createtrip"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
+                    <a href="/createtripform"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
                 </button>
             </div>
         </div>
@@ -67,7 +67,20 @@ templ TripsPage() {
 templ renderFlightSegment(trip models.Trip) {
     <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg relative">
         <!-- Icon in Top-Right -->
-        <button class="absolute top-3 right-3 text-gray-500 hover:text-gray-700" hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} hx-swap="outerHTML">
+        <button 
+            class="text-gray-500 hover:text-blue-600 transition"
+            hx-get={"/edittripform?id=" + fmt.Sprint(trip.ID)}
+            hx-target={"#trip-element-" + fmt.Sprint(trip.ID)}
+            hx-swap="outerHTML"
+        >
+            <img src="/static/images/edit-trip.png" alt="Edit" class="w-5 h-5">
+        </button>
+        <button 
+            class="text-gray-500 hover:text-red-600 transition" 
+            hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} 
+            hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} 
+            hx-swap="outerHTML"
+        >
             <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-6 h-6">
         </button>
         <div class="flex justify-between items-center">
@@ -121,6 +134,126 @@ templ renderFlightSegment(trip models.Trip) {
             } else {
                 <span class="col-span-1">N/A</span>
             }
+        </div>
+    </div>
+}
+
+// New template for editing a trip
+templ EditTripForm(trip models.Trip) {
+    <div class="relative border-2 border-blue-300 rounded-xl shadow-lg bg-blue-50" id={"trip-element-" + fmt.Sprint(trip.ID)}>
+        <div class="bg-blue-100 text-blue-800 text-center py-2 rounded-t-xl font-semibold">
+            Editing Trip
+        </div>
+        
+        <div class="p-6">
+            <form 
+                hx-put={"/trips?id=" + fmt.Sprint(trip.ID)}
+                hx-target={"#trip-element-" + fmt.Sprint(trip.ID)}
+                hx-swap="outerHTML"
+            >
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {{ inputStyle := "w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" }}
+                    {{ 
+                        reservationValue := "N/A"
+                        if trip.Reservation != nil || *trip.Reservation == "" {
+                            reservationValue = *trip.Reservation
+                        }
+                        terminalValue := "N/A"
+                        if trip.Terminal != nil || *trip.Terminal == "" {
+                            terminalValue = *trip.Terminal
+                        }
+                        gateValue := "N/A"
+                        if trip.Gate != nil || *trip.Gate == "" {
+                            gateValue = *trip.Gate
+                        }
+                    
+                    }}
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Departure</label>
+                        <input type="text" name="departure" value={trip.Departure} class={inputStyle} required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival</label>
+                        <input type="text" name="arrival" value={trip.Arrival} class={inputStyle} required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Departure Time</label>
+                        <input 
+                            type="datetime-local" 
+                            name="departuretime" 
+                            value={time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02T15:04")}
+                            class={inputStyle} 
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival Time</label>
+                        <input 
+                            type="datetime-local" 
+                            name="arrivaltime" 
+                            value={time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02T15:04")}
+                            class={inputStyle} 
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Airline</label>
+                        <input type="text" name="airline" value={trip.Airline} class={inputStyle} required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Flight Number</label>
+                        <input type="text" name="flightnumber" value={trip.FlightNumber} class={inputStyle} required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Reservation</label>
+                        <input 
+                            type="text" 
+                            name="reservation" 
+                            value={reservationValue}
+                            class={inputStyle}
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Terminal</label>
+                        <input 
+                            type="text" 
+                            name="terminal" 
+                            value={terminalValue}
+                            class={inputStyle}
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Gate</label>
+                        <input 
+                            type="text" 
+                            name="gate" 
+                            value={gateValue}
+                            class={inputStyle}
+                        >
+                    </div>
+                </div>
+
+                <input type="hidden" name="timezone" id="timezone">
+
+                <div class="mt-6 flex space-x-4">
+                    <button 
+                        type="submit" 
+                        class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                    >
+                        Save Changes
+                    </button>
+                    <button 
+                        type="button"
+                        class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+                    >
+                        <a 
+                            href="/trips"
+                        >
+                            Cancel
+                        </a>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 }

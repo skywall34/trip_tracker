@@ -65,15 +65,15 @@ func (t *TripStore) EditTrip(newTrip m.Trip) (error) {
 	q := `
 		UPDATE trips
 		SET 
-		departure = ?,
-		arrival = ?, 
-		departure_time = ?, 
-		arrival_time = ?, 
-		airline = ?, 
-		flight_number = ?, 
-		reservation = ?, 
-		terminal = ?, 
-		gate = ?
+			departure = ?,
+			arrival = ?, 
+			departure_time = ?, 
+			arrival_time = ?, 
+			airline = ?, 
+			flight_number = ?, 
+			reservation = ?, 
+			terminal = ?, 
+			gate = ?
 		WHERE id = ?
 	`
 
@@ -93,8 +93,9 @@ func (t *TripStore) EditTrip(newTrip m.Trip) (error) {
 		newTrip.Reservation, 
 		newTrip.Terminal, 
 		newTrip.Gate,
-		newTrip.UserId,
+		newTrip.ID,
 	)
+
 	if err != nil {
 		return err
 	}
@@ -120,6 +121,55 @@ func SetTimezonesForTrips(trips []m.Trip) ([]m.Trip, error) {
 		}
 	}
 	return trips, nil
+}
+
+func (t *TripStore) GetTripGivenId(tripID int, userID int) (m.Trip, error) {
+	var trip m.Trip
+
+	const q = `
+    SELECT 
+        t.id, 
+        t.user_id, 
+        t.departure, 
+        t.arrival, 
+        t.departure_time, 
+        t.arrival_time, 
+        t.airline, 
+        t.flight_number,
+		COALESCE(t.reservation, '') AS reservation,
+        COALESCE(t.terminal,    '') AS terminal,
+        COALESCE(t.gate,        '') AS gate,
+        d.latitude, 
+        d.longitude, 
+        a.latitude, 
+        a.longitude
+    FROM trips t
+    JOIN airports d ON t.departure = d.iata_code
+    JOIN airports a ON t.arrival   = a.iata_code
+    WHERE t.id = ? AND t.user_id = ?`
+
+	err := t.db.QueryRow(q, tripID, userID).Scan(
+		&trip.ID,
+		&trip.UserId,
+		&trip.Departure,
+		&trip.Arrival,
+		&trip.DepartureTime,
+		&trip.ArrivalTime,
+		&trip.Airline,
+		&trip.FlightNumber,
+		&trip.Reservation,
+		&trip.Terminal,
+		&trip.Gate,
+		&trip.DepartureLat,
+		&trip.DepartureLon,
+		&trip.ArrivalLat,
+		&trip.ArrivalLon,
+	)
+	if err != nil {
+		return trip, err
+	}
+
+	return trip, nil
 }
 
 
