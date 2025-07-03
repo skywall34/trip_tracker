@@ -43,24 +43,48 @@ function formatDatetimeLocal(date) {
 function convertTimes() {
   document.querySelectorAll(".time-convert").forEach((element) => {
     const utcTime = element.getAttribute("data-utc");
-    const timeZone = element.getAttribute("data-tz"); // NEW
+    const timeZone = element.getAttribute("data-tz");
 
     if (utcTime && timeZone) {
       const localDate = new Date(utcTime);
 
       if (!isNaN(localDate.getTime())) {
-        const formattedTime = localDate.toLocaleString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZoneName: "short",
-          timeZone: timeZone, // 👈 key fix
-        });
+        if (element.tagName === "INPUT" && element.type === "datetime-local") {
+          // Format the date in the target timezone
+          const formatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: timeZone,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          });
 
-        element.innerText = formattedTime;
+          // Get formatted parts
+          const parts = formatter.formatToParts(localDate);
+          const dateParts = Object.fromEntries(
+            parts.map((p) => [p.type, p.value])
+          );
+
+          // Create the datetime-local string (YYYY-MM-DDTHH:mm)
+          const formattedDate = `${dateParts.year}-${dateParts.month}-${dateParts.day}T${dateParts.hour}:${dateParts.minute}`;
+
+          element.value = formattedDate;
+        } else {
+          const formattedTime = localDate.toLocaleString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZoneName: "short",
+            timeZone: timeZone,
+          });
+
+          element.innerText = formattedTime;
+        }
       } else {
         console.error("Invalid Date Format:", utcTime);
         element.innerText = "Invalid Date";

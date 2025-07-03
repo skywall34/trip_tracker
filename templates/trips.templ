@@ -178,23 +178,45 @@ templ EditTripForm(trip models.Trip) {
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-600 mb-1">Departure Time</label>
-                        <input 
-                            type="datetime-local" 
-                            name="departuretime" 
-                            value={time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02T15:04")}
-                            class={inputStyle} 
-                            required
-                        >
+                        if trip.DepartureTimezone != nil {
+                            <input 
+                                type="datetime-local" 
+                                name="departuretime"
+                                value={time.Unix(int64(trip.DepartureTime), 0).Format("2006-01-02T15:04")}
+                                class={"time-convert " + inputStyle}
+                                data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)} 
+                                data-tz={*trip.DepartureTimezone}
+                                required
+                            >
+                        } else {
+                            <input 
+                                type="text" 
+                                value="N/A"
+                                class={inputStyle}
+                                disabled
+                            >
+                        }
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival Time</label>
-                        <input 
-                            type="datetime-local" 
-                            name="arrivaltime" 
-                            value={time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02T15:04")}
-                            class={inputStyle} 
-                            required
-                        >
+                        if trip.ArrivalTimezone != nil {
+                            <input 
+                                type="datetime-local" 
+                                name="arrivaltime"
+                                value={time.Unix(int64(trip.ArrivalTime), 0).Format("2006-01-02T15:04")}
+                                class={"time-convert " + inputStyle}
+                                data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)} 
+                                data-tz={*trip.ArrivalTimezone}
+                                required
+                            >
+                        } else {
+                            <input 
+                                type="text" 
+                                value="N/A"
+                                class={inputStyle}
+                                disabled
+                            >
+                        }
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-600 mb-1">Airline</label>
@@ -524,7 +546,7 @@ templ CreateTripForm() {
     <div id="create-trip" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add a New Trip</h2>
 
-        <form hx-post="/trips" hx-target="#trips-list" hx-swap="beforebegin">
+        <form hx-post="/trips" hx-swap="none">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {{/* Reusable input styles */}}
                 {{ inputStyle := "w-full border border-gray-200 rounded-2xl px-4 py-3 shadow-sm focus:ring-2 focus:ring-[#36B37E] focus:outline-none" }}

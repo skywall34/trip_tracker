@@ -169,6 +169,12 @@ func (t *TripStore) GetTripGivenId(tripID int, userID int) (m.Trip, error) {
 		return trip, err
 	}
 
+	tripsWithTZ, err := SetTimezonesForTrips([]m.Trip{trip})
+	if err != nil {
+		return trip, err
+	}
+	trip = tripsWithTZ[0]
+
 	return trip, nil
 }
 

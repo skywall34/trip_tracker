@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -24,19 +24,35 @@ func NewPostTripHandler(params PostTripHandlerParams) (*PostTripHandler) {
 	}
 }
 
+func getTimezoneGivenLocation(location string) (string) {
+	locationTZ, ok := models.AirportTimezoneLookup[location]
+
+	if !ok {
+		log.Println("Error loading timezone. Failed to get TZ from lookup:", location)
+		return ""
+	} else {
+		return locationTZ
+	}
+}
+
 const layout = "2006-01-02T15:04"
 
-func parseLocalToUTC(input, timezone string)(time.Time, error) {
+func parseLocalToUTC(input, location string, timezone string)(time.Time, error) {
 	// Parse the user-provided time (local time format)
 	localTime, err := time.Parse(layout, input)
 	if err != nil {
 		return time.Time{}, err
 	}
 
+	convertTimezone := getTimezoneGivenLocation(location)
+	if convertTimezone == "" {
+		convertTimezone = timezone
+	}
+
 	// Load the provided timezone
-	loc, err := time.LoadLocation(timezone)
+	loc, err := time.LoadLocation(convertTimezone)
 	if err != nil {
-		fmt.Println("Error loading timezone, defaulting to UTC:", err)
+		log.Println("Error loading timezone, defaulting to UTC:", err)
 		loc = time.UTC
 	}
 
@@ -49,6 +65,7 @@ func parseLocalToUTC(input, timezone string)(time.Time, error) {
 	// Convert to UTC
 	return localTime.UTC(), nil
 }
+
 
 // TODO: Some of this input is going to have to come from the API
 func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
@@ -72,14 +89,14 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parsedDepartureTime, err := parseLocalToUTC(departureTimeString, timezone)
+	parsedDepartureTime, err := parseLocalToUTC(departureTimeString, departure, timezone)
 	if err != nil {
-		fmt.Println("Error parsing departure time string:", err)
+		log.Println("Error parsing departure time string:", err)
 		return
 	}
-	parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, timezone)
+	parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, arrival, timezone)
 	if err != nil {
-		fmt.Println("Error parsing arrival time string:", err)
+		log.Println("Error parsing arrival time string:", err)
 		return
 	}
 
