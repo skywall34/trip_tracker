@@ -13,28 +13,28 @@ import (
 )
 
 type PostLoginHandler struct {
-	userStore *db.UserStore
+	userStore    *db.UserStore
 	sessionStore *db.SessionStore
 }
 
 type PostLoginHandlerParams struct {
-	UserStore *db.UserStore
+	UserStore    *db.UserStore
 	SessionStore *db.SessionStore
 }
 
 func NewPostLoginHandler(params PostLoginHandlerParams) *PostLoginHandler {
 	return &PostLoginHandler{
-		userStore: params.UserStore,
+		userStore:    params.UserStore,
 		sessionStore: params.SessionStore,
 	}
 }
 
 func comparePasswords(password, hashedPassword string) (bool, error) {
-    err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-    if err != nil {
-        return false, err
-    }
-    return true, nil
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// TODO: Proper authentication logic here
-	user, err := h.userStore.GetUser(email)
+	user, err := h.userStore.GetUserGivenEmail(email)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		c := templates.LoginError()
@@ -80,7 +80,7 @@ func (h *PostLoginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Name:     "session_id",
 		Value:    sessionID,
 		Path:     "/",
-		HttpOnly: true, // Prevents JavaScript access (security best practice)
+		HttpOnly: true,  // Prevents JavaScript access (security best practice)
 		MaxAge:   86400, // 1 day in seconds
 	})
 
