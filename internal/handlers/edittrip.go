@@ -8,7 +8,6 @@ import (
 	m "github.com/skywall34/trip-tracker/internal/middleware"
 )
 
-
 type EditTripHandler struct {
 	tripStore *db.TripStore
 }
@@ -17,7 +16,7 @@ type EditTripHandlerParams struct {
 	TripStore *db.TripStore
 }
 
-func NewEditTripHandler(params EditTripHandlerParams) (*EditTripHandler) {
+func NewEditTripHandler(params EditTripHandlerParams) *EditTripHandler {
 	return &EditTripHandler{
 		tripStore: params.TripStore,
 	}
@@ -58,7 +57,7 @@ func (t *EditTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if departureTimeString := r.FormValue("departuretime"); departureTimeString != "" {
 		timezone := r.FormValue("timezone")
-		parsedDepartureTime, err := parseLocalToUTC(departureTimeString, existingTrip.Departure, timezone)
+		parsedDepartureTime, err := ParseLocalToUTC(departureTimeString, existingTrip.Departure, timezone)
 		if err != nil {
 			http.Error(w, "Error parsing departure time", http.StatusBadRequest)
 			return
@@ -68,7 +67,7 @@ func (t *EditTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if arrivalTimeString := r.FormValue("arrivaltime"); arrivalTimeString != "" {
 		timezone := r.FormValue("timezone")
-		parsedArrivalTime, err := parseLocalToUTC(arrivalTimeString, existingTrip.Arrival, timezone)
+		parsedArrivalTime, err := ParseLocalToUTC(arrivalTimeString, existingTrip.Arrival, timezone)
 		if err != nil {
 			http.Error(w, "Error parsing arrival time", http.StatusBadRequest)
 			return
