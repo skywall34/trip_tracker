@@ -50,7 +50,7 @@ func (h *PostForgotPasswordHandler) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 	// Send the email TODO: Implement
 	resetLink := fmt.Sprintf("%s?token=%s", linkTemplate, token)
-	err = h.emailService.SendPassswordResetEmail(user.Email, resetLink)
+	err = h.emailService.SendPasswordResetEmail(user.Email, resetLink)
 	if err != nil {
 		http.Error(w, "Failed to send email", http.StatusInternalServerError)
 		return
