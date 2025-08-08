@@ -59,10 +59,6 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			MapJS: generateRandomString(16),
 			Map3dJS: generateRandomString(16),
 			ThreeJS: generateRandomString(16),
-			// Nonce for inline Tailwind CSS (or similar).
-			Tw: generateRandomString(16),
-			// Precomputed hash for HTMX CSS.
-			HtmxCSSHash: "sha256-qzJemDm3CBL67MiPc7kAKsiOqgUx6EzCggwD+ReowE8=",
 			// Nonce for convertTimes.js
 			ConvertTS: generateRandomString(16),
 		}
@@ -73,10 +69,18 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; script-src 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s'; "+
-			"style-src 'self' 'nonce-%s' '%s';" + 
-			"img-src 'self' https://*.tile.openstreetmap.org https://developers.google.com data:; " + 
-    		"connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://oauth2.googleapis.com;",
+			"default-src 'self'; " +
+			"base-uri 'self'; " +
+			"object-src 'none'; " +
+			"frame-ancestors 'none'; " +
+			"form-action 'self' https://accounts.google.com; " +
+			"script-src 'self' 'strict-dynamic' " +
+				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' " +
+				"https://cdn.jsdelivr.net; " +
+			"style-src 'self' https://fonts.googleapis.com; " +   // External CSS Only
+			"img-src 'self' data: https://*.tile.openstreetmap.org; " +
+			"connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://oauth2.googleapis.com; " +
+			"font-src 'self' https://fonts.gstatic.com; ",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
 			nonceSet.ConvertTS,
@@ -86,10 +90,9 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.MapJS,
 			nonceSet.Map3dJS,
 			nonceSet.ThreeJS,
-			nonceSet.Tw,
-			nonceSet.HtmxCSSHash,
 		)
 		w.Header().Set("Content-Security-Policy", cspHeader)
+
 
 		// Call the next handler in the chain, passing the updated context.
 		next.ServeHTTP(w, r.WithContext(ctx))

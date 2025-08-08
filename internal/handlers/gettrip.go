@@ -35,7 +35,7 @@ func (t *GetTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("User ID: %d, Filter Past: %s HeaderVal: %s, OK: %t \n", userId, filterPast, headerVal, ok)
     if !ok {
         // redirect to home
-        http.Redirect(w, r, "/login", http.StatusSeeOther)
+        w.WriteHeader(http.StatusNoContent)
         return
     }
 

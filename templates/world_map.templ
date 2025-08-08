@@ -5,31 +5,75 @@ import (
     "github.com/skywall34/trip-tracker/internal/middleware"
 )
 
-// WorldMap displays a map with countries visited
+// WorldMap — same data/paths as before, themed like the WorldMapPanel mock
 templ WorldMap(countries []models.Country) {
-    <div class="space-y-6">
-        <div class="container mx-auto">
-            <h1 class="text-2xl font-bold text-center mt-5">World Travel Map</h1>
-        </div>
-        <div class="bg-white shadow-md rounded-2xl p4">
-            <svg viewBox="0 0 2000 1001" class="block mx-auto w-full max-w-5xl h-auto" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(300, 0) scale(1.2)">
-                    for _, country := range countries {
-                        {{
-                            visitedClass := "country"
-                            if country.Visited {
-                                visitedClass += " visited"
-                            }
-                        }}
-                        <path id={country.ISOCode} class={visitedClass} title={country.ISOCode} d={country.Path} />
-                    }
-                </g>
-            </svg>
-        </div>
-    </div>
-} 
+    {{
+        visitedCount := 0
+        for _, c := range countries {
+            if c.Visited {
+                visitedCount++
+            }
+        }
+    }}
+    <section id="worldmap" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div class="rounded-2xl rack p-6 sm:p-8">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-white">World Travel Map</h2>
+                <div class="text-xs text-slate-400">
+                    Countries visited:
+                    <span class="text-mint-500 font-semibold">{ visitedCount }</span>
+                </div>
+            </div>
 
+            <!-- Themed map surface with scan overlay -->
+            <div class="mt-6 aspect-[16/7] rounded-xl bg-ink-800 border border-white/10 relative overflow-hidden">
+                <!-- Your SVG world map, now positioned absolutely to fill the panel -->
+                <svg viewBox="0 0 2000 1001" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(300, 0) scale(1.2)">
+                        for _, country := range countries {
+                            {{
+                                visitedClass := "country"
+                                if country.Visited {
+                                    visitedClass += " visited"
+                                }
+                            }}
+                            <path id={ country.ISOCode } class={ visitedClass } title={ country.ISOCode } d={ country.Path } />
+                        }
+                    </g>
+                </svg>
 
+                <!-- Scan overlay -->
+                <svg viewBox="0 0 1200 520" class="absolute inset-0 opacity-20 pointer-events-none">
+                    <defs>
+                        <linearGradient id="scan" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#a78bff" stop-opacity="0"/>
+                            <stop offset="30%" stop-color="#a78bff" stop-opacity="0.35"/>
+                            <stop offset="70%" stop-color="#37f5c0" stop-opacity="0.35"/>
+                            <stop offset="100%" stop-color="#37f5c0" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="1200" height="520" fill="url(#scan)">
+                        <animate attributeName="y" from="-520" to="520" dur="6s" repeatCount="indefinite" />
+                    </rect>
+                </svg>
+            </div>
+        </div>
+    </section>
+}
+
+// WorldMap3D — themed container for your WebGL globe (script is loaded in <head>)
 templ WorldMap3D() {
-	<script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetThreeJSNonce(ctx) }></script>
+    <section id="worldmap-3d" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div class="rounded-2xl rack p-6 sm:p-8">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-white">World Map 3D</h2>
+                <span class="text-xs font-mono px-2 py-1 rounded bg-white/5 border border-white/10 text-slate-400">Experimental</span>
+            </div>
+
+            <div class="mt-6 aspect-[16/9] rounded-xl bg-ink-800 border border-white/10 relative overflow-hidden">
+                <canvas id="worldmap3d-canvas" class="absolute inset-0 w-full h-full"></canvas>
+                <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
+            </div>
+        </div>
+    </section>
 }

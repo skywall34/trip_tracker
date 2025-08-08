@@ -121,6 +121,6 @@ func (t *PostTripHandler) ServeHTTP (w http.ResponseWriter, r *http.Request) {
 	}
 
 	// HTMX Redirect Response
-	w.Header().Set("HX-Redirect", "/trips")
-	w.WriteHeader(http.StatusOK)
+	w.Header().Set("HX-Trigger", `{"trip:created":{}}`)
+	w.WriteHeader(http.StatusNoContent)
 }

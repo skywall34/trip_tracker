@@ -7,66 +7,82 @@ import (
 templ header(title string) {
     <head>
         <meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{title}</title>
-		<script src="/static/js/htmx.min.js" nonce={ middleware.GetHtmxNonce(ctx) }></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{ title }</title>
+
+        <!-- Core JS -->
+        <script src="/static/js/htmx.min.js"         nonce={ middleware.GetHtmxNonce(ctx) }></script>
         <script src="/static/js/response-targets.js" nonce={ middleware.GetResponseTargetsNonce(ctx) }></script>
-        <script src="/static/js/modal.js" nonce={ middleware.GetModalNonce(ctx) }></script>
-        <script src="/static/js/tabs.js" nonce={ middleware.GetTabsJSNonce(ctx) }></script>
-        <!--Script to Convert UTC to Local Time-->
-        <script src="/static/js/convertTimes.js" nonce={ middleware.GetConvertTSNonce(ctx) }></script>
-        <script src="/static/js/leaflet.js" nonce={ middleware.GetLeafletNonce(ctx) }></script>
-        <script src="/static/js/map.js" nonce={ middleware.GetMapJSNonce(ctx) }></script>
+        <script src="/static/js/modal.js"            nonce={ middleware.GetModalNonce(ctx) }></script>
+        <script src="/static/js/tabs.js"             nonce={ middleware.GetTabsJSNonce(ctx) }></script>
+        <script src="/static/js/convertTimes.js"     nonce={ middleware.GetConvertTSNonce(ctx) }></script>
+
+        <!-- Map stack -->
+        <script src="/static/js/leaflet.js"          nonce={ middleware.GetLeafletNonce(ctx) }></script>
+        <script src="/static/js/map.js"              nonce={ middleware.GetMapJSNonce(ctx) }></script>
+
+        <!-- THREE import map + module -->
         <script type="importmap" nonce={ middleware.GetThreeJSNonce(ctx) }>
         {
             "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/"
+            "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/"
             }
         }
         </script>
         <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
-		<link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
+
+        <!-- Tailwind output -->
+        <link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     </head>
 }
 
 templ footer() {
-    <footer class="bg-primary-600 p-4"></footer>
+    <footer class="py-12 text-center text-xs text-slate-500/80 border-t border-white/5">
+        <p>Built with ❤️ for travelers — © 2025 Mia’s Trips</p>
+    </footer>
 }
 
 templ nav() {
-    <header class="bg-white shadow-md px-8 py-4 flex items-center justify-between">
-        <div class="text-xl font-bold text-green-700"><a href="/">Mia's Trips</a></div>
-        <!--TODO: Logout Function-->
-        <nav class="space-x-6 text-sm font-medium">
-            <a href="/" class="hover:underline text-gray-700">Home</a>
-            <a href="/statistics" class="hover:underline text-gray-700">Statistics</a>
-            <a href="/worldmap" class="hover:underline text-gray-700">World Map</a>
-            <a href="/trips" class="hover:underline text-gray-700">Trips</a>
+    <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-ink-900/70 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-6 w-6 rounded-full led"></div>
+                <a href="/" class="font-semibold tracking-tight text-white">Mia’s Trips</a>
+                <span class="hidden sm:inline-block text-xs font-mono px-2 py-1 rounded bg-white/5 border border-white/10 ml-2">Studio Mode</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-6 text-sm">
+                <a class="hover:text-white" href="/">Home</a>
+                <a class="hover:text-white" href="/statistics">Statistics</a>
+                <a class="hover:text-white" href="/worldmap">World Map</a>
+                <a class="hover:text-white" href="/trips">Trips</a>
+            </nav>
+
             if middleware.GetUserUsingContext(ctx) >= 0 {
-                <a hx-post="/logout" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition">
+                <a hx-post="/logout" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
                     Logout
                 </a>
             } else {
-                <a href="/login" class="button ml-4 px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition">
+                <a href="/login" class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
                     Login or Create Account
                 </a>
             }
-        </nav>
+        </div>
     </header>
 }
 
 templ Layout(contents templ.Component, title string) {
     <!DOCTYPE html>
-    <html lang="en" class="bg-[#EAF7FE]">
+    <html lang="en" class="dark">
     @header(title)
-    <body class="min-h-screen flex flex-col text-gray-700 font-sans">
+    <body class="bg-ink-900 bg-mesh bg-no-repeat text-slate-300 min-h-screen relative font-sans">
         @nav()
-
-        <main class="flex-1 container mx-auto p-4">
-            @contents
-        </main>
-
+        @contents
         @footer()
     </body>
     </html>
