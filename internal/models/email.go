@@ -13,7 +13,7 @@ type EmailService struct {
 	From     string
 }
 
-func (e *EmailService) SendPassswordResetEmail(toEmail string, resetLink string) error {
+func (e *EmailService) SendPasswordResetEmail(toEmail string, resetLink string) error {
 	subject := "Reset Your Password"
 	body := fmt.Sprintf("Click the link to reset your password:\n\n%s", resetLink)
 
