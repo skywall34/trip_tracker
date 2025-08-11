@@ -118,7 +118,7 @@ func renderFlightSegment(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-swap=\"outerHTML\"><img src=\"/static/images/trash-svgrepo-com.svg\" alt=\"Delete\" class=\"w-4 h-4 filter brightness-200\"></button></div><div class=\"flex justify-between items-center mb-6\"><!-- Departure Time stored in UTC--><div class=\"text-center w-full\"><span class=\"block text-xl font-bold text-mint-400 font-mono tracking-wider mb-1\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-swap=\"outerHTML\"><img src=\"/static/images/icons8-trash.svg\" alt=\"Delete\" class=\"w-4 h-4 filter brightness-200\"></button></div><div class=\"flex justify-between items-center mb-6\"><!-- Departure Time stored in UTC--><div class=\"text-center w-full\"><span class=\"block text-xl font-bold text-mint-400 font-mono tracking-wider mb-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -345,20 +345,20 @@ func EditTripForm(trip models.Trip) templ.Component {
 			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"relative border-2 border-blue-300 rounded-xl shadow-lg bg-blue-50\" id=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"relative bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-glass\" id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs("trip-element-" + fmt.Sprint(trip.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 150, Col: 124}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/trips.templ`, Line: 150, Col: 145}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\"><div class=\"bg-blue-100 text-blue-800 text-center py-2 rounded-t-xl font-semibold\">Editing Trip</div><div class=\"p-6\"><form hx-put=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\"><div class=\"bg-gradient-to-r from-mint-500/10 to-mint-600/10 border-b border-mint-500/20 text-mint-400 text-center py-3 rounded-t-xl font-semibold\">Editing Trip</div><div class=\"p-6\"><form hx-put=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -388,7 +388,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		inputStyle := "w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+		inputStyle := "w-full border border-white/10 rounded-xl px-4 py-3 bg-ink-700 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50 focus:outline-none"
 
 		reservationValue := "N/A"
 		if trip.Reservation != nil || *trip.Reservation == "" {
@@ -402,7 +402,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if trip.Gate != nil || *trip.Gate == "" {
 			gateValue = *trip.Gate
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Departure</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Departure</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -437,7 +437,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\" required></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Arrival</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\" required></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Arrival</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -472,7 +472,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" required></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Departure Time</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" required></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Departure Time</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -562,7 +562,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Arrival Time</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Arrival Time</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -652,7 +652,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "</div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Airline</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "</div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Airline</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -687,7 +687,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "\" required></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Flight Number</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "\" required></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Flight Number</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -722,7 +722,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "\" required></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Reservation</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "\" required></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Reservation</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -757,7 +757,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "\"></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Terminal</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "\"></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Terminal</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -792,7 +792,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "\"></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Gate</label> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "\"></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Gate</label> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -827,7 +827,7 @@ func EditTripForm(trip models.Trip) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><div class=\"mt-6 flex space-x-4\"><button type=\"submit\" class=\"flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition\">Save Changes</button> <button type=\"button\" class=\"flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition\"><a href=\"/trips\">Cancel</a></button></div></form></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "\"></div></div><input type=\"hidden\" name=\"timezone\" id=\"timezone\"><div class=\"mt-6 flex space-x-4\"><button type=\"submit\" class=\"flex-1 bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow\">Save Changes</button> <button type=\"button\" class=\"flex-1 bg-ink-700 border border-white/10 text-slate-300 py-3 rounded-xl font-semibold hover:bg-ink-600 hover:text-white transition-all duration-300\"><a href=\"/\">Cancel</a></button></div></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1356,7 +1356,7 @@ func TripForm(flights api.FlightsAPIResponse) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 114, "\" hx-swap=\"none\"><div class=\"grid grid-cols-1 sm:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Departure Time</label> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 114, "\" hx-swap=\"none\"><div class=\"grid grid-cols-1 sm:grid-cols-2 gap-4\"><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Departure Time</label> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1378,7 +1378,7 @@ func TripForm(flights api.FlightsAPIResponse) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 116, "\"></div><div><label class=\"block text-sm font-semibold text-gray-600 mb-1\">Arrival Time</label> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 116, "\"></div><div><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Arrival Time</label> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

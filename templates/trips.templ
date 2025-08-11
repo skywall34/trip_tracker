@@ -83,7 +83,7 @@ templ renderFlightSegment(trip models.Trip) {
                 hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} 
                 hx-swap="outerHTML"
             >
-                <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-4 h-4 filter brightness-200">
+                <img src="/static/images/icons8-trash.svg" alt="Delete" class="w-4 h-4 filter brightness-200">
             </button>
         </div>
         <div class="flex justify-between items-center mb-6">
@@ -147,8 +147,8 @@ templ renderFlightSegment(trip models.Trip) {
 
 // New template for editing a trip
 templ EditTripForm(trip models.Trip) {
-    <div class="relative border-2 border-blue-300 rounded-xl shadow-lg bg-blue-50" id={"trip-element-" + fmt.Sprint(trip.ID)}>
-        <div class="bg-blue-100 text-blue-800 text-center py-2 rounded-t-xl font-semibold">
+    <div class="relative bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-glass" id={"trip-element-" + fmt.Sprint(trip.ID)}>
+        <div class="bg-gradient-to-r from-mint-500/10 to-mint-600/10 border-b border-mint-500/20 text-mint-400 text-center py-3 rounded-t-xl font-semibold">
             Editing Trip
         </div>
         
@@ -159,7 +159,7 @@ templ EditTripForm(trip models.Trip) {
                 hx-swap="outerHTML"
             >
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {{ inputStyle := "w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" }}
+                    {{ inputStyle := "w-full border border-white/10 rounded-xl px-4 py-3 bg-ink-700 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50 focus:outline-none" }}
                     {{ 
                         reservationValue := "N/A"
                         if trip.Reservation != nil || *trip.Reservation == "" {
@@ -176,15 +176,15 @@ templ EditTripForm(trip models.Trip) {
                     
                     }}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Departure</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Departure</label>
                         <input type="text" name="departure" value={trip.Departure} class={inputStyle} required>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Arrival</label>
                         <input type="text" name="arrival" value={trip.Arrival} class={inputStyle} required>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Departure Time</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Departure Time</label>
                         if trip.DepartureTimezone != nil {
                             <input 
                                 type="datetime-local" 
@@ -205,7 +205,7 @@ templ EditTripForm(trip models.Trip) {
                         }
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival Time</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Arrival Time</label>
                         if trip.ArrivalTimezone != nil {
                             <input 
                                 type="datetime-local" 
@@ -226,15 +226,15 @@ templ EditTripForm(trip models.Trip) {
                         }
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Airline</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Airline</label>
                         <input type="text" name="airline" value={trip.Airline} class={inputStyle} required>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Flight Number</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Flight Number</label>
                         <input type="text" name="flightnumber" value={trip.FlightNumber} class={inputStyle} required>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Reservation</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Reservation</label>
                         <input 
                             type="text" 
                             name="reservation" 
@@ -243,7 +243,7 @@ templ EditTripForm(trip models.Trip) {
                         >
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Terminal</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Terminal</label>
                         <input 
                             type="text" 
                             name="terminal" 
@@ -252,7 +252,7 @@ templ EditTripForm(trip models.Trip) {
                         >
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Gate</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Gate</label>
                         <input 
                             type="text" 
                             name="gate" 
@@ -267,16 +267,16 @@ templ EditTripForm(trip models.Trip) {
                 <div class="mt-6 flex space-x-4">
                     <button 
                         type="submit" 
-                        class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 transition"
+                        class="flex-1 bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow"
                     >
                         Save Changes
                     </button>
                     <button 
                         type="button"
-                        class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-200 transition"
+                        class="flex-1 bg-ink-700 border border-white/10 text-slate-300 py-3 rounded-xl font-semibold hover:bg-ink-600 hover:text-white transition-all duration-300"
                     >
                         <a 
-                            href="/trips"
+                            href="/"
                         >
                             Cancel
                         </a>
@@ -529,7 +529,7 @@ templ TripForm(flights api.FlightsAPIResponse) {
             <form hx-post="/trips" hx-vals={hxValsJSON} hx-swap="none">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Departure Time</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Departure Time</label>
                         <input
                             type="datetime-local"
                             name="departuretime"
@@ -538,7 +538,7 @@ templ TripForm(flights api.FlightsAPIResponse) {
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival Time</label>
+                        <label class="block text-sm font-semibold text-slate-300 mb-1">Arrival Time</label>
                         <input
                             type="datetime-local"
                             name="arrivaltime"
