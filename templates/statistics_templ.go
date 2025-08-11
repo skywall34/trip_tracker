@@ -35,46 +35,46 @@ func Statistics(firstName string, tsAggregation models.TimeSpaceAggregation) tem
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container mx-auto\"><h1 class=\"text-2xl font-bold text-center mt-5\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"container mx-auto px-4 py-8\"><div class=\"text-center mb-8\"><h1 class=\"text-4xl font-bold text-white mb-2 tracking-tight\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(firstName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 12, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 13, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "'s Trip Map</h1><div id=\"map\" class=\"w-full h-[600px] rounded-lg shadow-md mt-5\"></div></div><div class=\"relative w-full h-screen\"><!-- Overlay --><div class=\"relativ z-10 p-4\"><!-- Header --><div class=\"flex items-center mb-4\"><h1 class=\"text-3xl font-bold\">Statistics</h1></div><!-- Summary TODO: Create sql query for total miles and hours--><div class=\"bg-white rounded-2xl shadow-lg p-4 mb-4\"><h2 class=\"text-xl font-semibold mb-2\">Statistics</h2><div class=\"text-lg font-medium\"><span>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "'s Travel Analytics</h1><p class=\"text-slate-400\">Explore your journey across the world</p></div><div id=\"map\" class=\"w-full h-[600px] rounded-xl shadow-glass border border-white/10 mt-8 overflow-hidden backdrop-blur-sm\"></div></div><div class=\"relative w-full\"><!-- Overlay --><div class=\"relative z-10 max-w-6xl mx-auto px-4 py-8\"><!-- Header --><div class=\"text-center mb-8\"><h2 class=\"text-3xl font-bold text-white mb-2\">Travel Statistics</h2><p class=\"text-slate-400\">Your adventures by the numbers</p></div><!-- Summary Cards --><div class=\"grid grid-cols-1 md:grid-cols-2 gap-6 mb-8\"><div class=\"bg-ink-800/80 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-glass hover:shadow-glass-hover transition-all duration-300 group\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-lg font-semibold text-white\">Total Distance</h3><div class=\"w-10 h-10 rounded-full bg-mint-500/20 flex items-center justify-center group-hover:bg-mint-500/30 transition-colors\"><span class=\"text-mint-400 text-xl\">✈️</span></div></div><div class=\"text-3xl font-bold text-mint-400 mb-1 font-mono\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(tsAggregation.TotalKm))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 29, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 38, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " Kilometers</span> <span class=\"ml-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div class=\"text-slate-400 text-sm\">Kilometers traveled</div></div><div class=\"bg-ink-800/80 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-glass hover:shadow-glass-hover transition-all duration-300 group\"><div class=\"flex items-center justify-between mb-4\"><h3 class=\"text-lg font-semibold text-white\">Flight Time</h3><div class=\"w-10 h-10 rounded-full bg-grape-500/20 flex items-center justify-center group-hover:bg-grape-500/30 transition-colors\"><span class=\"text-grape-400 text-xl\">⏱️</span></div></div><div class=\"text-3xl font-bold text-grape-400 mb-1 font-mono\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.FormatFloat(float64(tsAggregation.TotalHours), 'f', -1, 32))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 30, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 51, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " hours</span></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-4\"><button hx-get=\"/api/statistics?agg=m\" hx-target=\"#aggregation\" hx-trigger=\"load, click\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Month</button> <button hx-get=\"/api/statistics?agg=y\" hx-target=\"#aggregation\" class=\"w-1/2 bg-white text-gray-700 py-2 font-semibold transition hover:bg-gray-100 focus:outline-none\">Year</button></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-white rounded-2xl shadow-lg p-4\"><!-- This will be populated by HTMX /statistics, calling AggregationComponent --></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"text-slate-400 text-sm\">Hours in the air</div></div></div><!-- Toggle: Month/Year --><div class=\"flex justify-center mb-6\"><div class=\"flex bg-ink-800 border border-white/10 rounded-full p-1\"><button hx-get=\"/api/statistics?agg=m\" hx-target=\"#aggregation\" hx-trigger=\"load, click\" class=\"px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none\">Month</button> <button hx-get=\"/api/statistics?agg=y\" hx-target=\"#aggregation\" class=\"px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none\">Year</button></div></div><!-- Aggregation --><div id=\"aggregation\" class=\"bg-ink-800/60 backdrop-blur-xl border border-white/10 rounded-xl shadow-glass p-6\"><!-- This will be populated by HTMX /statistics, calling AggregationComponent --></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -103,7 +103,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div id=\"flights-per-agg\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"space-y-8\"><div id=\"flights-per-agg\" class=\"bg-white/5 rounded-xl p-6 border border-white/5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -111,7 +111,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div id=\"airlines-per-agg\" class=\"mt-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div id=\"airlines-per-agg\" class=\"bg-white/5 rounded-xl p-6 border border-white/5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -119,7 +119,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div id=\"countries-per-agg\" class=\"mt-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div id=\"countries-per-agg\" class=\"bg-white/5 rounded-xl p-6 border border-white/5\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -127,7 +127,7 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -137,21 +137,21 @@ func AggregationComponent(flights []models.FlightAggregation, airlines []models.
 
 func getBarHeightClass(count int, total int) string {
 	if count <= 0 || total <= 0 {
-		return "bg-gray-200 w-full h-1"
+		return "bg-ink-700 w-full h-1 rounded-full"
 	}
 
 	percent := float64(count) / float64(total)
 	switch {
 	case percent >= 0.9:
-		return "bg-black w-full h-6"
+		return "bg-gradient-to-r from-mint-600 to-mint-400 w-full h-6 rounded-full shadow-mint-glow"
 	case percent >= 0.75:
-		return "bg-black w-full h-3"
+		return "bg-gradient-to-r from-mint-600 to-mint-500 w-full h-5 rounded-full"
 	case percent >= 0.5:
-		return "bg-black w-full h-3"
+		return "bg-gradient-to-r from-mint-600 to-mint-500 w-full h-4 rounded-full"
 	case percent >= 0.25:
-		return "bg-black w-full h-1"
+		return "bg-gradient-to-r from-mint-500 to-mint-400 w-full h-3 rounded-full"
 	default:
-		return "bg-black w-full h-1"
+		return "bg-mint-600/60 w-full h-2 rounded-full"
 	}
 }
 
@@ -176,19 +176,19 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"flex items-end gap-2 h-40 w-full\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"mb-4\"><h3 class=\"text-lg font-semibold text-white mb-4 flex items-center gap-2\"><span class=\"w-2 h-2 rounded-full bg-mint-400\"></span> FLIGHTS OVER TIME</h3></div><div class=\"flex items-end gap-2 h-48 w-full bg-ink-700/30 rounded-lg p-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, flight := range flights {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"flex-1 flex flex-col items-center\"><div class=\"text-sm mb-1\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"flex-1 flex flex-col items-center\"><div class=\"text-xs mb-2 text-mint-400 font-mono font-semibold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(flight.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 89, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 121, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -223,20 +223,20 @@ func FlightsPerAggregation(flights []models.FlightAggregation) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(flight.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 91, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 123, Col: 108}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\"></div><div class=\"text-xs mt-1\">'")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\"></div><div class=\"text-xs mt-2 text-slate-400 font-mono\">'")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 92, Col: 56}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 124, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -288,18 +288,18 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 				maxCount = c.Count
 			}
 		}
-		var rowHeight = 32
+		var rowHeight = 40
 		var chartWidth = 600
 		var barMaxWidth = 360 // Maximum width for the largest bar
-		var chartHeight = len(airlines) * rowHeight
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<h3 class=\"text-md font-semibold mb-2\">AIRLINES</h3><svg class=\"w-full h-auto\" viewBox=\"")
+		var chartHeight = len(airlines)*rowHeight + 20
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"mb-4\"><h3 class=\"text-lg font-semibold text-white mb-4 flex items-center gap-2\"><span class=\"w-2 h-2 rounded-full bg-grape-400\"></span> AIRLINES</h3></div><div class=\"bg-ink-700/30 rounded-lg p-4\"><svg class=\"w-full h-auto\" viewBox=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs("0 0 " + strconv.Itoa(chartWidth) + " " + strconv.Itoa(chartHeight))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 119, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 157, Col: 111}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -311,37 +311,37 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 		}
 		for i, airline := range airlines {
 
-			y := i * rowHeight
+			y := i*rowHeight + 10
 			// Compute bar width proportional to maxCount
 			barWidth := 0
 			if maxCount > 0 {
 				barWidth = int(float64(airline.Count) / float64(maxCount) * float64(barMaxWidth))
 			}
 			// Positions for text and rectangle
-			countX := 140 + barWidth + 8
-			textY := y + 20
-			rectY := y + 8
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<g><!-- Country name --><text x=\"0\" y=\"")
+			countX := 140 + barWidth + 12
+			textY := y + 18
+			rectY := y + 6
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<g><!-- Airline name --><text x=\"0\" y=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(textY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 136, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 173, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" class=\"text-sm fill-gray-800\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" class=\"text-sm fill-slate-300 font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(airline.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 136, Col: 96}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 173, Col: 113}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -354,7 +354,7 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(rectY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 138, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 175, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -367,20 +367,20 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(barWidth))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 138, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 175, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" height=\"16\" rx=\"4\" class=\"fill-gray-700\"></rect><!-- Count label --><text x=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" height=\"20\" rx=\"10\" class=\"fill-grape-400 opacity-80\"></rect><!-- Count label --><text x=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(countX))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 140, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 177, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -393,20 +393,20 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(textY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 140, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 177, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" class=\"text-sm fill-gray-600\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" class=\"text-sm fill-slate-400 font-mono\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var20 string
 			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(airline.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 140, Col: 129}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 177, Col: 144}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 			if templ_7745c5c3_Err != nil {
@@ -417,7 +417,7 @@ func AirlinesPerAggregation(airlines []models.AirlineAggregation) templ.Componen
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</svg>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</svg></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -454,18 +454,18 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 				maxCount = c.Count
 			}
 		}
-		var rowHeight = 32
+		var rowHeight = 40
 		var chartWidth = 600
 		var barMaxWidth = 360 // Maximum width for the largest bar
-		var chartHeight = len(countries) * rowHeight
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<h3 class=\"text-md font-semibold mb-2\">COUNTRIES AND REGIONS</h3><svg class=\"w-full h-auto\" viewBox=\"")
+		var chartHeight = len(countries)*rowHeight + 20
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"mb-4\"><h3 class=\"text-lg font-semibold text-white mb-4 flex items-center gap-2\"><span class=\"w-2 h-2 rounded-full bg-mint-400\"></span> COUNTRIES AND REGIONS</h3></div><div class=\"bg-ink-700/30 rounded-lg p-4\"><svg class=\"w-full h-auto\" viewBox=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs("0 0 " + strconv.Itoa(chartWidth) + " " + strconv.Itoa(chartHeight))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 163, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 207, Col: 111}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -477,16 +477,16 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 		}
 		for i, country := range countries {
 
-			y := i * rowHeight
+			y := i*rowHeight + 10
 			// Compute bar width proportional to maxCount
 			barWidth := 0
 			if maxCount > 0 {
 				barWidth = int(float64(country.Count) / float64(maxCount) * float64(barMaxWidth))
 			}
 			// Positions for text and rectangle
-			countX := 140 + barWidth + 8
-			textY := y + 20
-			rectY := y + 8
+			countX := 140 + barWidth + 12
+			textY := y + 18
+			rectY := y + 6
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<g><!-- Country name --><text x=\"0\" y=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -494,20 +494,20 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(textY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 180, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 223, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" class=\"text-sm fill-gray-800\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" class=\"text-sm fill-slate-300 font-medium\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(country.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 180, Col: 96}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 223, Col: 113}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -520,7 +520,7 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(rectY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 182, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 225, Col: 56}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
@@ -533,20 +533,20 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			var templ_7745c5c3_Var26 string
 			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(barWidth))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 182, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 225, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\" height=\"16\" rx=\"4\" class=\"fill-gray-700\"></rect><!-- Count label --><text x=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "\" height=\"20\" rx=\"10\" class=\"fill-mint-500 opacity-80\"></rect><!-- Count label --><text x=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var27 string
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(countX))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 184, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 227, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 			if templ_7745c5c3_Err != nil {
@@ -559,20 +559,20 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(textY))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 184, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 227, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"text-sm fill-gray-600\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"text-sm fill-slate-400 font-mono\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var29 string
 			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(country.Count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 184, Col: 129}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/statistics.templ`, Line: 227, Col: 144}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 			if templ_7745c5c3_Err != nil {
@@ -583,7 +583,7 @@ func CountriesPerAggregation(countries []models.CountryAggregation) templ.Compon
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</svg>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</svg></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,29 +1,49 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Handle the close button for forms loaded via HTMX
+  document.body.addEventListener("click", function(event) {
+    if (event.target && (event.target.id === "close-trip-form" || event.target.id === "close-login-form")) {
+      // Find the parent container and clear it
+      const manualCreateDiv = document.getElementById("manual-create");
+      if (manualCreateDiv) {
+        manualCreateDiv.innerHTML = "";
+      }
+      
+      // Also handle the old form if it exists (on the dedicated create trip page)
+      const createTripFormDiv = document.getElementById("create-trip-form");
+      if (createTripFormDiv) {
+        createTripFormDiv.classList.add("hidden");
+      }
+    }
+  });
+
+  // Legacy support for the dedicated create trip page
   let createTripElement = document.getElementById("create-trip");
-  if (!createTripElement) {
-    return; // Exit if the map element does not exist
+  if (createTripElement) {
+    const addTripBtn = document.getElementById("add-trip-btn");
+    const createTripForm = document.getElementById("create-trip-form");
+
+    // Show modal when clicking the add button
+    if (addTripBtn) {
+      addTripBtn.addEventListener("click", function () {
+        if (createTripForm) {
+          createTripForm.classList.remove("hidden");
+        }
+      });
+    }
   }
 
-  const addTripBtn = document.getElementById("add-trip-btn");
-  const createTripForm = document.getElementById("create-trip-form");
-  const closeTripForm = document.getElementById("close-trip-form");
-
-  // Show modal when clicking the add button
-  if (addTripBtn) {
-    addTripBtn.addEventListener("click", function () {
-      createTripForm.classList.remove("hidden");
-    });
-  }
-
-  // Hide modal when clicking cancel button
-  if (closeTripForm) {
-    closeTripForm.addEventListener("click", function () {
-      createTripForm.classList.add("hidden");
-    });
-  }
-
-  // Automatically hide modal after form submission via HTMX
-  document.body.addEventListener("htmx:afterRequest", function () {
-    createTripForm.classList.add("hidden");
+  // Automatically hide forms after form submission via HTMX
+  document.body.addEventListener("htmx:afterRequest", function (event) {
+    // Clear the manual create div on the home page
+    const manualCreateDiv = document.getElementById("manual-create");
+    if (manualCreateDiv && event.detail.xhr.responseURL && event.detail.xhr.responseURL.includes("/trips")) {
+      manualCreateDiv.innerHTML = "";
+    }
+    
+    // Hide the modal on the dedicated create trip page
+    const createTripFormDiv = document.getElementById("create-trip-form");
+    if (createTripFormDiv) {
+      createTripFormDiv.classList.add("hidden");
+    }
   });
 });

@@ -18,6 +18,7 @@ templ header(title string) {
         <script src="/static/js/convertTimes.js"     nonce={ middleware.GetConvertTSNonce(ctx) }></script>
 
         <!-- Map stack -->
+        <link rel="stylesheet" href="/static/css/leaflet.css" nonce={ middleware.GetLeafletNonce(ctx) }>
         <script src="/static/js/leaflet.js"          nonce={ middleware.GetLeafletNonce(ctx) }></script>
         <script src="/static/js/map.js"              nonce={ middleware.GetMapJSNonce(ctx) }></script>
 
@@ -60,7 +61,6 @@ templ nav() {
                 <a class="hover:text-white" href="/">Home</a>
                 <a class="hover:text-white" href="/statistics">Statistics</a>
                 <a class="hover:text-white" href="/worldmap">World Map</a>
-                <a class="hover:text-white" href="/trips">Trips</a>
             </nav>
 
             if middleware.GetUserUsingContext(ctx) >= 0 {

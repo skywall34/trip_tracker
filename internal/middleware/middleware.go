@@ -54,7 +54,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Nonce for replacing content instead of hx-on
 			Modal: generateRandomString(16),
 			TabsJS: generateRandomString(16), // For tab functionality in templ UI
-			// Mapping JS function (Leaflet.js)
+			// Mapping JS and CSS (Leaflet.js and leaflet.css)
 			Leaflet: generateRandomString(16),
 			MapJS: generateRandomString(16),
 			Map3dJS: generateRandomString(16),
@@ -77,9 +77,9 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			"script-src 'self' 'strict-dynamic' " +
 				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' " +
 				"https://cdn.jsdelivr.net; " +
-			"style-src 'self' https://fonts.googleapis.com; " +   // External CSS Only
-			"img-src 'self' data: https://*.tile.openstreetmap.org; " +
-			"connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://oauth2.googleapis.com; " +
+			"style-src 'self' 'nonce-%s' 'nonce-%s' https://fonts.googleapis.com; " +
+			"img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; " +
+			"connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://accounts.google.com https://oauth2.googleapis.com; " +
 			"font-src 'self' https://fonts.gstatic.com; ",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
@@ -90,6 +90,8 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.MapJS,
 			nonceSet.Map3dJS,
 			nonceSet.ThreeJS,
+			nonceSet.Tw,
+			nonceSet.Leaflet,
 		)
 		w.Header().Set("Content-Security-Policy", cspHeader)
 

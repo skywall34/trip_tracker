@@ -103,4 +103,64 @@
   .visited {
     fill: #34d399;
   }
+  
+  /* Additional fill colors for SVG elements */
+  .fill-grape-400 {
+    fill: var(--color-grape-400);
+  }
+  
+  .fill-mint-500 {
+    fill: var(--color-mint-500);
+  }
+
+  /* Custom shadows for glass-morphism */
+  .shadow-glass {
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+  
+  .shadow-glass-hover {
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+  }
+  
+  .shadow-card-glow {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .shadow-mint-glow {
+    box-shadow: 0 0 0 1px rgba(55, 245, 192, 0.2), 0 4px 20px rgba(55, 245, 192, 0.1);
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 0 1px rgba(55, 245, 192, 0.35), 0 0 24px rgba(55, 245, 192, 0.25);
+  }
+
+  /* Animation classes */
+  .animate-slideUp {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+}
+
+/* Keyframes */
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
 }

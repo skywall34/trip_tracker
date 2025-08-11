@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/skywall34/trip-tracker/internal/api"
@@ -40,14 +41,9 @@ func (h *GetFlightHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	flightData, err := api.GetFlight(flightIATA)
 	if err != nil {
 		// Handle the error and return an internal server error
+		// TODO: Handle if the error was no data vs api error
+		fmt.Println("Failed to retrive flight data:", err.Error())
 		http.Error(w, "Failed to retrieve flight data: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Render the template with flight data
-	if flightData == nil {
-		// Handle the case where no flight data was returned
-		http.Error(w, "No flight data found for the provided flight IATA", http.StatusNotFound)
 		return
 	}
 

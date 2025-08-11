@@ -103,7 +103,6 @@ func GetFlight(flightIATA string) ( *FlightsAPIResponse, error ){
 
 	// Construct full URL with query parameters
 	fullURL := fmt.Sprintf("%s?%s", FlightsAPIURL, params.Encode())
-
 	// Send the request
 	resp, err := http.Get(fullURL) // Using http.Get for simplicity since we don't need custom headers here
 	if err != nil {

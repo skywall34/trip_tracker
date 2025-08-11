@@ -8,7 +8,8 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Login() templ.Component {
+// Unified login component - can be used as standalone page or inline component
+func Login(showCloseButton ...bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,7 +30,60 @@ func Login() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div hx-ext=\"response-targets\" class=\"flex-1 flex flex-col justify-center items-center\"><h1 class=\"text-5xl font-bold mb-4\">Welcome Back</h1><p class=\"text-lg text-gray-600 mb-6 text-center\">Login to continue your journey</p><form hx-post=\"/login\" hx-trigger=\"submit\" hx-target-401=\"#login-error\" class=\"bg-white p-8 rounded-lg shadow-lg w-96\"><div id=\"login-error\"></div><div class=\"mb-4\"><label class=\"block text-gray-700 font-medium\">Email</label> <input type=\"email\" name=\"email\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><div class=\"mb-6\"><label class=\"block text-gray-700 font-medium\">Password</label> <input type=\"password\" name=\"password\" required class=\"w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500\"></div><button type=\"submit\" class=\"w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition\">Sign In</button><div class=\"flex justify-between items-center mt-4 text-sm text-gray-600\"><a href=\"/register\" class=\"text-green-600 font-semibold hover:underline\">Register</a> <a href=\"/forgot-password\" class=\"text-green-600 font-semibold hover:underline\">Forgot Password?</a></div></form><a href=\"/auth/google/login\"><img class=\"h-10\" src=\"https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png\" alt=\"Sign in with Google\"></a></div>")
+		if len(showCloseButton) > 0 && showCloseButton[0] {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- Inline component with close button --> <div id=\"login-form\" class=\"bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl p-6 sm:p-8 shadow-glass relative\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = loginFormContent().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button type=\"button\" id=\"close-login-form\" class=\"absolute top-4 right-4 text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5\" onclick=\"document.getElementById('manual-create').innerHTML = ''\"><svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<!-- Full page layout --> <div hx-ext=\"response-targets\" class=\"flex-1 flex flex-col justify-center items-center px-4\"><div class=\"w-full max-w-md\"><div class=\"text-center mb-8\"><h1 class=\"text-4xl sm:text-5xl font-bold text-white mb-2 tracking-tight\">Welcome Back</h1><p class=\"text-slate-400\">Login to continue your journey</p></div><div class=\"bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl p-6 sm:p-8 shadow-glass\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = loginFormContent().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		return nil
+	})
+}
+
+// Shared login form content
+func loginFormContent() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var2 == nil {
+			templ_7745c5c3_Var2 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<h2 class=\"text-2xl font-semibold text-white mb-2\">Sign In</h2><p class=\"text-slate-400 mb-6\">Enter your credentials to access your account</p><form hx-post=\"/login\" hx-trigger=\"submit\" hx-target-401=\"#login-error\" hx-swap=\"innerHTML\"><div id=\"login-error\" class=\"mb-4 text-red-400 text-sm\"></div><div class=\"mb-4\"><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Email</label> <input type=\"email\" name=\"email\" required class=\"w-full border border-white/10 rounded-xl px-4 py-3 bg-ink-700 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50 focus:outline-none\" placeholder=\"Enter your email\"></div><div class=\"mb-6\"><label class=\"block text-sm font-semibold text-slate-300 mb-1\">Password</label> <input type=\"password\" name=\"password\" required class=\"w-full border border-white/10 rounded-xl px-4 py-3 bg-ink-700 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50 focus:outline-none\" placeholder=\"Enter your password\"></div><button type=\"submit\" class=\"w-full bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow mb-4\">Sign In</button><div class=\"flex justify-between items-center text-sm\"><a href=\"/register\" class=\"text-mint-400 hover:text-mint-300 font-medium transition-colors\">Register</a> <a href=\"/forgot-password\" class=\"text-mint-400 hover:text-mint-300 font-medium transition-colors\">Forgot Password?</a></div></form><div class=\"mt-6 pt-4 border-t border-white/10\"><a href=\"/auth/google/login\" class=\"block\"><div class=\"w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-gray-100 text-gray-700 rounded-xl font-medium transition-colors\"><svg class=\"w-5 h-5\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z\"></path> <path fill=\"currentColor\" d=\"M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z\"></path> <path fill=\"currentColor\" d=\"M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z\"></path> <path fill=\"currentColor\" d=\"M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z\"></path></svg> Continue with Google</div></a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,12 +107,12 @@ func LoginError() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p>Invalid Email or Password</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"bg-red-900/50 border border-red-500/50 text-red-200 px-3 py-2 rounded-lg text-sm\">Invalid Email or Password</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

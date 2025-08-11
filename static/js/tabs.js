@@ -11,12 +11,14 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   
     tabUpcoming.addEventListener("click", () => {
-      slider.style.transform = "translateX(0%)";
+      slider.classList.remove("translate-x-full");
+      slider.classList.add("translate-x-0");
       setActiveTab(tabUpcoming, tabPast);
     });
   
     tabPast.addEventListener("click", () => {
-      slider.style.transform = "translateX(100%)";
+      slider.classList.remove("translate-x-0");
+      slider.classList.add("translate-x-full");
       setActiveTab(tabPast, tabUpcoming);
     });
   });

@@ -13,33 +13,34 @@ templ TripsPage() {
 		<div class="text-center mb-8 mt-4">
 
             <!-- Title and subtitle -->
-            <h1 class="text-5xl sm:text-4xl font-bold text-gray-800 mb-2">Saving Your Trips Is Easier Now</h1>
+            <h1 class="text-4xl sm:text-5xl font-bold text-white mb-2 tracking-tight">Your Flight Journey</h1>
+            <p class="text-slate-400 mb-6">Track and manage all your adventures</p>
 
             <!-- Search Bar -->
-            <div class="flex justify-center mt-4">
+            <div class="flex justify-center mt-4 max-w-lg mx-auto">
                 <input
                     type="text"
-                    placeholder="Search for a trip"
-                    class="w-2/3 sm:w-1/2 rounded-l-full px-4 py-2 border border-gray-300 focus:outline-none"
+                    placeholder="Search trips, destinations, or airlines..."
+                    class="flex-1 rounded-l-xl px-4 py-3 bg-ink-800 border border-white/10 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50"
                 />
-                <button class="rounded-r-full bg-green-500 text-white px-6 py-2 hover:bg-green-600 transition">
+                <button class="rounded-r-xl bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 px-6 py-3 font-semibold transition-all duration-300 shadow-mint-glow">
                     Search
                 </button>
             </div>
         </div>
 
-        <div class="relative w-full max-w-sm mx-auto mb-6">
+        <div class="relative w-full max-w-md mx-auto mb-6">
             <!-- Animated slider -->
-            <div id="tab-slider" class="absolute top-0 left-0 w-1/2 h-full bg-gray-200 rounded-full transition-all duration-300 ease-in-out z-0"></div>
+            <div id="tab-slider" class="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-mint-600 to-mint-500 rounded-full transition-all duration-300 ease-in-out z-0 shadow-mint-glow"></div>
         
             <!-- Buttons go on top -->
-            <div class="flex border rounded-full overflow-hidden relative z-10">
+            <div class="flex bg-ink-800 border border-white/10 rounded-full overflow-hidden relative z-10">
                 <button 
                     id="tab-upcoming" 
                     hx-get="/trips?past=false" 
                     hx-target="#trips-list" 
                     hx-trigger="load, click"
-                    class="w-1/2 py-2 font-semibold transition text-gray-700 focus:outline-none relative z-20"
+                    class="w-1/2 py-3 font-semibold transition text-slate-300 hover:text-white focus:outline-none relative z-20"
                 >
                     Upcoming
                 </button>
@@ -47,14 +48,14 @@ templ TripsPage() {
                     id="tab-past" 
                     hx-get="/trips?past=true" 
                     hx-target="#trips-list"
-                    class="w-1/2 py-2 font-semibold transition text-gray-700 focus:outline-none relative z-20"
+                    class="w-1/2 py-3 font-semibold transition text-slate-300 hover:text-white focus:outline-none relative z-20"
                 >
                     Past
                 </button>
-                <button id="add-trip-btn" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition ml-2">
-                    <a href="/createtripform"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6"></a>
-                </button>
             </div>
+            <button id="add-trip-btn" class="absolute -right-14 top-1/2 -translate-y-1/2 p-2 bg-ink-800 border border-white/10 rounded-full hover:bg-ink-700 hover:border-mint-500/50 transition-all duration-300 group">
+                <a href="/createtripform"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6 filter brightness-150 group-hover:brightness-200 transition-all"></a>
+            </button>
         </div>
 			
         <!-- Trip Cards List TODO: Filter only by user and date range -->
@@ -65,75 +66,81 @@ templ TripsPage() {
 }
 
 templ renderFlightSegment(trip models.Trip) {
-    <div class="bg-white text-gray-700 p-6 rounded-lg w-full text-center shadow-lg relative">
+    <div class="bg-ink-800/90 backdrop-blur-xl border border-white/10 text-slate-200 p-6 rounded-xl w-full text-center shadow-glass hover:shadow-glass-hover hover:border-white/20 transition-all duration-300 relative group animate-slideUp">
         <!-- Icon in Top-Right -->
-        <button 
-            class="text-gray-500 hover:text-blue-600 transition"
-            hx-get={"/edittripform?id=" + fmt.Sprint(trip.ID)}
-            hx-target={"#trip-element-" + fmt.Sprint(trip.ID)}
-            hx-swap="outerHTML"
-        >
-            <img src="/static/images/edit-trip.png" alt="Edit" class="w-5 h-5">
-        </button>
-        <button 
-            class="text-gray-500 hover:text-red-600 transition" 
-            hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} 
-            hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} 
-            hx-swap="outerHTML"
-        >
-            <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-6 h-6">
-        </button>
-        <div class="flex justify-between items-center">
+        <div class="absolute top-4 right-4 flex gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+            <button 
+                class="text-slate-400 hover:text-mint-400 transition-colors p-1 rounded-lg hover:bg-white/5"
+                hx-get={"/edittripform?id=" + fmt.Sprint(trip.ID)}
+                hx-target={"#trip-element-" + fmt.Sprint(trip.ID)}
+                hx-swap="outerHTML"
+            >
+                <img src="/static/images/edit-trip.png" alt="Edit" class="w-4 h-4 filter brightness-200">
+            </button>
+            <button 
+                class="text-slate-400 hover:text-red-400 transition-colors p-1 rounded-lg hover:bg-white/5" 
+                hx-delete={"/trips?id=" + fmt.Sprint(trip.ID)} 
+                hx-target={"#trip-element-" + fmt.Sprint(trip.ID)} 
+                hx-swap="outerHTML"
+            >
+                <img src="/static/images/trash-svgrepo-com.svg" alt="Delete" class="w-4 h-4 filter brightness-200">
+            </button>
+        </div>
+        <div class="flex justify-between items-center mb-6">
             <!-- Departure Time stored in UTC-->
             <div class="text-center w-full">
-                <span class="block text-lg font-bold text-green-700">{trip.Departure}</span>
+                <span class="block text-xl font-bold text-mint-400 font-mono tracking-wider mb-1">{trip.Departure}</span>
                 if trip.DepartureTimezone != nil {
-                    <span class="block text-xl font-semibold time-convert" 
+                    <span class="block text-sm font-medium text-slate-300 time-convert" 
                         data-utc={time.Unix(int64(trip.DepartureTime), 0).UTC().Format(time.RFC3339)} 
                         data-tz={*trip.DepartureTimezone}>
                         Loading...
                     </span>
                 } else {
-                    <span class="block text-xl font-semibold">N/A</span>
+                    <span class="block text-sm font-medium text-slate-400">N/A</span>
                 }
             </div>
-            <span class="text-3xl font-bold text-green-600">→</span>
+            <div class="mx-6">
+                <span class="text-3xl font-bold text-mint-400">→</span>
+            </div>
             <div class="text-center w-full">
-                <span class="block text-lg font-bold text-green-700">{trip.Arrival}</span>
+                <span class="block text-xl font-bold text-mint-400 font-mono tracking-wider mb-1">{trip.Arrival}</span>
                 if trip.ArrivalTimezone != nil {
-                    <span class="block text-xl font-semibold time-convert" 
+                    <span class="block text-sm font-medium text-slate-300 time-convert" 
                         data-utc={time.Unix(int64(trip.ArrivalTime), 0).UTC().Format(time.RFC3339)} 
                         data-tz={*trip.ArrivalTimezone}>
                         Loading...
                     </span>
                 } else {
-                    <span class="block text-xl font-semibold">N/A</span>
+                    <span class="block text-sm font-medium text-slate-400">N/A</span>
                 }
             </div>
         </div>
-        <div class="grid grid-cols-4 text-sm text-gray-400 mt-4 text-center">
-            <span class="col-span-1">Flight</span>
-            <span class="col-span-1">Reservation</span>
-            <span class="col-span-1">Terminal</span>
-            <span class="col-span-1">Gate</span>
-        </div>
-        <div class="grid grid-cols-4 text-sm font-semibold mt-1 text-center text-gray-700">
-            <span class="col-span-1">{trip.FlightNumber}</span>
-            if trip.Reservation != nil {
-                <span class="col-span-1">{ *trip.Reservation }</span>
-            } else {
-                <span class="col-span-1">N/A</span>
-            }
-            if trip.Terminal != nil {
-                <span class="col-span-1">{ *trip.Terminal }</span>
-            } else {
-                <span class="col-span-1">N/A</span>
-            }
-            if trip.Gate != nil {
-                <span class="col-span-1">{ *trip.Gate }</span>
-            } else {
-                <span class="col-span-1">N/A</span>
-            }
+        <div class="bg-white/5 rounded-lg p-4 border border-white/5">
+            <div class="grid grid-cols-4 text-xs uppercase tracking-wide text-slate-500 mb-2 text-center font-medium">
+                <span class="col-span-1">Flight</span>
+                <span class="col-span-1">Reservation</span>
+                <span class="col-span-1">Terminal</span>
+                <span class="col-span-1">Gate</span>
+            </div>
+            <div class="grid grid-cols-4 text-sm font-semibold text-center">
+                <span class="col-span-1 text-white font-mono">{trip.FlightNumber}</span>
+                if trip.Reservation != nil {
+                    <span class="col-span-1 text-slate-300">{ *trip.Reservation }</span>
+                } else {
+                    <span class="col-span-1 text-slate-500">—</span>
+                }
+                if trip.Terminal != nil {
+                    <span class="col-span-1 text-slate-300">{ *trip.Terminal }</span>
+                } else {
+                    <span class="col-span-1 text-slate-500">—</span>
+                }
+                if trip.Gate != nil {
+                    <span class="col-span-1 text-slate-300">{ *trip.Gate }</span>
+                } else {
+                    <span class="col-span-1 text-slate-500">—</span>
+                }
+            </div>
         </div>
     </div>
 }
@@ -291,10 +298,9 @@ templ RenderTrips(trips []models.Trip, connectingTrips []models.ConnectingTrip) 
     <div class="space-y-6">
         for _, trip := range trips {
             <div class="relative" id={"trip-element-" + fmt.Sprint(trip.ID)}>
-                <!-- Flight Card TODO: Reservation, Terminal, Gate -->
-                <div class="flex justify-between text-gray-500 text-sm my-2 font-bold">
-                    <span></span>
-                    <span>{
+                <!-- Flight Duration -->
+                <div class="flex justify-end mb-2">
+                    <span class="bg-mint-500/20 text-mint-400 text-xs font-mono px-3 py-1 rounded-full border border-mint-500/30">{
                         fmt.Sprintf(
                             "%dh %dm", 
                             int((time.Duration(int64(trip.ArrivalTime)-int64(trip.DepartureTime))*time.Second).Hours()), 
@@ -305,34 +311,34 @@ templ RenderTrips(trips []models.Trip, connectingTrips []models.ConnectingTrip) 
                 
                 @renderFlightSegment(trip)
             
-                <!-- Check In Section TODO: Status Backend -->
-                <div class="bg-[#DBF3F8] text-gray-700 p-6 rounded-lg w-full text-center shadow mt-1">
+                <!-- Check In Section -->
+                <div class="bg-ink-700/60 backdrop-blur-sm border border-white/5 text-slate-200 p-4 rounded-xl w-full text-center shadow-glass mt-2">
                     <div class="flex justify-between">
                         <div class="text-center w-full">
-                            <span class="block text-sm font-bold">Status</span>
-                            <span class="block text-sm font-bold">On Time</span>
+                            <span class="block text-xs uppercase tracking-wide text-slate-500 mb-1">Status</span>
+                            <span class="block text-sm font-semibold text-mint-400">On Time</span>
                         </div>
                         <div class="text-center w-full">
-                            <span class="block text-sm font-bold">Check In At</span>
+                            <span class="block text-xs uppercase tracking-wide text-slate-500 mb-1">Check In At</span>
                             if trip.DepartureTimezone != nil {
-                                <span class="block text-sm font-bold time-convert" 
+                                <span class="block text-sm font-semibold text-slate-300 time-convert" 
                                     data-utc={time.Unix(int64(trip.DepartureTime) - (24 * 60 * 60), 0).UTC().Format(time.RFC3339)}
                                     data-tz={*trip.DepartureTimezone}>
                                     Loading...
                                 </span>
                             } else {
-                                <span class="block text-sm font-bold">N/A</span>
+                                <span class="block text-sm font-semibold text-slate-400">N/A</span>
                             }
                         </div>
                     </div>
-                    <div class="w-full bg-gray-300 h-2 rounded-full overflow-hidden mt-2">
-                        <div class="bg-green-500 h-full w-3/5"></div>
+                    <div class="w-full bg-ink-800 h-2 rounded-full overflow-hidden mt-3 border border-white/10">
+                        <div class="bg-gradient-to-r from-mint-600 to-mint-400 h-full w-3/5 shadow-mint-glow rounded-full"></div>
                     </div>
                 </div>
 
                 if time.Now().Unix() > int64(trip.DepartureTime) - (24 * 60 * 60) && time.Now().Unix() < int64(trip.DepartureTime) - (90 * 60) {
                     <!-- Check-In Button Only If Within the time frame (24hrs before and up to 90 minutes before departure) -->
-                    <button class="w-full bg-green-500 text-white py-2 mt-2 rounded-lg font-semibold hover:bg-green-600 transition">
+                    <button class="w-full bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 mt-3 rounded-xl font-semibold shadow-mint-glow hover:shadow-glow transition-all duration-300 transform hover:scale-[1.02]">
                         Check In
                     </button>
                 }
@@ -343,26 +349,33 @@ templ RenderTrips(trips []models.Trip, connectingTrips []models.ConnectingTrip) 
     <!-- Connecting Trips -->
     <div class="space-y-6 mt-10">
         for _, conn := range connectingTrips {
-            <div class="relative border border-green-300 rounded-xl shadow-lg">
+            <div class="relative border border-mint-500/30 rounded-xl shadow-glass bg-ink-800/50 backdrop-blur-sm overflow-hidden animate-slideUp">
                 <!-- Label -->
-                <div class="text-sm text-center text-green-700 font-semibold py-2 bg-green-50 rounded-t-xl">
-                    Connecting Flight via {conn.FromTrip.Arrival}
+                <div class="text-sm text-center text-mint-400 font-semibold py-3 bg-gradient-to-r from-mint-500/10 to-mint-600/10 border-b border-mint-500/20">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-mint-400 animate-pulse"></span>
+                        Connecting Flight via {conn.FromTrip.Arrival}
+                    </span>
                 </div>
 
                 <!-- First Leg -->
-                <div class="p-4 border-b border-dashed border-green-200">
+                <div class="p-4 border-b border-dashed border-white/10">
                     @renderFlightSegment(conn.FromTrip)
                 </div>
 
                 <!-- Layover Info -->
-                <div class="text-xs text-center py-2 text-gray-500 font-medium italic">
-                    Layover: {
-                        fmt.Sprintf(
-                            "%dh %dm",
-                            int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Hours()),
-                            int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Minutes()) % 60,
-                        )
-                    } in {conn.FromTrip.Arrival}
+                <div class="text-xs text-center py-3 text-slate-400 font-medium bg-ink-700/30">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-1 h-1 rounded-full bg-slate-500"></span>
+                        <span class="text-mint-400 font-mono">{
+                            fmt.Sprintf(
+                                "%dh %dm",
+                                int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Hours()),
+                                int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Minutes()) % 60,
+                            )
+                        }</span>
+                        layover in <span class="text-slate-300 font-mono">{conn.FromTrip.Arrival}</span>
+                    </span>
                 </div>
 
                 <!-- Second Leg -->
@@ -397,26 +410,33 @@ templ RenderPastTrips(trips []models.Trip, connectingTrips []models.ConnectingTr
     <!-- Connecting Trips -->
     <div class="space-y-6 mt-10">
         for _, conn := range connectingTrips {
-            <div class="relative border border-green-300 rounded-xl shadow-lg">
+            <div class="relative border border-mint-500/30 rounded-xl shadow-glass bg-ink-800/50 backdrop-blur-sm overflow-hidden animate-slideUp">
                 <!-- Label -->
-                <div class="text-sm text-center text-green-700 font-semibold py-2 bg-green-50 rounded-t-xl">
-                    Connecting Flight via {conn.FromTrip.Arrival}
+                <div class="text-sm text-center text-mint-400 font-semibold py-3 bg-gradient-to-r from-mint-500/10 to-mint-600/10 border-b border-mint-500/20">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-mint-400 animate-pulse"></span>
+                        Connecting Flight via {conn.FromTrip.Arrival}
+                    </span>
                 </div>
 
                 <!-- First Leg -->
-                <div class="p-4 border-b border-dashed border-green-200">
+                <div class="p-4 border-b border-dashed border-white/10">
                     @renderFlightSegment(conn.FromTrip)
                 </div>
 
                 <!-- Layover Info -->
-                <div class="text-xs text-center py-2 text-gray-500 font-medium italic">
-                    Layover: {
-                        fmt.Sprintf(
-                            "%dh %dm",
-                            int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Hours()),
-                            int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Minutes()) % 60,
-                        )
-                    } in {conn.FromTrip.Arrival}
+                <div class="text-xs text-center py-3 text-slate-400 font-medium bg-ink-700/30">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="w-1 h-1 rounded-full bg-slate-500"></span>
+                        <span class="text-mint-400 font-mono">{
+                            fmt.Sprintf(
+                                "%dh %dm",
+                                int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Hours()),
+                                int((time.Duration(int64(conn.ToTrip.DepartureTime)-int64(conn.FromTrip.ArrivalTime)) * time.Second).Minutes()) % 60,
+                            )
+                        }</span>
+                        layover in <span class="text-slate-300 font-mono">{conn.FromTrip.Arrival}</span>
+                    </span>
                 </div>
 
                 <!-- Second Leg -->
@@ -543,48 +563,48 @@ templ TripForm(flights api.FlightsAPIResponse) {
 
 
 templ CreateTripForm() {
-    <div id="create-trip" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add a New Trip</h2>
+    <div id="create-trip" class="bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl p-6 sm:p-8 shadow-glass">
+        <h2 class="text-2xl font-semibold text-white mb-6">Add a New Trip</h2>
 
         <form hx-post="/trips" hx-swap="none">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {{/* Reusable input styles */}}
-                {{ inputStyle := "w-full border border-gray-200 rounded-2xl px-4 py-3 shadow-sm focus:ring-2 focus:ring-[#36B37E] focus:outline-none" }}
+                {{/* Dark theme input styles */}}
+                {{ inputStyle := "w-full border border-white/10 rounded-xl px-4 py-3 bg-ink-700 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50 focus:outline-none" }}
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Departure</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Departure</label>
                     <input type="text" name="departure" class={inputStyle} placeholder="Enter departure location" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Arrival</label>
                     <input type="text" name="arrival" class={inputStyle} placeholder="Enter arrival location" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Departure Time</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Departure Time</label>
                     <input type="datetime-local" name="departuretime" class={inputStyle} required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Arrival Time</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Arrival Time</label>
                     <input type="datetime-local" name="arrivaltime" class={inputStyle} required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Airline</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Airline</label>
                     <input type="text" name="airline" class={inputStyle} placeholder="Enter airline name" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Flight Number</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Flight Number</label>
                     <input type="text" name="flightnumber" class={inputStyle} placeholder="Enter flight number" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Reservation</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Reservation</label>
                     <input type="text" name="reservation" class={inputStyle} placeholder="Enter reservation code">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Terminal</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Terminal</label>
                     <input type="text" name="terminal" class={inputStyle} placeholder="Enter terminal">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Gate</label>
+                    <label class="block text-sm font-semibold text-slate-300 mb-1">Gate</label>
                     <input type="text" name="gate" class={inputStyle} placeholder="Enter gate">
                 </div>
             </div>
@@ -592,10 +612,10 @@ templ CreateTripForm() {
             <input type="hidden" name="timezone" id="timezone">
 
             <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button type="submit" class="w-full bg-[#36B37E] text-white py-3 rounded-2xl font-semibold hover:bg-green-600 transition">
+                <button type="submit" class="w-full bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow">
                     Submit Trip
                 </button>
-                <button type="button" id="close-trip-form" class="w-full bg-gray-100 text-gray-700 py-3 rounded-2xl font-semibold hover:bg-gray-200 transition">
+                <button type="button" id="close-trip-form" class="w-full bg-ink-700 border border-white/10 text-slate-300 py-3 rounded-xl font-semibold hover:bg-ink-600 hover:text-white transition-all duration-300">
                     Cancel
                 </button>
             </div>

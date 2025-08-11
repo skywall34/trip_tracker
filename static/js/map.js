@@ -9,8 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return; // Exit if the map element does not exist
   }
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 10,
+  // Use dark theme map tiles
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd'
   }).addTo(map);
 
   const customIcon = new L.Icon({
@@ -31,19 +34,24 @@ document.addEventListener("DOMContentLoaded", function () {
         let departure = [trip.departure_lat, trip.departure_lon];
         let arrival = [trip.arrival_lat, trip.arrival_lon];
 
-        L.polyline([departure, arrival], { color: "blue", weight: 2 })
+        L.polyline([departure, arrival], { 
+          color: "#37f5c0", 
+          weight: 3,
+          opacity: 0.8,
+          dashArray: "5, 10"
+        })
           .addTo(map)
-          .bindPopup(`${trip.airline} Flight ${trip.flight_number}`);
+          .bindPopup(`<div class="text-white font-semibold">${trip.airline} Flight ${trip.flight_number}</div>`);
 
         // Add departure marker
         L.marker(departure, { icon: customIcon })
           .addTo(map)
-          .bindPopup(`Departure: ${trip.departure}`);
+          .bindPopup(`<div class="text-white font-medium">✈️ Departure<br><span class="text-mint-400">${trip.departure}</span></div>`);
 
         // Add arrival marker
         L.marker(arrival, { icon: customIcon })
           .addTo(map)
-          .bindPopup(`Arrival: ${trip.arrival}`);
+          .bindPopup(`<div class="text-white font-medium">🛬 Arrival<br><span class="text-mint-400">${trip.arrival}</span></div>`);
       });
     });
 });
