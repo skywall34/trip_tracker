@@ -8,62 +8,6 @@ import (
     "fmt"
 )
 
-templ TripsPage() {
-	<div class="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
-		<div class="text-center mb-8 mt-4">
-
-            <!-- Title and subtitle -->
-            <h1 class="text-4xl sm:text-5xl font-bold text-white mb-2 tracking-tight">Your Flight Journey</h1>
-            <p class="text-slate-400 mb-6">Track and manage all your adventures</p>
-
-            <!-- Search Bar -->
-            <div class="flex justify-center mt-4 max-w-lg mx-auto">
-                <input
-                    type="text"
-                    placeholder="Search trips, destinations, or airlines..."
-                    class="flex-1 rounded-l-xl px-4 py-3 bg-ink-800 border border-white/10 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-mint-500/50 focus:border-mint-500/50"
-                />
-                <button class="rounded-r-xl bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 px-6 py-3 font-semibold transition-all duration-300 shadow-mint-glow">
-                    Search
-                </button>
-            </div>
-        </div>
-
-        <div class="relative w-full max-w-md mx-auto mb-6">
-            <!-- Animated slider -->
-            <div id="tab-slider" class="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-mint-600 to-mint-500 rounded-full transition-all duration-300 ease-in-out z-0 shadow-mint-glow"></div>
-        
-            <!-- Buttons go on top -->
-            <div class="flex bg-ink-800 border border-white/10 rounded-full overflow-hidden relative z-10">
-                <button 
-                    id="tab-upcoming" 
-                    hx-get="/trips?past=false" 
-                    hx-target="#trips-list" 
-                    hx-trigger="load, click"
-                    class="w-1/2 py-3 font-semibold transition text-slate-300 hover:text-white focus:outline-none relative z-20"
-                >
-                    Upcoming
-                </button>
-                <button 
-                    id="tab-past" 
-                    hx-get="/trips?past=true" 
-                    hx-target="#trips-list"
-                    class="w-1/2 py-3 font-semibold transition text-slate-300 hover:text-white focus:outline-none relative z-20"
-                >
-                    Past
-                </button>
-            </div>
-            <button id="add-trip-btn" class="absolute -right-14 top-1/2 -translate-y-1/2 p-2 bg-ink-800 border border-white/10 rounded-full hover:bg-ink-700 hover:border-mint-500/50 transition-all duration-300 group">
-                <a href="/createtripform"><img src="/static/images/add-circle-svgrepo-com.svg" alt="Add" class="w-6 h-6 filter brightness-150 group-hover:brightness-200 transition-all"></a>
-            </button>
-        </div>
-			
-        <!-- Trip Cards List TODO: Filter only by user and date range -->
-        <div id="trips-list">
-            <!-- This will be populated by HTMX, calling RenderTrips or RenderPastTrips -->
-        </div>   
-	</div>
-}
 
 templ renderFlightSegment(trip models.Trip) {
     <div class="bg-ink-800/90 backdrop-blur-xl border border-white/10 text-slate-200 p-6 rounded-xl w-full text-center shadow-glass hover:shadow-glass-hover hover:border-white/20 transition-all duration-300 relative group animate-slideUp">

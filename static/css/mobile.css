@@ -1,0 +1,129 @@
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  /* Touch-friendly buttons */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Mobile navigation */
+  .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 12px;
+    min-width: 44px;
+  }
+
+  .mobile-nav-item.active {
+    color: #10b981;
+  }
+
+  .mobile-nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+  }
+
+  /* Pull-to-refresh styling */
+  .pull-to-refresh {
+    transform: translateY(var(--pull-distance, 0));
+    transition: transform 0.2s ease;
+  }
+
+  /* Form optimizations */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+
+  /* Trip cards for mobile */
+  .trip-card {
+    margin: 8px 16px;
+    border-radius: 12px;
+    padding: 16px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .trip-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .trip-card-action {
+    flex: 1;
+    min-height: 44px;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  /* Safe area handling for iOS */
+  .safe-area-padding {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Main content with bottom navigation space */
+  .main-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Touch feedback */
+.btn:active,
+.trip-card:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #10b981;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

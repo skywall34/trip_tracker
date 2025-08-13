@@ -28,6 +28,7 @@ type Nonces struct {
 	Leaflet         string
 	HtmxCSSHash     string
 	ConvertTS       string
+	PWA             string
 }
 
 
@@ -61,6 +62,10 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			ThreeJS: generateRandomString(16),
 			// Nonce for convertTimes.js
 			ConvertTS: generateRandomString(16),
+			// Nonce for PWA scripts
+			PWA: generateRandomString(16),
+			// Nonce for Tailwind CSS
+			Tw: generateRandomString(16),
 		}
 
 		// Store the nonce set in the request context so other parts of the application
@@ -75,7 +80,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			"frame-ancestors 'none'; " +
 			"form-action 'self' https://accounts.google.com; " +
 			"script-src 'self' 'strict-dynamic' " +
-				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' " +
+				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' " +
 				"https://cdn.jsdelivr.net; " +
 			"style-src 'self' 'nonce-%s' 'nonce-%s' https://fonts.googleapis.com; " +
 			"img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; " +
@@ -90,6 +95,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.MapJS,
 			nonceSet.Map3dJS,
 			nonceSet.ThreeJS,
+			nonceSet.PWA,
 			nonceSet.Tw,
 			nonceSet.Leaflet,
 		)
@@ -182,6 +188,11 @@ func GetThreeJSNonce(ctx context.Context) string {
 func GetTabsJSNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.TabsJS
+}
+
+func GetPWANonce(ctx context.Context) string {
+	nonceSet := GetNonces(ctx)
+	return nonceSet.PWA
 }
 /***********************************Auth Middleware**********************************************/
 

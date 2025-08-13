@@ -10,12 +10,26 @@ templ header(title string) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{ title }</title>
 
+        <!-- PWA Meta Tags -->
+        <meta name="application-name" content="Mia's Trips"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="apple-mobile-web-app-title" content="Mia's Trips"/>
+        <meta name="description" content="Track your adventures like a pro producer"/>
+        <meta name="theme-color" content="#10b981"/>
+
+        <!-- Icons -->
+        <link rel="manifest" href="/manifest.json"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png"/>
+        <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"/>
+
         <!-- Core JS -->
         <script src="/static/js/htmx.min.js"         nonce={ middleware.GetHtmxNonce(ctx) }></script>
         <script src="/static/js/response-targets.js" nonce={ middleware.GetResponseTargetsNonce(ctx) }></script>
         <script src="/static/js/modal.js"            nonce={ middleware.GetModalNonce(ctx) }></script>
         <script src="/static/js/tabs.js"             nonce={ middleware.GetTabsJSNonce(ctx) }></script>
         <script src="/static/js/convertTimes.js"     nonce={ middleware.GetConvertTSNonce(ctx) }></script>
+        <script src="/static/js/pwa-features.js"     nonce={ middleware.GetPWANonce(ctx) }></script>
 
         <!-- Map stack -->
         <link rel="stylesheet" href="/static/css/leaflet.css" nonce={ middleware.GetLeafletNonce(ctx) }>
@@ -35,6 +49,45 @@ templ header(title string) {
 
         <!-- Tailwind output -->
         <link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
+        
+        <!-- Mobile CSS -->
+        <link rel="stylesheet" href="/static/css/mobile.css" nonce={ middleware.GetTwNonce(ctx) }>
+
+        <!-- PWA Installation Script -->
+        <script nonce={ middleware.GetPWANonce(ctx) }>
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+            });
+          }
+
+          // PWA Install Prompt
+          let deferredPrompt;
+          window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+          });
+
+          function showInstallButton() {
+            const installBtn = document.createElement('button');
+            installBtn.innerHTML = '📱 Install App';
+            installBtn.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-emerald-700 z-50';
+            installBtn.onclick = installApp;
+            document.body.appendChild(installBtn);
+          }
+
+          function installApp() {
+            if (deferredPrompt) {
+              deferredPrompt.prompt();
+              deferredPrompt.userChoice.then((choiceResult) => {
+                deferredPrompt = null;
+              });
+            }
+          }
+        </script>
 
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,9 +96,26 @@ templ header(title string) {
     </head>
 }
 
+templ mobileNav() {
+    <nav class="mobile-nav md:hidden">
+        <a href="/" class="mobile-nav-item">
+            <div class="mobile-nav-icon">🏠</div>
+            <span>Home</span>
+        </a>
+        <a href="/statistics" class="mobile-nav-item">
+            <div class="mobile-nav-icon">📊</div>
+            <span>Stats</span>
+        </a>
+        <a href="/worldmap" class="mobile-nav-item">
+            <div class="mobile-nav-icon">🗺️</div>
+            <span>Map</span>
+        </a>
+    </nav>
+}
+
 templ footer() {
     <footer class="py-12 text-center text-xs text-slate-500/80 border-t border-white/5">
-        <p>Built with ❤️ for travelers — © 2025 Mia’s Trips</p>
+        <p>Built with ❤️ for travelers — © 2025 Mia's Trips</p>
     </footer>
 }
 
@@ -82,7 +152,10 @@ templ Layout(contents templ.Component, title string) {
     @header(title)
     <body class="bg-ink-900 bg-mesh bg-no-repeat text-slate-300 min-h-screen relative font-sans">
         @nav()
-        @contents
+        <div class="main-content">
+            @contents
+        </div>
+        @mobileNav()
         @footer()
     </body>
     </html>

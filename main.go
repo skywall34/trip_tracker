@@ -66,6 +66,11 @@ func main() {
     fs:= http.FileServer(http.Dir("./static"))
     mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
+    // PWA routes
+    mux.Handle("/manifest.json", handlers.NewPWAManifestHandler())
+    mux.Handle("/sw.js", handlers.NewServiceWorkerHandler())
+    mux.Handle("/offline", handlers.NewOfflineHandler())
+
     // Main
     mux.Handle("/", 
         authMiddleware.AddUserToContext(
