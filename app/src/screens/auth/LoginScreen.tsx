@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useDispatch, useSelector } from "react-redux";
+import Constants from "expo-constants";
 
 import { Button, Card, Input } from "../../components/common";
 import { colors, typography, spacing } from "../../utils/theme";
@@ -44,15 +45,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     url: string;
   } | null>(null);
 
-  // Configure Google OAuth (you'll need to set up proper client IDs)
+  // Configure Google OAuth with environment-based client IDs
+  const googleClientIds = Constants.expoConfig?.extra?.googleOAuthClientId;
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: Platform.select({
-      // You'll need to replace these with your actual Google OAuth client IDs
-      ios: "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
-      android:
-        "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
-      default:
-        "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
+      ios: googleClientIds?.ios || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
+      android: googleClientIds?.android || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
+      default: googleClientIds?.web || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
     }),
     scopes: ["openid", "profile", "email"],
   });

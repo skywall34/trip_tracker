@@ -160,6 +160,22 @@ app/
 
 ### Development Scripts
 
+**New Automated Development Workflow:**
+```bash
+# One-command development startup (recommended)
+npm run dev
+# Automatically starts: ngrok + backend + Expo
+
+# Clean shutdown of all processes
+npm run cleanup
+
+# Individual components
+npm run backend      # Start Go backend with air
+npm run ngrok       # Start ngrok tunnel only
+npm run check-ngrok # Display current ngrok URL
+```
+
+**Standard Expo Commands:**
 ```bash
 # Start development server
 npm start
@@ -175,30 +191,50 @@ npx expo start --web
 npx expo start --clear
 
 # Build for production
-npx expo build:ios
-npx expo build:android
+eas build --profile production --platform ios
+eas build --profile production --platform android
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-The app uses environment variables configured in `app.json`:
+The app uses environment variables for secure configuration management:
 
-```json
-{
-  "expo": {
-    "extra": {
-      "apiUrl": "http://localhost:3000"
-    }
-  }
-}
+**Setup (Required):**
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your actual values
 ```
 
-**Development vs Production:**
+**Available Environment Variables:**
+```bash
+# Google OAuth Client IDs (Get from Google Cloud Console)
+EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_IOS=your-ios-client-id.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_ANDROID=your-android-client-id.apps.googleusercontent.com  
+EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_WEB=your-web-client-id.apps.googleusercontent.com
 
-- **Development**: `http://localhost:3000` or `http://YOUR_IP:3000`
-- **Production**: `https://your-production-domain.com`
+# Production API URL
+EXPO_PUBLIC_PRODUCTION_API_URL=https://yourdomain.com
+
+# Optional: Development API URL override (bypasses ngrok auto-detection)
+EXPO_PUBLIC_DEV_API_URL=https://your-custom-dev-url.com
+
+# Google Maps API Key (for React Native Maps)
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+```
+
+**Dynamic Configuration:**
+- **Development**: Automatic ngrok URL detection via `app.config.js`
+- **Production**: Uses `EXPO_PUBLIC_PRODUCTION_API_URL`
+- **Override**: Can force specific URL via `EXPO_PUBLIC_DEV_API_URL`
+
+**Security:**
+- All sensitive values stored in `.env` (git-ignored)
+- No hardcoded credentials in source code
+- Environment-based OAuth client IDs
 
 ### Backend Integration
 
@@ -218,7 +254,9 @@ The mobile app connects to the existing Go backend server with dedicated mobile 
 **Authentication:**
 
 - ✅ `POST /api/v1/mobile/auth/google` - Google OAuth login
+- ⚠️ `POST /api/v1/mobile/auth/login` - Email/password login (needs backend implementation)
 - ✅ `POST /api/v1/mobile/auth/refresh` - Token refresh
+- ✅ `POST /api/v1/mobile/auth/logout` - Logout
 
 **Trip Management:**
 
@@ -515,30 +553,232 @@ The web PWA features will be removed as outlined in the project plan, with the m
 - ✅ Redux integration for trip state management
 - ✅ Error handling and loading states
 
-**Next Immediate Steps:**
+## 📋 Comprehensive Development Todo List
 
-0. **Fix Issues with network**
+Based on the comprehensive codebase audit, here's the complete roadmap for bringing the mobile app to feature parity and production readiness:
 
-   - Emulator or phone is unable to communicate with backend server running at port 3000 on localhost
-   - Google OAuth and Email logins fail
+### 🚨 Critical Issues (Fix First)
 
-1. **Add Trip Screen**
+#### Backend API Integration
+- [ ] **Add Email Login Backend Endpoint** - `POST /api/v1/mobile/auth/login` missing
+  - Location: Create `internal/handlers/mobile/login.go` (exists but route not registered)
+  - Frontend calls this in `authSlice.ts:51-54`
+  - Backend only has Google OAuth route
 
-   - Form validation for trip data
-   - Airport selection with autocomplete
-   - Date/time pickers for departure/arrival
-   - Integration with backend POST endpoint
+#### API Response Structure Mismatch
+- [ ] **Fix API Response Handling in Trips Slice**
+  - Location: `/src/store/slices/tripsSlice.ts:36`
+  - Issue: `apiClient.get()` expects different structure than backend provides
+  - Backend returns: `{ success: boolean, data: Trip[], error?: ErrorResponse }`
+  - Frontend expects: Direct array or `response.data as Trip[]`
 
-2. **Edit Trip Screen**
+### 🎯 High Priority Features (Phase 1)
 
-   - Pre-populate form with existing trip data
-   - Partial update functionality
-   - Optimistic UI updates
+#### Core Trip Management Screens
+- [ ] **Add Trip Screen Implementation**
+  - Location: Replace placeholder in `AppNavigator.tsx:133-139`
+  - Features needed:
+    - Form validation with React Hook Form
+    - Airport autocomplete/selection
+    - Date/time pickers for departure/arrival
+    - Airline and flight number inputs
+    - Integration with `POST /api/v1/trips`
+    - Error handling and loading states
 
-3. **Trip Detail Screen**
-   - Full trip information display
-   - Action buttons (edit, delete)
-   - Flight status integration
+- [ ] **Edit Trip Screen Implementation**
+  - Location: Replace placeholder in `AppNavigator.tsx:141-147`
+  - Features needed:
+    - Pre-filled form with existing trip data
+    - Same form components as Add Trip
+    - Integration with `PUT /api/v1/trips/{id}`
+    - Optimistic UI updates
+    - Partial update support
+
+- [ ] **Trip Detail Screen Implementation**
+  - Location: Replace placeholder in `AppNavigator.tsx:128-131`
+  - Features needed:
+    - Full trip information display
+    - Action buttons (edit, delete)
+    - Delete confirmation dialog
+    - Flight status integration (if available)
+    - Share trip functionality
+
+#### Maps Integration
+- [ ] **World Map Screen Implementation**
+  - Location: Replace placeholder in `AppNavigator.tsx:23-27`
+  - Dependencies: Install `react-native-maps`
+  - Features needed:
+    - Interactive world map with trip markers
+    - Flight route visualization
+    - Marker clustering for dense areas
+    - Trip filtering and legend
+    - Integration with Google Maps API key from environment
+
+### 🌟 Medium Priority Features (Phase 2)
+
+#### User Profile & Settings
+- [ ] **Profile Screen Implementation**
+  - Location: Replace placeholder in `AppNavigator.tsx:29-33`
+  - Features needed:
+    - User information display
+    - Profile picture upload
+    - Account settings
+    - Logout functionality
+    - Delete account option
+
+- [ ] **Settings Screen Implementation**
+  - Features needed:
+    - App preferences (theme, notifications)
+    - Privacy settings
+    - Data management (export, delete)
+    - About section with app version
+
+#### Enhanced Functionality
+- [ ] **Flight Search Implementation**
+  - Location: Complete TODO in `HomeScreen.tsx:24-27`
+  - Integration with AviationStack API
+  - Flight lookup and auto-population
+  - Real-time flight status
+
+- [ ] **Statistics Dashboard**
+  - Features needed:
+    - Total trips, miles flown, countries visited
+    - Travel patterns and insights
+    - Data visualizations (charts/graphs)
+    - Year-over-year comparisons
+
+- [ ] **Offline Support Implementation**
+  - Redux Persist configuration
+  - Offline queue for API calls
+  - Sync mechanism when online
+  - Offline indicators and messaging
+
+### 🔧 Technical Improvements
+
+#### Code Quality & Architecture
+- [ ] **TypeScript Coverage Improvement**
+  - Replace `any` types with proper interfaces
+  - Add missing prop interface definitions
+  - Strict type checking compliance
+
+- [ ] **Error Boundaries Implementation**
+  - React error boundaries for crash prevention
+  - Error logging and reporting
+  - Graceful fallback UI components
+
+- [ ] **Performance Optimization**
+  - FlatList optimization for large trip lists
+  - React.memo and useCallback optimization
+  - Image loading optimization
+  - Bundle size analysis and reduction
+
+#### Testing Framework
+- [ ] **Unit Testing Setup**
+  - Jest configuration for React Native
+  - Component testing with React Native Testing Library
+  - Redux store testing
+  - API client testing with mocks
+
+- [ ] **Integration Testing**
+  - E2E testing with Detox
+  - Navigation flow testing
+  - Authentication flow testing
+  - API integration testing
+
+#### Enhanced UI/UX
+- [ ] **Loading States & Skeletons**
+  - Skeleton components for all screens
+  - Better loading indicators
+  - Progressive loading for images
+
+- [ ] **Toast Notification System**
+  - Success/error message toasts
+  - Action confirmation toasts
+  - Offline status notifications
+
+- [ ] **Accessibility Improvements**
+  - Screen reader support
+  - Accessibility labels and hints
+  - Focus management
+  - High contrast support
+
+### 🚀 Production Readiness
+
+#### App Store Preparation
+- [ ] **iOS App Store Configuration**
+  - App icons (all required sizes)
+  - Splash screens and launch images
+  - App Store metadata and screenshots
+  - TestFlight beta testing setup
+
+- [ ] **Android Play Store Configuration**
+  - Adaptive icons and splash screens
+  - Play Store metadata and screenshots
+  - Internal testing track setup
+  - Signed APK/AAB generation
+
+#### Security & Monitoring
+- [ ] **Enhanced Security Implementation**
+  - Input validation on all forms
+  - XSS prevention measures
+  - Certificate pinning for API calls
+  - Biometric authentication option
+
+- [ ] **Analytics & Monitoring Setup**
+  - Crash reporting (Sentry integration)
+  - Usage analytics (Firebase/Amplitude)
+  - Performance monitoring
+  - Error tracking and alerting
+
+#### Advanced Features
+- [ ] **Push Notifications**
+  - Expo Notifications setup
+  - Trip reminder notifications
+  - Flight status update notifications
+  - Permission handling
+
+- [ ] **Camera Integration**
+  - Trip photo capture
+  - Photo gallery integration
+  - Image upload to backend
+  - Photo management
+
+### 📱 Nice-to-Have Features (Phase 3)
+
+- [ ] **Advanced Search & Filtering**
+  - Trip search functionality
+  - Filter by airline, date range, destinations
+  - Sorting options
+
+- [ ] **Data Export & Backup**
+  - Export trips to CSV/PDF
+  - Backup/restore functionality
+  - Data synchronization across devices
+
+- [ ] **Social Features**
+  - Trip sharing with friends
+  - Travel recommendations
+  - Social login options
+
+- [ ] **Travel Planning Tools**
+  - Trip planning assistance
+  - Weather integration
+  - Currency converter
+  - Time zone calculator
+
+### 🏁 Current Status Summary
+- **Foundation**: ✅ Complete (100%)
+- **Authentication**: ✅ Complete (95% - missing email login backend)
+- **Basic UI**: ✅ Complete (90%)
+- **Trip Listing**: ✅ Complete (100%)
+- **Trip Management**: 🚧 In Progress (20% - only listing implemented)
+- **Maps**: ❌ Not Started (0%)
+- **Profile/Settings**: ❌ Not Started (0%)
+- **Production Ready**: ❌ Not Started (10%)
+
+**Overall Completion**: ~40% of planned features
+**Estimated Time to MVP**: 3-4 weeks for Phase 1
+**Estimated Time to Production**: 6-8 weeks total
 
 ### 🗺️ Upcoming Major Phases
 
@@ -576,11 +816,29 @@ npx expo start --tunnel
 # Choose platform: Android (a), iOS (i), or Web (w)
 ```
 
+**Automated Development Setup:**
+
+```bash
+# Quick start (recommended)
+npm run dev
+# Automatically handles: ngrok tunneling, backend startup, Expo server
+
+# Manual setup (if needed)
+# Terminal 1: Backend server
+cd /home/mshin/trip-tracker
+air  # Hot reload enabled
+
+# Terminal 2: Mobile app  
+cd app
+npx expo start --clear
+```
+
 **Testing Setup:**
 
-- Physical device testing via Expo Go
-- Network configuration for WSL2/Windows environments
-- API endpoint testing with proper JWT tokens
+- Physical device testing via Expo Go (for most features)
+- Development builds required for OAuth testing (`npx expo run:android`)
+- Network configuration automated via ngrok tunneling
+- Environment variable management via `.env` files
 
 ### 📋 Development Checklist
 

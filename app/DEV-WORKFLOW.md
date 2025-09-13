@@ -1,5 +1,14 @@
 # Development Workflow Guide
 
+## Setup (First Time Only)
+
+1. **Environment Variables** (Optional but recommended):
+```bash
+cd app
+cp .env.example .env
+# Edit .env with your Google OAuth client IDs and other settings
+```
+
 ## Quick Start
 
 ```bash
@@ -41,6 +50,15 @@ This single command will:
 - `Ctrl+C` in terminal - Stops current process only
 
 ## How It Works
+
+### Environment-Based Configuration
+- **Environment Variables**: All sensitive values in `.env` file (git-ignored)
+- **Google OAuth**: Separate client IDs for iOS/Android/Web platforms
+- **API URL Priority**:
+  1. `EXPO_PUBLIC_DEV_API_URL` (manual override)
+  2. ngrok auto-detection (dynamic)
+  3. `http://localhost:3000` (fallback)
+  4. `EXPO_PUBLIC_PRODUCTION_API_URL` (production)
 
 ### Automatic ngrok Detection
 - `app.config.js` calls ngrok API at `http://localhost:4040/api/tunnels`

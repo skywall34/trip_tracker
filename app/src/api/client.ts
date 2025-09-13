@@ -29,7 +29,7 @@ const getApiUrl = (): string => {
   }
   
   // Production fallback
-  return 'https://api.miastrips.com';
+  return Constants.expoConfig?.extra?.productionApiUrl || 'https://api.miastrips.com';
 };
 
 const API_BASE_URL = getApiUrl();

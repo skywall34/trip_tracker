@@ -25,7 +25,9 @@ const getNgrokUrl = async () => {
 };
 
 module.exports = async ({ config }) => {
-  const apiUrl = await getNgrokUrl() || 'http://localhost:3000';
+  // Check for development API URL override first
+  const devApiUrl = process.env.EXPO_PUBLIC_DEV_API_URL;
+  const apiUrl = devApiUrl || await getNgrokUrl() || 'http://localhost:3000';
   
   console.log('📱 Mobile API URL:', apiUrl);
   
@@ -68,7 +70,13 @@ module.exports = async ({ config }) => {
       ]
     ],
     extra: {
-      apiUrl: apiUrl
+      apiUrl: apiUrl,
+      googleOAuthClientId: {
+        ios: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_IOS || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
+        android: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_ANDROID || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
+        web: process.env.EXPO_PUBLIC_GOOGLE_OAUTH_CLIENT_ID_WEB || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com"
+      },
+      productionApiUrl: process.env.EXPO_PUBLIC_PRODUCTION_API_URL || "https://api.miastrips.com"
     },
     scheme: "mias-trips"
   };

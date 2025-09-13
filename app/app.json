@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.miasname.trips"
+      "bundleIdentifier": "com.mias.trips"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.miasname.trips",
+      "package": "com.mias.trips",
       "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
     "web": {
@@ -37,9 +37,6 @@
         }
       ]
     ],
-    "extra": {
-      "apiUrl": "https://0509ca426fe8.ngrok-free.app"
-    },
     "scheme": "mias-trips"
   }
 }
