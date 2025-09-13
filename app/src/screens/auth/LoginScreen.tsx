@@ -19,6 +19,7 @@ import { Button, Card, Input } from "../../components/common";
 import { colors, typography, spacing } from "../../utils/theme";
 import { loginWithEmail, loginWithGoogle } from "../../store/slices/authSlice";
 import { RootState, AppDispatch } from "../../store";
+import apiClient from "../../api/client";
 
 // Complete auth session for Google OAuth
 WebBrowser.maybeCompleteAuthSession();
@@ -36,6 +37,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [connectionStatus, setConnectionStatus] = useState<{
+    tested: boolean;
+    success: boolean;
+    message: string;
+    url: string;
+  } | null>(null);
 
   // Configure Google OAuth (you'll need to set up proper client IDs)
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -123,6 +130,39 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const handleGoogleLogin = () => {
     promptAsync();
+  };
+
+  // Test connection to backend
+  const testConnection = async () => {
+    try {
+      const result = await apiClient.testConnection();
+      setConnectionStatus({
+        tested: true,
+        success: result.success,
+        message: result.message,
+        url: result.url,
+      });
+      
+      if (result.success) {
+        Alert.alert(
+          "Connection Test",
+          `✅ ${result.message}\n\nServer: ${result.url}`,
+          [{ text: "OK" }]
+        );
+      } else {
+        Alert.alert(
+          "Connection Failed",
+          `❌ ${result.message}\n\nTrying to reach: ${result.url}\n\nMake sure:\n• Your phone and computer are on the same WiFi\n• Backend server is running\n• IP address is correct`,
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        "Connection Test Failed",
+        `Error testing connection: ${error}`,
+        [{ text: "OK" }]
+      );
+    }
   };
 
   return (
@@ -245,6 +285,41 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
               Policy
             </Text>
           </Card>
+
+          {/* Connection Test Button - Development Only */}
+          {__DEV__ && (
+            <Card variant="subtle" padding="md" style={styles.debugCard}>
+              <Text style={styles.debugTitle}>Development Tools</Text>
+              <Button
+                title="Test Backend Connection"
+                onPress={testConnection}
+                variant="outline"
+                size="sm"
+                fullWidth
+                style={styles.testButton}
+              />
+              {connectionStatus && (
+                <View style={styles.connectionStatus}>
+                  <Text
+                    style={[
+                      styles.connectionText,
+                      {
+                        color: connectionStatus.success
+                          ? colors.success
+                          : colors.error,
+                      },
+                    ]}
+                  >
+                    {connectionStatus.success ? "✅" : "❌"}{" "}
+                    {connectionStatus.message}
+                  </Text>
+                  <Text style={styles.connectionUrl}>
+                    {connectionStatus.url}
+                  </Text>
+                </View>
+              )}
+            </Card>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -385,5 +460,38 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     fontFamily: typography.fontFamily.regular,
     fontSize: typography.fontSize.sm,
+  },
+  debugCard: {
+    marginTop: spacing.lg,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+  },
+  debugTitle: {
+    fontSize: typography.fontSize.sm,
+    fontFamily: typography.fontFamily.semiBold,
+    color: colors.text.secondary,
+    textAlign: "center",
+    marginBottom: spacing.sm,
+  },
+  testButton: {
+    marginBottom: spacing.sm,
+  },
+  connectionStatus: {
+    padding: spacing.sm,
+    backgroundColor: colors.background,
+    borderRadius: 8,
+  },
+  connectionText: {
+    fontSize: typography.fontSize.sm,
+    fontFamily: typography.fontFamily.medium,
+    textAlign: "center",
+    marginBottom: spacing.xs,
+  },
+  connectionUrl: {
+    fontSize: typography.fontSize.xs,
+    fontFamily: typography.fontFamily.regular,
+    color: colors.text.muted,
+    textAlign: "center",
   },
 });

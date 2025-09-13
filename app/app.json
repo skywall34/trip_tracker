@@ -38,7 +38,7 @@
       ]
     ],
     "extra": {
-      "apiUrl": "http://10.0.2.2:3000"
+      "apiUrl": "https://0509ca426fe8.ngrok-free.app"
     },
     "scheme": "mias-trips"
   }

@@ -53,15 +53,22 @@ export const loginWithEmail = createAsyncThunk(
         password,
       });
 
-      const data = response.data as {
-        success: boolean;
-        data: { user: User; access_token: string; refresh_token: string };
+      console.log("Login response:", JSON.stringify(response.data, null, 2));
+
+      const response_data = response.data as {
+        user: User;
+        access_token: string;
+        refresh_token: string;
+        expires_in?: number;
       };
-      if (!data.success) {
-        return rejectWithValue(response || "Login failed on API step");
+      
+      // Check if we have the required fields
+      if (!response_data.user || !response_data.access_token || !response_data.refresh_token) {
+        console.log("Login failed - missing required fields:", response_data);
+        return rejectWithValue("Login failed - missing authentication data");
       }
 
-      const { user, access_token, refresh_token } = data.data;
+      const { user, access_token, refresh_token } = response_data;
 
       // Store tokens securely
       await SecureStore.setItemAsync("access_token", access_token);
