@@ -48,11 +48,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   // Configure Google OAuth with environment-based client IDs
   const googleClientIds = Constants.expoConfig?.extra?.googleOAuthClientId;
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: Platform.select({
-      ios: googleClientIds?.ios || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
-      android: googleClientIds?.android || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
-      default: googleClientIds?.web || "731083279268-udc3jitbjbn40k281oa1ppourlk9ikuj.apps.googleusercontent.com",
-    }),
+    clientId: __DEV__
+      ? "731083279268-ooc2cccshr009pd11bkdte2n7om2tmns.apps.googleusercontent.com" // Web client for Expo Go
+      : Platform.select({
+          ios: googleClientIds?.ios || "",
+          android: googleClientIds?.android || "731083279268-40ueldcggn03lj76jknhfsfkdso82nds.apps.googleusercontent.com",
+          default: googleClientIds?.web || "731083279268-ooc2cccshr009pd11bkdte2n7om2tmns.apps.googleusercontent.com",
+        }),
     scopes: ["openid", "profile", "email"],
   });
 
@@ -128,7 +130,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   const handleGoogleLogin = () => {
-    promptAsync();
+    if (__DEV__) {
+      // Use mock authentication for development/Expo Go
+      dispatch(loginWithGoogle("mock-google-token-development"));
+    } else {
+      // Use real OAuth for production builds
+      promptAsync();
+    }
   };
 
   // Test connection to backend
@@ -145,13 +153,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       if (result.success) {
         Alert.alert(
           "Connection Test",
-          `✅ ${result.message}\n\nServer: ${result.url}`,
+          `${result.message}\n\nServer: ${result.url}`,
           [{ text: "OK" }]
         );
       } else {
         Alert.alert(
           "Connection Failed",
-          `❌ ${result.message}\n\nTrying to reach: ${result.url}\n\nMake sure:\n• Your phone and computer are on the same WiFi\n• Backend server is running\n• IP address is correct`,
+          `${result.message}\n\nTrying to reach: ${result.url}\n\nMake sure:\n• Your phone and computer are on the same WiFi\n• Backend server is running\n• IP address is correct`,
           [{ text: "OK" }]
         );
       }
@@ -309,8 +317,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
                       },
                     ]}
                   >
-                    {connectionStatus.success ? "✅" : "❌"}{" "}
-                    {connectionStatus.message}
+                    {connectionStatus.success ? "Connected" : "Failed"} - {connectionStatus.message}
                   </Text>
                   <Text style={styles.connectionUrl}>
                     {connectionStatus.url}

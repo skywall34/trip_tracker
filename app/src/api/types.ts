@@ -50,6 +50,11 @@ export interface User {
   name: string;
   email: string;
   picture?: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  auth_provider?: string;
+  created_at?: string;
 }
 
 export interface Statistics {

@@ -287,8 +287,11 @@ func main() {
             UserStore: userStore,
         }).ServeHTTP))
     
-    mux.Handle("POST /api/v1/mobile/auth/refresh", 
+    mux.Handle("POST /api/v1/mobile/auth/refresh",
         m.LoggingMiddleware(mobile.NewRefreshTokenHandler(mobileAuthHandler).ServeHTTP))
+
+    mux.Handle("POST /api/v1/mobile/auth/logout",
+        m.LoggingMiddleware(mobile.NewLogoutHandler(mobile.LogoutHandlerParams{}).ServeHTTP))
     
     // Mobile trips API (protected by JWT) - Uses dedicated mobile handlers
     mux.Handle("GET /api/v1/trips", 
@@ -309,11 +312,18 @@ func main() {
                 mobile.NewPutTripsHandler(mobile.PutTripsHandlerParams{
                     TripStore: tripStore}).ServeHTTP)))
     
-    mux.Handle("DELETE /api/v1/trips/{id}", 
+    mux.Handle("DELETE /api/v1/trips/{id}",
         jwtMiddleware.Handler(
             m.LoggingMiddleware(
                 mobile.NewDeleteTripsHandler(mobile.DeleteTripsHandlerParams{
                     TripStore: tripStore}).ServeHTTP)))
+
+    // Mobile profile API (protected by JWT)
+    mux.Handle("GET /api/v1/profile",
+        jwtMiddleware.Handler(
+            m.LoggingMiddleware(
+                mobile.NewGetProfileHandler(mobile.GetProfileHandlerParams{
+                    UserStore: userStore}).ServeHTTP)))
 
     appPort := os.Getenv("APP_PORT")
     if appPort == "" {

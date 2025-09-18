@@ -35,9 +35,9 @@ SELECT
   to_airport                      AS arrival,
   CAST(strftime('%s', departure_ts) AS INTEGER) AS departure_time,
   CAST(strftime('%s', arrival_ts)   AS INTEGER) AS arrival_time,
-  ''                            AS airline,        -- ⚠️ missing in CSV
+  ''                            AS airline,        -- missing in CSV
   flight_id || flight_number      AS flight_number,  -- e.g. 'AF' || '694' → 'AF694'
-  ''                            AS reservation,    -- ⚠️ missing
-  ''                            AS terminal,       -- ⚠️ missing
-  ''                            AS gate            -- ⚠️ missing
+  ''                            AS reservation,    -- missing
+  ''                            AS terminal,       -- missing
+  ''                            AS gate            -- missing
 FROM staging_trips;

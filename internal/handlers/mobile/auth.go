@@ -296,7 +296,7 @@ func (h *MobileAuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if the user exists in the database
-	user, err := h.userStore.GetUser(userInfo.Email)
+	user, err := h.userStore.GetUserGivenEmail(userInfo.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// User does not exist, create a new user

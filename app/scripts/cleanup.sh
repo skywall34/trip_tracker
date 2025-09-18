@@ -1,7 +1,7 @@
 #!/bin/bash
 # Cleanup script to terminate all development processes
 
-echo "🧹 Cleaning up development processes..."
+echo "Cleaning up development processes..."
 
 # Kill ngrok processes
 echo "Stopping ngrok..."
@@ -37,7 +37,7 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 lsof -ti:4040 | xargs kill -9 2>/dev/null || true
 lsof -ti:8081 | xargs kill -9 2>/dev/null || true
 
-echo "✅ Cleanup complete!"
+echo "Cleanup complete!"
 echo ""
 echo "All development processes have been terminated."
 echo "You can now run 'npm run dev' to start fresh."

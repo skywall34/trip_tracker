@@ -1,39 +1,36 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import screens
 import { LoginScreen, SplashScreen } from '../screens/auth';
 import { HomeScreen } from '../screens/home';
 import { TripsListScreen } from '../screens/trips';
-// import { MapScreen } from '../screens/map';
-// import { ProfileScreen } from '../screens/profile';
+import { ProfileScreen } from '../screens/profile';
 
 import { colors, typography } from '../utils/theme';
 import { RootState } from '../store';
+import { PlaceholderScreen } from '../components/common';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Temporary placeholder screens
-const MapScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
-    <Text style={{ color: colors.text.primary, fontSize: 18 }}>Map Screen - Coming Soon</Text>
-  </View>
-);
+// Placeholder screens for features under development
+const MapScreen = () => <PlaceholderScreen title="World Map" subtitle="Interactive map visualization coming soon!" icon="map-outline" />;
+const TripDetailScreen = () => <PlaceholderScreen title="Trip Details" subtitle="Detailed trip view coming soon!" icon="airplane-outline" />;
+const AddTripScreen = () => <PlaceholderScreen title="Add Trip" subtitle="Trip creation form coming soon!" icon="add-circle-outline" />;
+const EditTripScreen = () => <PlaceholderScreen title="Edit Trip" subtitle="Trip editing form coming soon!" icon="create-outline" />;
 
-const ProfileScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
-    <Text style={{ color: colors.text.primary, fontSize: 18 }}>Profile Screen - Coming Soon</Text>
-  </View>
-);
 
 // Tab Navigator for authenticated users
-const TabNavigator = () => (
+const TabNavigator = () => {
+  const insets = useSafeAreaInsets();
+
+  return (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
@@ -61,9 +58,9 @@ const TabNavigator = () => (
         backgroundColor: colors.surface,
         borderTopColor: colors.border,
         borderTopWidth: 1,
-        paddingBottom: 8,
+        paddingBottom: Math.max(insets.bottom, 8),
         paddingTop: 8,
-        height: 65,
+        height: 65 + Math.max(insets.bottom - 8, 0),
       },
       tabBarLabelStyle: {
         fontSize: 12,
@@ -99,7 +96,8 @@ const TabNavigator = () => (
       options={{ title: 'Profile' }}
     />
   </Tab.Navigator>
-);
+  );
+};
 
 // Main App Stack (for authenticated users)
 const MainAppStack = () => (
@@ -124,23 +122,23 @@ const MainAppStack = () => (
       component={TabNavigator}
       options={{ headerShown: false }}
     />
-    <Stack.Screen 
-      name="TripDetail" 
-      component={MapScreen} // Placeholder, will be replaced
+    <Stack.Screen
+      name="TripDetail"
+      component={TripDetailScreen}
       options={{ title: 'Trip Details' }}
     />
-    <Stack.Screen 
-      name="AddTrip" 
-      component={MapScreen} // Placeholder, will be replaced
-      options={{ 
+    <Stack.Screen
+      name="AddTrip"
+      component={AddTripScreen}
+      options={{
         title: 'Add Trip',
         presentation: 'modal',
       }}
     />
-    <Stack.Screen 
-      name="EditTrip" 
-      component={MapScreen} // Placeholder, will be replaced
-      options={{ 
+    <Stack.Screen
+      name="EditTrip"
+      component={EditTripScreen}
+      options={{
         title: 'Edit Trip',
         presentation: 'modal',
       }}

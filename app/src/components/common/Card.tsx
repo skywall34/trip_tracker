@@ -11,7 +11,7 @@ import { colors, borderRadius, spacing, shadows } from '../../utils/theme';
 interface CardProps {
   children: React.ReactNode;
   style?: ViewStyle;
-  variant?: 'default' | 'elevated' | 'glass' | 'outline';
+  variant?: 'default' | 'elevated' | 'glass' | 'outline' | 'subtle';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   onPress?: TouchableOpacityProps['onPress'];
   disabled?: boolean;
@@ -82,6 +82,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: colors.border,
+  },
+
+  subtle: {
+    backgroundColor: colors.surface + '50', // Semi-transparent surface
+    borderWidth: 1,
+    borderColor: colors.border + '30', // Subtle border
+    ...shadows.sm,
   },
 
   // Padding variants

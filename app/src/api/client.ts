@@ -8,31 +8,15 @@ interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-// Get API URL based on environment and platform
-const getApiUrl = (): string => {
-  const configUrl = Constants.expoConfig?.extra?.apiUrl;
-  
-  if (configUrl) {
-    console.log('Using configured API URL:', configUrl);
-    return configUrl;
+// Get API URL from app configuration
+const API_BASE_URL = (() => {
+  const apiUrl = Constants.expoConfig?.extra?.apiUrl;
+  if (!apiUrl) {
+    throw new Error('API URL not configured. Check app.config.js');
   }
-  
-  // Fallback logic for different environments
-  if (__DEV__) {
-    // Development environment
-    const Platform = require('react-native').Platform;
-    if (Platform.OS === 'android') {
-      return 'http://10.0.2.2:3000'; // Android emulator
-    } else if (Platform.OS === 'ios') {
-      return 'http://localhost:3000'; // iOS simulator
-    }
-  }
-  
-  // Production fallback
-  return Constants.expoConfig?.extra?.productionApiUrl || 'https://api.miastrips.com';
-};
-
-const API_BASE_URL = getApiUrl();
+  console.log('API Base URL:', apiUrl);
+  return apiUrl;
+})();
 
 class ApiClient {
   private client: AxiosInstance;
@@ -174,6 +158,18 @@ class ApiClient {
     } catch {
       return null;
     }
+  }
+
+  // Profile-related methods
+  async getProfile(): Promise<ApiResponse<any>> {
+    return this.get('/api/v1/profile');
+  }
+
+  async logout(): Promise<ApiResponse<any>> {
+    const response = await this.post('/api/v1/mobile/auth/logout');
+    // Clear local storage after successful logout
+    await this.clearAuth();
+    return response;
   }
 
   // Test connectivity to backend
