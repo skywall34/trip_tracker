@@ -28,4 +28,4 @@ echo $PAT_TOKEN | docker login "$REGISTRY" -u $USERNAME --password-stdin
 echo "Pushing image to $FULL_IMAGE_NAME"
 docker push "$FULL_IMAGE_NAME"
 
-echo "Done!"
+echo "✅ Done!"

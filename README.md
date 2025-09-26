@@ -1,497 +1,403 @@
-# Trip Tracker Project (Mia's Trips)
+# Trip Tracker Project (Mia's Trips) - PWA
 
-**Go Version**: 1.23.5
-**Type**: Dual-platform application - Web (PWA) + React Native Mobile App
+**GO Version**: 1.23.5  
+**Type**: Progressive Web Application (PWA)
 
-This project is a comprehensive travel tracking application with both web and mobile interfaces. The Go backend serves a responsive Progressive Web Application (PWA) built with HTMX and Templ, while also providing JWT-based REST API endpoints for a dedicated React Native mobile app. This dual-platform approach allows users to create, edit, delete, and visualize trips on a world map across any device with native mobile capabilities.
+This project started as a side project to build a simple travel website for one particular user. What began as a simple CRUD app has evolved into a **unified Progressive Web App (PWA)** that serves as both a responsive website and an installable mobile application - providing the best of both worlds with a single codebase.
 
-**Web Experience**: Full desktop/mobile browser experience with PWA features
-**Mobile Experience**: Native React Native app for iOS and Android
-**Single Backend**: One Go server serves both platforms with different authentication methods
+**🌐 Works as a Website**: Full desktop experience with rich UI and all features  
+**📱 Works as a Mobile App**: Installable on phones, offline support, native-like features  
+**🔧 Single Codebase**: One application that adapts to any device or platform
 
-## Features
+This application is written in **Go/HTMX/Templ** and provides comprehensive trip management capabilities. The backend uses the built-in `net/http` package with a `SQLite` database, real-time flight APIs, and modern PWA features that enhance both web and mobile experiences.
 
-### Web Application (PWA)
-- **Progressive Web App**: Installable on any device, works offline
-- **Responsive Design**: Adapts to desktop, tablet, and mobile screens
-- **Real-time Updates**: HTMX-powered dynamic content without page reloads
-- **Session Authentication**: Google OAuth with server-side sessions
-- **PWA Features**: Service worker caching, offline support, app shortcuts
-- **Desktop Navigation**: Traditional top navigation bar for larger screens
-- **Mobile Navigation**: Bottom tab navigation optimized for touch
+## ✨ Unified Web + Mobile Features
 
-### Mobile Application (React Native)
-- **Cross-Platform**: Single codebase for iOS and Android using Expo
-- **TypeScript**: Type-safe development with full TypeScript support
-- **JWT Authentication**: Secure token-based authentication with refresh tokens
-- **Redux State Management**: Centralized state with Redux Toolkit
-- **Native Features**: Platform-specific UI components and interactions
-- **Offline Capability**: Data synchronization when connection is restored
-- **Maps Integration**: Interactive maps to visualize trip locations
+### 🌐 Website Experience
+- **Responsive Design**: Adapts to any screen size (desktop, tablet, mobile)
+- **Full Feature Set**: Complete trip management, statistics, world map
+- **Desktop Navigation**: Traditional top navigation bar
+- **Rich Interactions**: HTMX-powered dynamic content updates
 
-### Shared Features
-- **Trip Management**: Create, edit, delete, and organize travel trips
-- **World Map Visualization**: Interactive maps showing visited locations and flight paths
-- **Airport Database**: Comprehensive airport data with IATA codes
-- **Flight Information**: Real-time flight data via AviationStack API
-- **Statistics Dashboard**: Trip analytics, countries visited, miles flown
-- **Google OAuth**: Unified authentication across both platforms
+### 📱 Mobile App Experience  
+- **Installable**: Add to home screen on iOS, Android, or desktop
+- **Bottom Navigation**: Touch-optimized mobile navigation bar
+- **Offline Support**: View cached trips and sync when online
+- **Native Features**: Geolocation, camera access, pull-to-refresh
+- **Background Sync**: Queue actions when offline, sync when connected
+- **App Shortcuts**: Quick actions from home screen icon
 
-## Tech Stack
+### 🔧 Progressive Enhancement
+The same application provides different experiences based on the device:
+- **Desktop browsers**: Full website experience
+- **Mobile browsers**: Mobile-optimized website
+- **Installed on mobile**: Native app-like experience with PWA features
+- **Offline mode**: Core functionality available without internet
 
-### Backend (Shared)
-- **Language**: Go 1.23.5
-- **HTTP Server**: Built-in `net/http` package
-- **Database**: SQLite with comprehensive schema
-- **Authentication**: Dual system - Sessions (web) + JWT (mobile)
-- **External APIs**: Google OAuth, AviationStack flight data
+## Resources
 
-### Web Frontend (PWA)
-- **Templates**: Templ (Go template engine)
-- **Real-time**: HTMX for dynamic updates
-- **CSS**: Tailwind CSS with mobile-optimized styles
-- **JavaScript**: Leaflet.js for maps, custom PWA features
-- **PWA**: Service worker, web manifest, offline functionality
+- **AviationStack API**: Real-time flight/airport information [Visit Site](https://aviationstack.com) | [API Docs](https://aviationstack.com/documentation)
+- **PWA Testing**: Use [PWABuilder](https://www.pwabuilder.com/) for validation
+- **Mobile Testing**: Chrome DevTools Device Mode or real devices via HTTPS
 
-### Mobile App (React Native)
-- **Framework**: React Native with Expo
-- **Language**: TypeScript
-- **State Management**: Redux Toolkit + React Redux
-- **Navigation**: React Navigation v6
-- **API Client**: Axios with JWT interceptors
-- **Storage**: Expo SecureStore for sensitive data
-- **Maps**: React Native Maps
-- **UI**: Custom components matching web theme
+---
 
-## Project Structure
+## Architecture
 
-```
-trip-tracker/
-├── main.go                          # Application entry point with dual routing
-├── .air.toml                        # Air configuration for hot reload
-├── docker-compose.yml               # Docker deployment setup
-├── Dockerfile                       # Container configuration
-├── tailwind.config.js               # Tailwind CSS configuration
-│
-├── internal/
-│   ├── api/
-│   │   ├── flights.go               # AviationStack API integration
-│   │   └── google_*.go              # Google OAuth handlers (web)
-│   │
-│   ├── database/                    # Database layer
-│   │   ├── *.go                     # Database store files
-│   │   ├── schema.sql               # Table definitions
-│   │   └── database.db              # SQLite database file
-│   │
-│   ├── handlers/                    # Web HTTP handlers (HTMX/Session-based)
-│   │   ├── get*.go                  # GET request handlers
-│   │   ├── post*.go                 # POST request handlers
-│   │   ├── edit*.go                 # PUT/PATCH request handlers
-│   │   ├── delete*.go               # DELETE request handlers
-│   │   ├── pwa.go                   # PWA-specific handlers
-│   │   └── mobile/                  # Mobile API handlers (JWT-based)
-│   │       ├── auth.go              # Mobile Google OAuth + JWT
-│   │       ├── refresh.go           # JWT token refresh
-│   │       ├── middleware.go        # JWT authentication middleware
-│   │       ├── common.go            # Shared API response structures
-│   │       ├── gettrips.go          # GET /api/v1/trips
-│   │       ├── posttrips.go         # POST /api/v1/trips
-│   │       ├── puttrips.go          # PUT /api/v1/trips/{id}
-│   │       ├── deletetrips.go       # DELETE /api/v1/trips/{id}
-│   │       └── getprofile.go        # GET /api/v1/profile
-│   │
-│   ├── models/                      # Data models
-│   │   └── *.go                     # User, Trip, Airport models
-│   │
-│   └── middleware/                  # HTTP middleware
-│       └── middleware.go            # Auth, CSP, logging, HTMX headers
-│
-├── static/                          # Static assets for web
-│   ├── manifest.json                # PWA web app manifest
-│   ├── css/
-│   │   ├── input.css                # Tailwind CSS input
-│   │   ├── output.css               # Generated CSS
-│   │   └── mobile.css               # Mobile-optimized PWA styles
-│   ├── icons/                       # PWA icons (72x72 to 512x512)
-│   ├── js/
-│   │   ├── htmx.min.js              # HTMX library
-│   │   ├── leaflet.js               # Map library
-│   │   ├── map.js                   # Map configuration
-│   │   ├── pwa-features.js          # PWA functionality
-│   │   └── sw.js                    # Service worker
-│   └── images/                      # Static images
-│
-├── templates/                       # Templ template files (web only)
-│   ├── layout.templ                 # Base layout with PWA support
-│   ├── trips.templ                  # Trip-related components
-│   ├── *.templ                      # Other page templates
-│   └── *_templ.go                   # Generated Go files
-│
-└── app/                             # React Native mobile app
-    ├── package.json                 # Mobile app dependencies (locked versions)
-    ├── app.json                     # Expo configuration
-    ├── app.config.js                # Dynamic config with ngrok detection
-    ├── tsconfig.json                # TypeScript configuration
-    ├── .npmrc                       # Exact version enforcement
-    ├── App.tsx                      # Mobile app entry point
-    │
-    ├── src/
-    │   ├── api/                     # API client layer
-    │   │   ├── client.ts            # Axios configuration with JWT
-    │   │   ├── types.ts             # TypeScript interfaces
-    │   │   └── index.ts             # API exports
-    │   │
-    │   ├── components/              # Reusable mobile components
-    │   │   ├── common/              # Shared UI components
-    │   │   │   ├── Button.tsx
-    │   │   │   ├── Card.tsx
-    │   │   │   ├── Input.tsx
-    │   │   │   └── Loading.tsx
-    │   │   └── trips/               # Trip-specific components
-    │   │       └── TripCard.tsx
-    │   │
-    │   ├── screens/                 # Mobile screen components
-    │   │   ├── auth/                # Authentication screens
-    │   │   │   ├── LoginScreen.tsx
-    │   │   │   └── SplashScreen.tsx
-    │   │   ├── trips/               # Trip management screens
-    │   │   │   └── TripsListScreen.tsx
-    │   │   └── profile/             # Profile screens
-    │   │       └── ProfileScreen.tsx
-    │   │
-    │   ├── navigation/              # Navigation configuration
-    │   │   └── AppNavigator.tsx     # Root navigator with auth flow
-    │   │
-    │   ├── store/                   # Redux store
-    │   │   ├── index.ts             # Store setup
-    │   │   ├── hooks.ts             # Typed Redux hooks
-    │   │   └── slices/              # Redux slices
-    │   │       ├── authSlice.ts     # Authentication state
-    │   │       ├── tripsSlice.ts    # Trips state
-    │   │       └── uiSlice.ts       # UI state
-    │   │
-    │   └── utils/                   # Utility functions
-    │       └── theme.ts             # Dark theme matching website
-    │
-    ├── scripts/                     # Development scripts
-    │   ├── start-dev.sh             # Complete development startup
-    │   └── cleanup.sh               # Process cleanup
-    │
-    └── assets/                      # Expo assets
-        ├── icon.png                 # App icon
-        └── splash-icon.png          # Splash screen icon
+### Middleware
+
+This application uses the following middleware
+
+- Auth
+- TextHTML Middleware (serving html from the backend)
+- CSP Middleware
+- Logging
+
+The CSP Middleware is used as a security measure to prevent unexpected `<script>` tags, inline JS code, and external resources such as images, fonts, etc. Since HTMX dynamically swaps html into the page via AJAX this is especially important in production environment to prevent XSS (cross-site scripting) and similar attacks.
+
+**Dev Note** I have tried using chaining middleware. For some reason though it seems to break CSP And TextHTML Middleware effectively making the app inoperable. It is something I wish to tackle in the future.
+
+### Database
+
+The sqlite database currently uses the following tables (all which can be found under `internal/database/schema.sql`)
+
+- airports: Static list of all airports. Populated using csv files received from public websites
+- users: Holds user information
+- trips: Holder all trip information. Many queries will pair this with airports via a `JOIN` operation
+- sessions: Holds session data of the user.
+- password_reset_tokens: Holds 1 hour expiry reset tokens for users requesting forgot-password
+
+All .go files under the database serve to run SQL queries on their respective tables and pass them to the handlers.
+
+### Handlers
+
+THe files in this folder represent the backend of the project. The naming convention for these files generally fall under this ruleset:
+
+- `{get/post/update/delete}{resource_name}.go`
+
+For example, to create a handler which is called by a GET request to retrieve the home page, we name the handler `gethome.go`
+
+Each handler also follows the following file structure so that it can be easily called in the mux handler:
+
+```go
+// Base Handler Struct. Any database structs are defined here
+type DeleteTripHandler struct {
+	tripStore *db.TripStore
+}
+
+// The Handler Params struct
+type DeleteTripHandlerParams struct {
+	TripStore *db.TripStore
+}
+
+// This function allows the mux in main.go to pass in the actual database services
+func NewDeleteTripHandler(params DeleteTripHandlerParams) (*DeleteTripHandler) {
+	return &DeleteTripHandler{
+		tripStore: params.TripStore,
+	}
+
+func (h *NewDeleteTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+  // Handler Logic Here
+}
 ```
 
-## Database Schema
+### Templates
 
-**Database**: SQLite (`internal/database/database.db`)
+The `templates` folder stores all the htmx/templ files. The general convention here is that if a component exist or will populate the same page they must live in the same file.
 
-### Tables
-1. **airports**: Static airport data with IATA codes, coordinates
-2. **users**: User accounts with Google OAuth data
-3. **trips**: Trip records with origin/destination airports
-4. **sessions**: User session management (web only)
-5. **password_reset_tokens**: 1-hour expiry tokens
+For example, all trip related components (RenderPastTrips, CreateTripPage) all live under `trips.templ`. This is to organize and easily find where all the components are.
 
-### Key Relationships
-- `trips.user_id` → `users.id`
-- `trips.origin` → `airports.iata_code`
-- `trips.destination` → `airports.iata_code`
-- `sessions.user_id` → `users.id`
+In addition, for the page to appear under tha layout the layout must be instantiated in the handler servicing the page and then rendered with the component to go inside. Example:
 
-## Development Setup
+`internal/handlers/gettrip.go`
 
-### Prerequisites
-- **Go 1.23+**
-- **Node.js 18+**
-- **SQLite3**
-- **Expo CLI**: `npm install -g @expo/cli`
-- **Air** (Go hot reload): `go install github.com/cosmtrek/air@latest`
-- **Tailwind CLI binary**
-- **Templ CLI**: `go install github.com/a-h/templ/cmd/templ@latest`
+```go
+c := templates.TripsPage()
+templates.Layout(c, "Trips").Render(r.Context(), w)
+```
 
-### Environment Variables
+### Static Assets
 
-**Backend (.env in root):**
+#### JavaScript Files
+- **htmx.min.js**: Core HTMX library for dynamic content
+- **convertTimes.js**: UTC time standardization and timezone handling
+- **leaflet.js**: Map library for world map visualization
+- **map.js**: Map configuration and markers
+- **modal.js**: Trip form show/hide logic
+- **response-targets.js**: HTMX response targeting
+- **tabs.js**: Sliding animation logic
+- **pwa-features.js**: PWA functionality (geolocation, camera, pull-to-refresh, offline sync)
+- **sw.js**: Service worker for caching and offline support
+
+#### CSS Files
+- **output.css**: Generated Tailwind CSS
+- **mobile.css**: Mobile-optimized styles and touch-friendly UI
+- **leaflet.css**: Map styling
+
+#### PWA Assets
+- **manifest.json**: Web app manifest with metadata and icons
+- **static/icons/**: Complete icon set (72x72 to 512x512) for all devices
+
+### External APIs
+
+- Google Auth:
+  - google_auth.go: Sets up the auth config
+  - google_login.go: Sends a request to Google oauth
+  - google_callback.go: Once Google processes the request, the callback validates the user and sets the session for login
+- Flights
+  - AviationStack has a free 100 calls/month plan which allows to call real time flight data. Here, we get the flight route using the iata_code and request the user to enter in the date.
+
+## Prerequisites
+
+1. **Go Installed**: Ensure Go is installed on your system (at least 1.23). You can download it from [here](https://golang.org/dl/).
+
+   - Verify installation:
+     ```bash
+     go version
+     ```
+
+2. **Environment**: You can set an optional `PORT` environment variable to specify the port number on which the backend will run.
+
+---
+
+## Database
+
+I use sqlite for this project
+
+### Installation
+
+Assuming you're working on an Ubuntu 22.04, but this process is similar for most OS cases.
+
 ```bash
-APP_PORT=3000                                    # Optional, defaults to 3000
-JWT_SECRET=your-super-secure-jwt-secret         # Optional, auto-generated if not set
-GOOGLE_OAUTH_CLIENT_ID=your-google-client-id
-GOOGLE_OAUTH_CLIENT_SECRET=your-google-client-secret
+sudo apt update
 ```
 
-**Mobile App (app/.env):**
 ```bash
-EXPO_PUBLIC_DEV_API_URL=http://0.0.0.0:3000  # Your computer's IP for physical devices
-EXPO_PUBLIC_PRODUCTION_API_URL=https://your-domain.com
+sudo apt install sqlite3
 ```
 
-### Quick Start
+Verify the installation
 
-#### 1. Backend Setup (One-time)
 ```bash
-# Install Go dependencies
-go mod download
+sqlite3 --version
+```
 
-# Create database
-sqlite3 internal/database/database.db < internal/database/schema.sql
+Creates the shell and new database. I like to put this under the database folder
 
-# Generate CSS and templates
-./tailwindcss -i ./static/css/input.css -o ./static/css/output.css
+```bash
+sqlite3 database.db
+```
+
+You can also load the schema.sql, which is store under the database folder
+
+```bash
+sqlite3 database.db < database/schema.sql
+```
+
+## Installing Tailwind
+
+To generate the Tailwind style sheet, we use the Tailwind binary. To get started with TailWind CSS, make sure you have the correct binary in the root directory. follow the instructions in this guide. Make sure you download the correct binary for your operating system. https://tailwindcss.com/blog/standalone-cli
+
+Generating the output.css file
+
+```bash
+./tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
+```
+
+Add the href to the templ files
+
+```html
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Trips</title>
+  <script src="/static/js/htmx.min.js"></script>
+  <link rel="stylesheet" href="/static/css/output.css" />
+</head>
+```
+
+## Installing Templ
+
+https://templ.guide/
+
+Generate the files via
+
+```bash
 templ generate
 ```
 
-#### 2. Start Backend Development
+## PWA Development Setup
+
+For PWA functionality, additional steps are required:
+
+### 1. HTTPS Requirement
+PWAs require HTTPS in production. For local testing:
+
+**Option A: Use ngrok for HTTPS tunnel**
 ```bash
-# Hot reload development server
+# Install ngrok, then start your app and create tunnel
+air &
+ngrok http 3000
+```
+
+**Option B: Local testing (limited PWA features)**
+```bash
+# Find your local IP
+ip addr show | grep "inet " | grep -v 127.0.0.1
+
+# Access via http://YOUR_IP:3000 on mobile
+# Note: PWA installation requires HTTPS
+```
+
+### 2. Icon Generation
+Icons are auto-generated, but you can replace them:
+```bash
+# Icons are stored in static/icons/
+# Replace with custom designs maintaining the same sizes
+```
+
+## Installing Air
+
+Air is useful to autoload and track your go code
+
+https://github.com/cosmtrek/air
+
+Refere to [Here](https://github.com/air-verse/air) for reference
+
+First, init air if not already doe
+
+```bash
+air init
+```
+
+That wil create the .air.toml file. Then just run the air command.
+
+```bash
 air
-# Backend will run on http://localhost:3000
 ```
 
-#### 3. Mobile App Development
+## HTMX Example
+
+```html
+<button hx-get="/trips" hx-target="#trip-list" hx-swap="innerHTML">
+  Load Trips
+</button>
+
+<div id="trip-list">
+  <ul>
+    for _, trip := range trips {
+    <li>{ trip.Airline }</li>
+    }
+  </ul>
+</div>
+```
+
+## How to Run the Application
+
+### Development Mode
+
+1. **Clone the Repository**:
 ```bash
-# Navigate to mobile app
-cd app
-
-# Install dependencies (first time)
-npm install
-
-# Start complete development environment
-npm run dev
+git clone <repository_url>
+cd trip-tracker
 ```
 
-This will:
-1. Start ngrok tunnel for public HTTPS access
-2. Start Go backend with hot reload
-3. Start Expo development server
-4. Auto-configure API URL for mobile app
-
-### Development Commands
-
-**Backend:**
+2. **Generate Required Files**:
 ```bash
-go run main.go                    # Basic server start
-air                              # Hot reload development
-./tailwindcss -i ./static/css/input.css -o ./static/css/output.css  # Build CSS
-templ generate                   # Generate templates
+# Generate Tailwind CSS
+./tailwindcss -i ./static/css/input.css -o ./static/css/output.css
+
+# Generate Templ templates
+templ generate
 ```
 
-**Mobile App:**
+3. **Start Development Server**:
 ```bash
-npm run dev                      # Complete development environment
-npm run cleanup                 # Stop all processes
-npm start                       # Expo only
-npm run android                 # Android emulator
-npm run ios                     # iOS simulator (macOS only)
-npm run web                     # Web browser
+air
 ```
 
-### Testing
+4. **Access the Application**:
 
-**Web Application:**
-1. **Desktop**: `http://localhost:3000`
-2. **PWA Features**: Use ngrok for HTTPS testing
-3. **Mobile Browser**: Test responsive design
+### 🌐 As a Website
+- **Desktop**: http://localhost:3000
+- **Mobile Browser**: http://YOUR_IP:3000 (responsive mobile website)
 
-**Mobile App:**
-1. **Expo Go**: Scan QR code on physical device
-2. **Emulator**: Press 'a' (Android) or 'i' (iOS)
-3. **Physical Device**: Ensure same WiFi network
+### 📱 As a Mobile App
+- **Full PWA Features**: Use ngrok tunnel (HTTPS required)
+- **Limited Features**: http://YOUR_IP:3000 (no installation, but mobile UI)
 
-**API Testing:**
-```bash
-# Test mobile endpoints
-curl -X POST http://localhost:3000/api/v1/mobile/auth/google \
-  -H "Content-Type: application/json" \
-  -d '{"google_token": "mock-google-token-development"}'
+### Testing Both Experiences
 
-# Test JWT protected endpoint
-curl -X GET http://localhost:3000/api/v1/profile \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
+✅ **Website Testing (Desktop)**:
+- Open http://localhost:3000 in any browser
+- Test full desktop experience with top navigation
+- Verify all features work (trips, statistics, world map)
 
-## Architecture Patterns
+✅ **Website Testing (Mobile Browser)**:
+- Open http://YOUR_IP:3000 on mobile device
+- See responsive design with bottom navigation
+- Test touch interactions and mobile layout
 
-### Dual Authentication System
+✅ **Mobile App Testing (PWA)**:
+- Use HTTPS (ngrok tunnel) for full PWA features
+- Install prompt appears and app installs to home screen
+- Test offline functionality and native-like features
+- Verify background sync and app shortcuts work
 
-**Web Application (Session-based):**
-- Google OAuth flow with server-side sessions
-- Session cookies for authentication
-- HTMX responses with HTML fragments
-- CSRF protection via Content Security Policy
+---
 
-**Mobile Application (JWT-based):**
-- Google OAuth with JWT token exchange
-- Access tokens (15 min) + Refresh tokens (7 days)
-- JSON API responses
-- Automatic token refresh via interceptors
+## Troubleshooting
 
-### Handler Organization
+### Common Issues
 
-**Naming Convention**: `{method}{resource}.go`
-- `gethome.go` - GET request for home page
-- `posttrip.go` - POST request to create trip
-- `mobile/gettrips.go` - GET /api/v1/trips (JSON)
-- `mobile/auth.go` - Mobile authentication
+1. **Port Already in Use**:
 
-**Response Patterns:**
-```go
-// Web handler (returns HTML)
-err := templates.ComponentName(data).Render(r.Context(), w)
+   - Error: `listen tcp :3000: bind: address already in use`
+   - Solution: Use a different port by setting the `PORT` environment variable:
+     ```bash
+     export PORT=4000
+     go run main.go
+     ```
+     Another solution is to kill the process using port 3000
 
-// Mobile handler (returns JSON)
-response := mobile.ApiResponse{
-    Success: true,
-    Data:    result,
-}
-json.NewEncoder(w).Encode(response)
-```
+2. **Invalid JSON Payload**:
 
-### PWA Implementation
+   - Ensure the payload in `POST` or `PUT` requests is well-formed and includes all required fields.
 
-**Progressive Enhancement:**
-- Works as website without PWA features
-- Enhanced experience when installed
-- Offline-first with service worker caching
-- Mobile navigation appears only on small screens
+3. **CSS Not Being Updated**
 
-**Key Files:**
-- `static/manifest.json` - PWA manifest
-- `static/js/sw.js` - Service worker
-- `handlers/pwa.go` - PWA-specific endpoints
-- `templates/layout.templ` - PWA meta tags
+- Ensure that your browser cache isn't caching an old version of your output.css file
 
-## Google OAuth Setup
-
-### Web Application
-1. **Google Cloud Console** → Create OAuth 2.0 Client
-2. **Application Type**: Web application
-3. **Authorized Redirect URIs**: `http://localhost:3000/auth/google/callback`
-4. **Environment Variables**: Set `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET`
-
-### Mobile Application
-1. **iOS Client ID**: For iOS app builds
-2. **Android Client ID**: For Android app builds
-3. **Web Client ID**: For Expo Go development
-4. **App Configuration**: Update `app.config.js` with platform-specific client IDs
-
-**Development Mode:**
-The mobile app includes mock authentication that bypasses Google OAuth:
-- Use token: `"mock-google-token-development"`
-- Creates user: `dev@example.com`
-- Returns real JWT tokens for testing
+---
 
 ## Deployment
 
-### Production Build
+We use docker and docker compose to run deployment.
 
-**Backend:**
+The following forces the docker to build the Dockerfile and run in detached mode
+
 ```bash
-# Build production binary
-go build -o trip-tracker main.go
-
-# Docker build and deploy
-./docker_build.sh YOUR_GITHUB_PAT
+docker compose up --build -d
 ```
 
-**Mobile App:**
-```bash
-# Build for app stores
-cd app
-eas build --platform all
+It will setup the following
 
-# Preview build
-eas build --profile preview
+- The trip_tracker service with replicas
+- The traefik reverse proxy
+- Watchtower to check for new updates to docker images and then run rolling updates
 
-# Development build (for testing)
-eas build --profile development
-```
+Once you have it initially setup, watchtower will listen for any new updates to the docker image and update if there's a change to a tag
 
-### Environment Configuration
+There is an example script `docker_build.sh` which will build the Dockerfile and then upload to this repository as a ghcr.io image.
 
-**Development:**
-- Backend: `http://localhost:3000`
-- Mobile: Local IP for physical device testing
-- Database: Local SQLite file
+### Setting up your own hosted server
 
-**Production:**
-- Backend: HTTPS domain with SSL termination
-- Mobile: Production API URL in app config
-- Database: Production SQLite or external database
+For me I used Hostinger. They have good pricing and super easy to setup with some knowledge of LinuxOS (I personally used Ubuntu)
 
-## Development Progress & Roadmap
+I also used this [Youtube Video](https://www.youtube.com/watch?v=F-9KWQByeU0&ab_channel=DreamsofCode). Basically tells you how to setup a VPS from scratch. Highly recommend.
 
-### Completed Features
-- **Foundation**: Go backend with dual routing architecture
-- **Web PWA**: Complete responsive web application with offline support
-- **Mobile App**: React Native app with Expo, Redux state management
-- **Authentication**: Dual auth system (sessions + JWT) with Google OAuth
-- **API Integration**: RESTful JSON API for mobile consumption
-- **Database**: SQLite schema with proper relationships
-- **Trip Management**: Full CRUD operations for both platforms
-- **Profile System**: User profile display and management
-- **Security**: Dependency version locking, proper error handling
-- **Development Workflow**: Automated development environment setup
+## License
 
-### Next Priorities
+This project is licensed under the APACHE 2.0 License. See the `LICENSE` file for details.
 
-**Phase 1: Core Mobile Features**
-1. Trip creation and editing on mobile
-2. Maps integration with React Native Maps
-3. Image upload and trip photos
-4. Push notifications for trip reminders
-5. Offline synchronization improvements
-
-**Phase 2: Advanced Features**
-1. Trip sharing capabilities
-2. Statistics and analytics dashboard
-3. Calendar integration
-4. Flight status tracking
-5. Travel document storage
-
-**Phase 3: Production Readiness**
-1. App store deployment (iOS/Android)
-2. Production OAuth configuration
-3. Performance optimization
-4. Error tracking and analytics
-5. User feedback system
-
-**Phase 4: Enhancements**
-1. Multi-user support
-2. Trip collaboration features
-3. Social sharing integration
-4. Advanced reporting
-5. API rate limiting and caching
-
-### Technical Debt & Improvements
-1. **Middleware Chaining**: Fix middleware integration issues
-2. **Test Coverage**: Add comprehensive test suites
-3. **Documentation**: API documentation with OpenAPI/Swagger
-4. **Monitoring**: Production logging and metrics
-5. **Backup**: Automated database backup system
-
-## Code Conventions
-
-### File Organization
-- **One responsibility per file**: Each handler handles one HTTP endpoint
-- **Clear naming**: Files named after HTTP method + resource
-- **Separation of concerns**: Web handlers vs mobile API handlers
-- **Template co-location**: Related Templ components in same file
-
-### Error Handling
-```go
-// Web handler error response
-if err != nil {
-    http.Error(w, "Error message", http.StatusInternalServerError)
-    return
-}
-
-// Mobile API error response
-response := mobile.ApiResponse{
-    Success: false,
-    Error: &mobile.ErrorResponse{
-        Code:    "ERROR_CODE",
-        Message: "Human readable message",
-    },
-}
-```
+---

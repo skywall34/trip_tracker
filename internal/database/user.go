@@ -21,16 +21,15 @@ func NewUserStore(params NewUserStoreParams) *UserStore {
 	return &UserStore{db: params.DB}
 }
 
+// TODO: Check to make sure user has not already been created with email
 func (u *UserStore) CreateUser(user m.User) (int, error) {
-	stmt, err := u.db.Prepare(`INSERT INTO users
-		(username, password, first_name, last_name, email, google_id, auth_provider)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`)
+	stmt, err := u.db.Prepare("INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(user.Username, user.Password, user.FirstName, user.LastName, user.Email, user.GoogleID, user.AuthProvider)
+	res, err := stmt.Exec(user.Username, user.Password, user.FirstName, user.LastName, user.Email)
 	if err != nil {
 		return 0, err
 	}
@@ -45,27 +44,7 @@ func (u *UserStore) CreateUser(user m.User) (int, error) {
 
 func (u *UserStore) GetUser(username string) (m.User, error) {
 	var user m.User
-	err := u.db.QueryRow(`SELECT
-							id,
-							username,
-							password,
-							first_name,
-							last_name,
-							email,
-							google_id,
-							auth_provider,
-							created_at
-						FROM users
-						WHERE username = ?`, username).Scan(
-							&user.ID,
-							&user.Username,
-							&user.Password,
-							&user.FirstName,
-							&user.LastName,
-							&user.Email,
-							&user.GoogleID,
-							&user.AuthProvider,
-							&user.CreatedAt)
+	err := u.db.QueryRow("SELECT id, username, password, first_name, last_name, email FROM users WHERE username = ?", username).Scan(&user.ID, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.Email)
 	if err != nil {
 		return user, err
 	}
@@ -74,18 +53,7 @@ func (u *UserStore) GetUser(username string) (m.User, error) {
 
 func (u *UserStore) GetUsers(username string) ([]m.User, error) {
 	var users []m.User
-	rows, err := u.db.Query(`SELECT
-							id,
-							username,
-							password,
-							first_name,
-							last_name,
-							email,
-							google_id,
-							auth_provider,
-							created_at
-						FROM users
-						WHERE username = ?`, username)
+	rows, err := u.db.Query("SELECT id, username, password, first_name, last_name, email FROM users WHERE username = ?")
 	if err != nil {
 		return users, err
 	}
@@ -93,16 +61,7 @@ func (u *UserStore) GetUsers(username string) ([]m.User, error) {
 
 	for rows.Next() {
 		var user m.User
-		err := rows.Scan(
-			&user.ID,
-			&user.Username,
-			&user.Password,
-			&user.FirstName,
-			&user.LastName,
-			&user.Email,
-			&user.GoogleID,
-			&user.AuthProvider,
-			&user.CreatedAt)
+		err := rows.Scan(&user.ID, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.Email)
 		if err != nil {
 			return users, err
 		}
@@ -114,50 +73,25 @@ func (u *UserStore) GetUsers(username string) ([]m.User, error) {
 
 func (u *UserStore) GetUserGivenID(id int) (m.User, error) {
 	var user m.User
-	var username, password, firstName, lastName, googleID sql.NullString
-
-	err := u.db.QueryRow(`SELECT
-							id,
-							username,
-							password,
-							first_name,
-							last_name,
-							email,
-							google_id,
-							auth_provider,
-							created_at
-						FROM
-							users
+	err := u.db.QueryRow(`SELECT 
+							id, 
+							username, 
+							password, 
+							first_name, 
+							last_name, 
+							email 
+						FROM 
+							users 
 						WHERE id = ?`, id).Scan(
-							&user.ID,
-							&username,
-							&password,
-							&firstName,
-							&lastName,
-							&user.Email,
-							&googleID,
-							&user.AuthProvider,
-							&user.CreatedAt)
+							&user.ID, 
+							&user.Username, 
+							&user.Password, 
+							&user.FirstName, 
+							&user.LastName, 
+							&user.Email)
 
 	if err != nil {
 		return user, err
-	}
-
-	// Convert NullString to regular strings
-	if username.Valid {
-		user.Username = username.String
-	}
-	if password.Valid {
-		user.Password = password.String
-	}
-	if firstName.Valid {
-		user.FirstName = firstName.String
-	}
-	if lastName.Valid {
-		user.LastName = lastName.String
-	}
-	if googleID.Valid {
-		user.GoogleID = googleID.String
 	}
 
 	return user, nil
@@ -166,28 +100,22 @@ func (u *UserStore) GetUserGivenID(id int) (m.User, error) {
 
 func (u *UserStore) GetUserGivenEmail(email string) (m.User, error) {
 	var user m.User
-	err := u.db.QueryRow(`SELECT
-							id,
-							username,
-							password,
-							first_name,
-							last_name,
-							email,
-							google_id,
-							auth_provider,
-							created_at
-						FROM
-							users
+	err := u.db.QueryRow(`SELECT 
+							id, 
+							username, 
+							password, 
+							first_name, 
+							last_name, 
+							email 
+						FROM 
+							users 
 						WHERE email = ?`, email).Scan(
-							&user.ID,
-							&user.Username,
-							&user.Password,
-							&user.FirstName,
-							&user.LastName,
-							&user.Email,
-							&user.GoogleID,
-							&user.AuthProvider,
-							&user.CreatedAt)
+							&user.ID, 
+							&user.Username, 
+							&user.Password, 
+							&user.FirstName, 
+							&user.LastName, 
+							&user.Email)
 
 	if err != nil {
 		return user, err

@@ -11,7 +11,6 @@ import (
 	"github.com/skywall34/trip-tracker/internal/api"
 	"github.com/skywall34/trip-tracker/internal/database"
 	"github.com/skywall34/trip-tracker/internal/handlers"
-	"github.com/skywall34/trip-tracker/internal/handlers/mobile"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
 	"github.com/skywall34/trip-tracker/internal/models"
 )
@@ -269,61 +268,6 @@ func main() {
                 SessionStore: sessionStore,
                 GoogleOauthConfig: googleOauthConfig,
             }).ServeHTTP)
-
-    // Mobile API endpoints
-    mobileAuthHandler := mobile.NewMobileAuthHandler(mobile.MobileAuthHandlerParams{
-        UserStore: userStore,
-    })
-    
-    jwtMiddleware := mobile.NewJWTMiddleware(mobileAuthHandler)
-    
-    // Mobile authentication endpoints
-    mux.Handle("POST /api/v1/mobile/auth/google", 
-        m.LoggingMiddleware(mobileAuthHandler.ServeHTTP))
-    
-    mux.Handle("POST /api/v1/mobile/auth/login", 
-        m.LoggingMiddleware(mobile.NewEmailLoginHandler(mobile.EmailLoginHandlerParams{
-            AuthHandler: mobileAuthHandler,
-            UserStore: userStore,
-        }).ServeHTTP))
-    
-    mux.Handle("POST /api/v1/mobile/auth/refresh",
-        m.LoggingMiddleware(mobile.NewRefreshTokenHandler(mobileAuthHandler).ServeHTTP))
-
-    mux.Handle("POST /api/v1/mobile/auth/logout",
-        m.LoggingMiddleware(mobile.NewLogoutHandler(mobile.LogoutHandlerParams{}).ServeHTTP))
-    
-    // Mobile trips API (protected by JWT) - Uses dedicated mobile handlers
-    mux.Handle("GET /api/v1/trips", 
-        jwtMiddleware.Handler(
-            m.LoggingMiddleware(
-                mobile.NewGetTripsHandler(mobile.GetTripsHandlerParams{
-                    TripStore: tripStore}).ServeHTTP)))
-    
-    mux.Handle("POST /api/v1/trips", 
-        jwtMiddleware.Handler(
-            m.LoggingMiddleware(
-                mobile.NewPostTripsHandler(mobile.PostTripsHandlerParams{
-                    TripStore: tripStore}).ServeHTTP)))
-    
-    mux.Handle("PUT /api/v1/trips/{id}", 
-        jwtMiddleware.Handler(
-            m.LoggingMiddleware(
-                mobile.NewPutTripsHandler(mobile.PutTripsHandlerParams{
-                    TripStore: tripStore}).ServeHTTP)))
-    
-    mux.Handle("DELETE /api/v1/trips/{id}",
-        jwtMiddleware.Handler(
-            m.LoggingMiddleware(
-                mobile.NewDeleteTripsHandler(mobile.DeleteTripsHandlerParams{
-                    TripStore: tripStore}).ServeHTTP)))
-
-    // Mobile profile API (protected by JWT)
-    mux.Handle("GET /api/v1/profile",
-        jwtMiddleware.Handler(
-            m.LoggingMiddleware(
-                mobile.NewGetProfileHandler(mobile.GetProfileHandlerParams{
-                    UserStore: userStore}).ServeHTTP)))
 
     appPort := os.Getenv("APP_PORT")
     if appPort == "" {
