@@ -8,7 +8,6 @@ import (
 	m "github.com/skywall34/trip-tracker/internal/middleware"
 )
 
-
 type EditTripHandler struct {
 	tripStore *db.TripStore
 }
@@ -17,7 +16,7 @@ type EditTripHandlerParams struct {
 	TripStore *db.TripStore
 }
 
-func NewEditTripHandler(params EditTripHandlerParams) (*EditTripHandler) {
+func NewEditTripHandler(params EditTripHandlerParams) *EditTripHandler {
 	return &EditTripHandler{
 		tripStore: params.TripStore,
 	}
@@ -120,6 +119,6 @@ func (t *EditTripHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// HTMX Redirect Response
-	w.Header().Set("HX-Redirect", "/trips")
+	w.Header().Set("HX-Redirect", "/")
 	w.WriteHeader(http.StatusOK)
 }
