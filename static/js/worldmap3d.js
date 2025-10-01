@@ -148,19 +148,28 @@ const fragmentShader = `
 if (window.location.pathname !== "/worldmap3d") {
   console.log("Not on /worldmap3d → skipping ThreeJS init.");
 } else {
+  // Get the canvas element from the template
+  const canvas = document.getElementById('worldmap3d-canvas');
+  if (!canvas) {
+    console.error('worldmap3d-canvas element not found');
+  } else {
+
+  // Get container dimensions
+  const container = canvas.parentElement;
+  const rect = container.getBoundingClientRect();
+
   // scene, camera, renderer
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     45,
-    innerWidth / innerHeight,
+    rect.width / rect.height,
     0.1,
     1000
   );
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   camera.position.set(0, 0, 3.5);
-  renderer.setSize(innerWidth, innerHeight);
+  renderer.setSize(rect.width, rect.height);
   renderer.setPixelRatio(window.devicePixelRatio);
-  document.body.appendChild(renderer.domElement);
 
   // controls
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -276,8 +285,10 @@ if (window.location.pathname !== "/worldmap3d") {
 
   // resize
   window.addEventListener("resize", () => {
-    camera.aspect = innerWidth / innerHeight;
+    const rect = container.getBoundingClientRect();
+    camera.aspect = rect.width / rect.height;
     camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
+    renderer.setSize(rect.width, rect.height);
   });
+  }
 }
