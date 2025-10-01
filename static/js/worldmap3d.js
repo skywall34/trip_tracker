@@ -87,20 +87,77 @@ function createFlightPath(from, to, globeGroup) {
 
 async function loadTrips() {
   const response = await fetch("/api/trips");
-  const data = await response.json();
+  let data = await response.json();
 
-  const trips = data.map((trip) => ({
-    from: {
-      lat: trip.departure_lat,
-      lon: trip.departure_lon,
-      name: trip.departure,
-    },
-    to: {
-      lat: trip.arrival_lat,
-      lon: trip.arrival_lon,
-      name: trip.arrival,
-    },
-  }));
+  // Check if data has the expected structure - if not, assume old API format
+  if (!data.hasOwnProperty('standalone_trips') || !data.hasOwnProperty('connecting_trips')) {
+    console.log("Old API format detected, converting to new format");
+    // Convert old format to new format
+    const oldData = data;
+    data = {
+      standalone_trips: Array.isArray(oldData) ? oldData : [],
+      connecting_trips: []
+    };
+  }
+
+  const trips = [];
+
+  // Process standalone trips
+  if (data.standalone_trips && Array.isArray(data.standalone_trips)) {
+    data.standalone_trips.forEach((trip) => {
+      trips.push({
+        type: 'standalone',
+        from: {
+          lat: trip.departure_lat,
+          lon: trip.departure_lon,
+          name: trip.departure,
+        },
+        to: {
+          lat: trip.arrival_lat,
+          lon: trip.arrival_lon,
+          name: trip.arrival,
+        },
+        flight: `${trip.airline} ${trip.flight_number}`
+      });
+    });
+  }
+
+  // Process connecting trips
+  if (data.connecting_trips && Array.isArray(data.connecting_trips)) {
+    data.connecting_trips.forEach((conn) => {
+    trips.push({
+      type: 'connecting',
+      legs: [
+        {
+          from: {
+            lat: conn.FromTrip.departure_lat,
+            lon: conn.FromTrip.departure_lon,
+            name: conn.FromTrip.departure,
+          },
+          to: {
+            lat: conn.FromTrip.arrival_lat,
+            lon: conn.FromTrip.arrival_lon,
+            name: conn.FromTrip.arrival,
+          },
+          flight: `${conn.FromTrip.airline} ${conn.FromTrip.flight_number}`
+        },
+        {
+          from: {
+            lat: conn.ToTrip.departure_lat,
+            lon: conn.ToTrip.departure_lon,
+            name: conn.ToTrip.departure,
+          },
+          to: {
+            lat: conn.ToTrip.arrival_lat,
+            lon: conn.ToTrip.arrival_lon,
+            name: conn.ToTrip.arrival,
+          },
+          flight: `${conn.ToTrip.airline} ${conn.ToTrip.flight_number}`
+        }
+      ]
+    });
+    });
+  }
 
   return trips;
 }
@@ -233,21 +290,69 @@ if (window.location.pathname !== "/worldmap3d") {
   const airportMarkers = [];
   const flightPaths = [];
   const markerGeo = new THREE.SphereGeometry(0.015, 8, 6);
+  const layoverMarkerGeo = new THREE.SphereGeometry(0.02, 8, 6);
+  const uniqueAirports = new Map();
 
-  trips.forEach(({ from, to }) => {
-    [from, to].forEach((pt) => {
-      const m = new THREE.Mesh(
-        markerGeo,
-        new THREE.MeshBasicMaterial({ color: 0x00ffcc })
-      );
-      m.position.copy(latLongToVector3(pt.lat, pt.lon));
-      m.userData = pt;
-      globeGroup.add(m);
-      airportMarkers.push(m);
-    });
-    const fp = createFlightPath(from, to, globeGroup);
-    globeGroup.add(fp.line);
-    flightPaths.push(fp);
+  trips.forEach((trip) => {
+    if (trip.type === 'standalone') {
+      // Handle standalone trips
+      const { from, to, flight } = trip;
+
+      // Track unique airports
+      if (!uniqueAirports.has(from.name)) {
+        uniqueAirports.set(from.name, { ...from, type: 'departure' });
+      }
+      if (!uniqueAirports.has(to.name)) {
+        uniqueAirports.set(to.name, { ...to, type: 'arrival' });
+      }
+
+      // Create flight path with yellow color for standalone
+      const fp = createFlightPath(from, to, globeGroup);
+      fp.line.material.color.setHex(0xffff00); // Yellow for standalone
+      globeGroup.add(fp.line);
+      flightPaths.push(fp);
+
+    } else if (trip.type === 'connecting') {
+      // Handle connecting trips with different colors
+      const { legs } = trip;
+
+      legs.forEach((leg, index) => {
+        const { from, to, flight } = leg;
+
+        // Track unique airports
+        if (!uniqueAirports.has(from.name)) {
+          const type = index === 0 ? 'departure' : 'layover';
+          uniqueAirports.set(from.name, { ...from, type });
+        }
+        if (!uniqueAirports.has(to.name)) {
+          const type = index === legs.length - 1 ? 'arrival' : 'layover';
+          uniqueAirports.set(to.name, { ...to, type });
+        }
+
+        // Create flight path with cyan color for connecting flights
+        const fp = createFlightPath(from, to, globeGroup);
+        fp.line.material.color.setHex(0x00ffcc); // Cyan for connecting
+        fp.line.material.linewidth = 3; // Thicker line for connecting flights
+        globeGroup.add(fp.line);
+        flightPaths.push(fp);
+      });
+    }
+  });
+
+  // Create markers for unique airports
+  uniqueAirports.forEach((airport) => {
+    const isLayover = airport.type === 'layover';
+    const markerGeometry = isLayover ? layoverMarkerGeo : markerGeo;
+    const color = isLayover ? 0xff6600 : 0x00ffcc; // Orange for layovers, cyan for others
+
+    const m = new THREE.Mesh(
+      markerGeometry,
+      new THREE.MeshBasicMaterial({ color })
+    );
+    m.position.copy(latLongToVector3(airport.lat, airport.lon));
+    m.userData = airport;
+    globeGroup.add(m);
+    airportMarkers.push(m);
   });
 
   // hover tooltip

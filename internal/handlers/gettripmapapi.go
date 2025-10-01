@@ -6,6 +6,7 @@ import (
 
 	db "github.com/skywall34/trip-tracker/internal/database"
 	m "github.com/skywall34/trip-tracker/internal/middleware"
+	"github.com/skywall34/trip-tracker/internal/models"
 )
 
 type GetTripMapApiHandler struct {
@@ -33,14 +34,22 @@ func (t *GetTripMapApiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
         return
     }
 
-	// Fetch trips from the store
-	trips, err := t.tripStore.GetTripsGivenUser(userId)
+	// Fetch trips and connecting trips from the store
+	standaloneTrips, connectingTrips, err := t.tripStore.GetConnectingTripsGivenUser(userId)
 	if err != nil {
-		http.Error(w, "Error Fetchin Tripos", http.StatusInternalServerError)
+		http.Error(w, "Error fetching trips", http.StatusInternalServerError)
 		return
 	}
 
+	// Structure the response to include both standalone and connecting flights
+	response := struct {
+		StandaloneTrips  []models.Trip           `json:"standalone_trips"`
+		ConnectingTrips  []models.ConnectingTrip `json:"connecting_trips"`
+	}{
+		StandaloneTrips: standaloneTrips,
+		ConnectingTrips: connectingTrips,
+	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(trips)
+	json.NewEncoder(w).Encode(response)
 }
