@@ -16,7 +16,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=mshin@fromnto.cloud"
+      - "--certificatesresolvers.myresolver.acme.email=mshin@themshin.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
@@ -38,12 +38,23 @@ services:
       - "traefik.http.routers.triptracker.tls.certresolver=myresolver"
       - "com.centurylinklabs.watchtower.enable=true"
     volumes:
-      - ./internal/database/database.db:/root/internal/database/database.db # Mount SQLite3 database file
+      - ./internal/database/database.db:/root/internal/database/database.db
       - ./.env:/root/.env:ro
     environment:
       - DOTENV_PATH=/root/.env
     deploy:
       mode: replicated
       replicas: 3
+  portfolio:
+    image: ghcr.io/skywall34/portfolio:prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolio.rule=Host(`themshin.com`)"
+      - "traefik.http.routers.portfolio.entrypoints=websecure"
+      - "traefik.http.routers.portfolio.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      mode: replicated
+      replicas: 1
 volumes:
   letsencrypt:
