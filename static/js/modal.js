@@ -47,17 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Close place modal when cancel button is clicked
-  document.body.addEventListener("click", function(event) {
-    if (event.target && event.target.id === "close-place-modal") {
-      const modal = document.getElementById("add-place-modal");
-      if (modal) {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-      }
-    }
-  });
-
   // Automatically hide forms after form submission via HTMX
   document.body.addEventListener("htmx:afterRequest", function (event) {
     // Clear the manual create div on the home page

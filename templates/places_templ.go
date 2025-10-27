@@ -125,13 +125,13 @@ func PlaceSearchResults(suggestions []m.GooglePlaceSuggestion) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(suggestions) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"glass rounded-lg border border-white/10 overflow-hidden shadow-xl\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"bg-ink-900 rounded-lg border border-white/20 overflow-hidden shadow-2xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, suggestion := range suggestions {
 				if suggestion.PlacePrediction != nil {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"p-4 hover:bg-white/5 cursor-pointer transition border-b border-white/5 last:border-0\" hx-get=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"p-4 hover:bg-mint-500/10 cursor-pointer transition border-b border-white/10 last:border-0\" hx-get=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -893,7 +893,7 @@ func AddPlaceModalForm(placeID, name, address string, latitude, longitude float6
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 73, ">📍 Other</option></select></div><div><label class=\"block text-sm font-semibold text-slate-400 mb-2\">Notes</label> <textarea name=\"notes\" rows=\"3\" class=\"w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition\" placeholder=\"What made this place special?\"></textarea></div><div><label class=\"block text-sm font-semibold text-slate-400 mb-2\">Marker Color</label> <input type=\"color\" name=\"marker_color\" value=\"#26e0b0\" class=\"w-full h-12 rounded-lg bg-white/5 border border-white/10 cursor-pointer\"></div></div><div class=\"flex gap-3 mt-6\"><button type=\"button\" id=\"close-place-modal\" class=\"flex-1 px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300\">Cancel</button> <button type=\"submit\" class=\"flex-1 px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600\">Add Place</button></div></form></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 73, ">📍 Other</option></select></div><div><label class=\"block text-sm font-semibold text-slate-400 mb-2\">Notes</label> <textarea name=\"notes\" rows=\"3\" class=\"w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition\" placeholder=\"What made this place special?\"></textarea></div><div><label class=\"block text-sm font-semibold text-slate-400 mb-2\">Marker Color</label> <input type=\"color\" name=\"marker_color\" value=\"#26e0b0\" class=\"w-full h-12 rounded-lg bg-white/5 border border-white/10 cursor-pointer\"></div></div><div class=\"flex gap-3 mt-6\"><a href=\"/places\" class=\"flex flex-1 items-center justify-center px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300\">Cancel</a> <button type=\"submit\" class=\"flex-1 px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600\">Add Place</button></div></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -930,7 +930,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var47 string
 		templ_7745c5c3_Var47, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("place-%d", place.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 395, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 391, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var47))
 		if templ_7745c5c3_Err != nil {
@@ -943,7 +943,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var48 string
 		templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#place-%d", place.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 399, Col: 77}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 395, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var48))
 		if templ_7745c5c3_Err != nil {
@@ -956,7 +956,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var49 string
 		templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(place.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 400, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 396, Col: 71}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
 		if templ_7745c5c3_Err != nil {
@@ -969,7 +969,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var50 string
 		templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.JoinStringErrs(place.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 408, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 404, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var50))
 		if templ_7745c5c3_Err != nil {
@@ -982,7 +982,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var51 string
 		templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(getStringValue(place.Address))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 419, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 415, Col: 61}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
 		if templ_7745c5c3_Err != nil {
@@ -995,7 +995,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var52 string
 		templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(time.Unix(int64(place.VisitDate), 0).Format("2006-01-02"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 429, Col: 89}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 425, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
 		if templ_7745c5c3_Err != nil {
@@ -1068,7 +1068,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var53 string
 		templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(getStringValue(place.Notes))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 458, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 454, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
 		if templ_7745c5c3_Err != nil {
@@ -1081,7 +1081,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var54 string
 		templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(place.MarkerColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 466, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 462, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var54))
 		if templ_7745c5c3_Err != nil {
@@ -1094,7 +1094,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var55 string
 		templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/places?refresh=%d", place.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 475, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 471, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var55))
 		if templ_7745c5c3_Err != nil {
@@ -1107,7 +1107,7 @@ func EditPlaceForm(place m.Place) templ.Component {
 		var templ_7745c5c3_Var56 string
 		templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#place-%d", place.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 476, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/places.templ`, Line: 472, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var56))
 		if templ_7745c5c3_Err != nil {

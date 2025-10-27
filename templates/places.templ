@@ -85,11 +85,11 @@ templ PlacesPage(places []m.Place, trips []m.Trip, stats map[string]int) {
 
 templ PlaceSearchResults(suggestions []m.GooglePlaceSuggestion) {
 	if len(suggestions) > 0 {
-		<div class="glass rounded-lg border border-white/10 overflow-hidden shadow-xl">
+		<div class="bg-ink-900 rounded-lg border border-white/20 overflow-hidden shadow-2xl">
 			for _, suggestion := range suggestions {
 				if suggestion.PlacePrediction != nil {
 					<div
-						class="p-4 hover:bg-white/5 cursor-pointer transition border-b border-white/5 last:border-0"
+						class="p-4 hover:bg-mint-500/10 cursor-pointer transition border-b border-white/10 last:border-0"
 						hx-get={ fmt.Sprintf("/api/places/details?place_id=%s", suggestion.PlacePrediction.PlaceID) }
 						hx-target="#add-place-modal"
 						hx-swap="outerHTML"
@@ -369,13 +369,9 @@ templ AddPlaceModalForm(placeID, name, address string, latitude, longitude float
                 </div>
 
                 <div class="flex gap-3 mt-6">
-                    <button
-                        type="button"
-                        id="close-place-modal"
-                        class="flex-1 px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300"
-                    >
+                    <a href="/places" class="flex flex-1 items-center justify-center px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300">
                         Cancel
-                    </button>
+                    </a>
                     <button
                         type="submit"
                         class="flex-1 px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600"
