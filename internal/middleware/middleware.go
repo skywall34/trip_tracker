@@ -20,8 +20,8 @@ type Nonces struct {
 	Htmx            string
 	ResponseTargets string
 	Tw              string
-	Modal			string
-	TabsJS		    string
+	Modal           string
+	TabsJS          string
 	MapJS           string
 	Map3dJS         string
 	ThreeJS         string
@@ -30,7 +30,6 @@ type Nonces struct {
 	ConvertTS       string
 	PWA             string
 }
-
 
 func generateRandomString(length int) string {
 	bytes := make([]byte, length)
@@ -50,14 +49,14 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		// These nonces allow specific inline scripts and styles to run.
 		nonceSet := Nonces{
 			// Nonce for inline HTMX scripts.
-			Htmx: generateRandomString(16),
+			Htmx:            generateRandomString(16),
 			ResponseTargets: generateRandomString(16),
 			// Nonce for replacing content instead of hx-on
-			Modal: generateRandomString(16),
+			Modal:  generateRandomString(16),
 			TabsJS: generateRandomString(16), // For tab functionality in templ UI
 			// Mapping JS and CSS (Leaflet.js and leaflet.css)
 			Leaflet: generateRandomString(16),
-			MapJS: generateRandomString(16),
+			MapJS:   generateRandomString(16),
 			Map3dJS: generateRandomString(16),
 			ThreeJS: generateRandomString(16),
 			// Nonce for convertTimes.js
@@ -73,19 +72,21 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		ctx := context.WithValue(r.Context(), NonceKey, nonceSet)
 
 		// Build the CSP header using the generated nonces.
+		// Note: 'unsafe-inline' for style-src is needed for HTMX swap animations
+		// Note: 'unsafe-hashes' for style-src allows HTMX to use inline style attributes
 		cspHeader := fmt.Sprintf(
-			"default-src 'self'; " +
-			"base-uri 'self'; " +
-			"object-src 'none'; " +
-			"frame-ancestors 'none'; " +
-			"form-action 'self' https://accounts.google.com; " +
-			"script-src 'self' 'strict-dynamic' " +
-				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' " +
-				"https://cdn.jsdelivr.net; " +
-			"style-src 'self' 'nonce-%s' 'nonce-%s' https://fonts.googleapis.com; " +
-			"img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; " +
-			"connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://accounts.google.com https://oauth2.googleapis.com; " +
-			"font-src 'self' https://fonts.gstatic.com; ",
+			"default-src 'self'; "+
+				"base-uri 'self'; "+
+				"object-src 'none'; "+
+				"frame-ancestors 'none'; "+
+				"form-action 'self' https://accounts.google.com; "+
+				"script-src 'self' 'strict-dynamic' "+
+				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' "+
+				"https://cdn.jsdelivr.net; "+
+				"style-src 'self' 'unsafe-inline' 'nonce-%s' 'nonce-%s' https://fonts.googleapis.com; "+
+				"img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; "+
+				"connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://accounts.google.com https://oauth2.googleapis.com https://places.googleapis.com; "+
+				"font-src 'self' https://fonts.gstatic.com; ",
 			nonceSet.Htmx,
 			nonceSet.ResponseTargets,
 			nonceSet.ConvertTS,
@@ -101,15 +102,13 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		)
 		w.Header().Set("Content-Security-Policy", cspHeader)
 
-
 		// Call the next handler in the chain, passing the updated context.
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
-
 // Return the header text/html
-func TextHTMLMiddleware(next http.HandlerFunc) http.HandlerFunc  {
+func TextHTMLMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		next.ServeHTTP(w, r)
@@ -194,16 +193,18 @@ func GetPWANonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.PWA
 }
+
+
 /***********************************Auth Middleware**********************************************/
 
 type AuthMiddleware struct {
-	sessionStore *db.SessionStore
+	sessionStore      *db.SessionStore
 	sessionCookieName string
 }
 
 func NewAuthMiddleware(sessionStore *db.SessionStore, sessionCookieName string) *AuthMiddleware {
 	return &AuthMiddleware{
-		sessionStore: sessionStore,
+		sessionStore:      sessionStore,
 		sessionCookieName: sessionCookieName,
 	}
 }
@@ -211,7 +212,6 @@ func NewAuthMiddleware(sessionStore *db.SessionStore, sessionCookieName string) 
 type UserContextKey string
 
 var UserKey UserContextKey = "user"
-
 
 func (m *AuthMiddleware) AddUserToContext(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -260,7 +260,7 @@ func GetUserUsingContext(ctx context.Context) int {
 
 /***********************************Logging Middleware**********************************************/
 
-func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc  {
+func LoggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 

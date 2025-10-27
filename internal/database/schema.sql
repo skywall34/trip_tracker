@@ -51,6 +51,23 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
   CONSTRAINT fk_password_reset_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS places (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    place_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    address TEXT,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    visit_date INTEGER NOT NULL,
+    category TEXT,
+    notes TEXT,
+    marker_color TEXT DEFAULT '#26e0b0',
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE INDEX idx_trips_user_id ON trips(user_id);
 CREATE INDEX idx_trips_departure ON trips(departure);
 CREATE INDEX idx_trips_arrival ON trips(arrival);
@@ -58,3 +75,6 @@ CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_sessions_user_id ON sessions(user_id);
 CREATE INDEX idx_sessions_session_id ON sessions(session_id);
+CREATE INDEX IF NOT EXISTS idx_places_user_id ON places(user_id);
+CREATE INDEX IF NOT EXISTS idx_places_visit_date ON places(visit_date);
+CREATE INDEX IF NOT EXISTS idx_places_category ON places(category);

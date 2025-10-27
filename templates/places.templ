@@ -1,0 +1,525 @@
+package templates
+
+import (
+    "fmt"
+    "time"
+    m "github.com/skywall34/trip-tracker/internal/models"
+)
+
+// Main Places Page
+templ PlacesPage(places []m.Place, trips []m.Trip, stats map[string]int) {
+    <div class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">My Travel Timeline</h2>
+
+            <!-- Search and Add -->
+            <div class="flex gap-4 mb-6">
+                <form class="flex-1 flex gap-2" hx-get="/api/places/search" hx-target="#search-results">
+                    <div class="flex-1 relative">
+                        <input
+                            type="text"
+                            id="place-search-input"
+                            name="query"
+                            placeholder="Search places with Google..."
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                        />
+
+                        <!-- Search Results Dropdown -->
+                        <div id="search-results" class="absolute z-20 w-full mt-2"></div>
+                    </div>
+                    <button
+                        type="submit"
+                        class="px-6 py-3 rounded-lg font-semibold transition bg-blue-500 text-white hover:bg-blue-600 htmx-indicator:opacity-50"
+                    >
+                        🔍
+                    </button>
+                </form>
+                <button
+                    hx-get="/api/places/modal"
+                    hx-target="#add-place-modal"
+                    hx-swap="outerHTML"
+                    class="px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600"
+                >
+                    + Add Place
+                </button>
+            </div>
+
+            <!-- Stats Banner -->
+            <div class="grid grid-cols-4 gap-4">
+                <div class="glass rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-mint-500">{ fmt.Sprint(len(trips)) }</div>
+                    <div class="text-sm text-slate-400">Flights</div>
+                </div>
+                <div class="glass rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-grape-400">{ fmt.Sprint(stats["total_places"]) }</div>
+                    <div class="text-sm text-slate-400">Places</div>
+                </div>
+                <div class="glass rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-400">12</div>
+                    <div class="text-sm text-slate-400">Countries</div>
+                </div>
+                <div class="glass rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-yellow-400">{ fmt.Sprint(len(stats) - 1) }</div>
+                    <div class="text-sm text-slate-400">Categories</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-6">
+
+            <!-- Left Sidebar: Filters -->
+            @FiltersSidebar(stats)
+
+            <!-- Right Side: Timeline Feed -->
+            <div class="flex-1" id="timeline-feed">
+                @TimelineFeed(places, trips)
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Place Modal -->
+    @AddPlaceModal()
+}
+
+templ PlaceSearchResults(suggestions []m.GooglePlaceSuggestion) {
+	if len(suggestions) > 0 {
+		<div class="glass rounded-lg border border-white/10 overflow-hidden shadow-xl">
+			for _, suggestion := range suggestions {
+				if suggestion.PlacePrediction != nil {
+					<div
+						class="p-4 hover:bg-white/5 cursor-pointer transition border-b border-white/5 last:border-0"
+						hx-get={ fmt.Sprintf("/api/places/details?place_id=%s", suggestion.PlacePrediction.PlaceID) }
+						hx-target="#add-place-modal"
+						hx-swap="outerHTML"
+						data-place-suggestion="true"
+					>
+						<p class="text-white font-medium">{ suggestion.PlacePrediction.Text.Text }</p>
+						if suggestion.PlacePrediction.StructuredFormat != nil {
+							<p class="text-slate-400 text-sm">{ suggestion.PlacePrediction.StructuredFormat.SecondaryText.Text }</p>
+						}
+					</div>
+				}
+			}
+		</div>
+	}
+}
+
+// Filters Sidebar Component
+templ FiltersSidebar(stats map[string]int) {
+    <div class="w-64 flex-shrink-0">
+        <div class="glass rounded-lg p-6 sticky top-4">
+            <h3 class="text-lg font-semibold text-white mb-4">Filters</h3>
+
+            <form id="filter-form" hx-get="/api/places/filter" hx-target="#timeline-feed" hx-trigger="change" hx-include="#filter-form">
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-slate-400 mb-2">Type</p>
+                    <label class="flex items-center mb-2 cursor-pointer group">
+                        <input type="checkbox" checked class="mr-2 accent-mint-500" name="show_trips" value="true">
+                        <span class="text-sm group-hover:text-white transition">✈️ Flights</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input type="checkbox" checked class="mr-2 accent-mint-500" name="show_places" value="true">
+                        <span class="text-sm group-hover:text-white transition">📍 Places</span>
+                    </label>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-slate-400 mb-2">Year</p>
+                    <label class="flex items-center mb-2 cursor-pointer group">
+                        <input type="checkbox" checked class="mr-2 accent-mint-500" name="year" value="2025">
+                        <span class="text-sm group-hover:text-white transition">2025</span>
+                    </label>
+                    <label class="flex items-center mb-2 cursor-pointer group">
+                        <input type="checkbox" checked class="mr-2 accent-mint-500" name="year" value="2024">
+                        <span class="text-sm group-hover:text-white transition">2024</span>
+                    </label>
+                </div>
+
+                <div>
+                    <p class="text-sm font-semibold text-slate-400 mb-2">Category</p>
+                    for category, count := range stats {
+                        if category != "total_places" {
+                            <label class="flex items-center mb-2 cursor-pointer group">
+                                <input type="checkbox" checked class="mr-2 accent-mint-500" name="category" value={ category }>
+                                <span class="text-sm group-hover:text-white transition">{ category } ({ fmt.Sprint(count) })</span>
+                            </label>
+                        }
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+// Timeline Feed Component
+templ TimelineFeed(places []m.Place, trips []m.Trip) {
+    <div class="space-y-6">
+
+        <!-- Places -->
+        for _, place := range places {
+            @PlaceCard(place)
+        }
+
+        <!-- Trips (you can combine and sort these) -->
+        for _, trip := range trips {
+            @TripCardInTimeline(trip)
+        }
+    </div>
+}
+
+// Individual Place Card
+templ PlaceCard(place m.Place) {
+    <div
+        class="glass rounded-xl p-6 border border-white/10 hover:border-mint-500/40 transition card-hover"
+        id={ fmt.Sprintf("place-%d", place.ID) }
+    >
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-12 h-12 rounded-full flex items-center justify-center text-2xl border"
+                    style={ fmt.Sprintf("background-color: %s20; border-color: %s30;", place.MarkerColor, place.MarkerColor) }
+                >
+                    { getCategoryEmoji(place.Category) }
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">{ place.Name }</h3>
+                    if place.Address != nil {
+                        <p class="text-sm text-slate-400">{ *place.Address } • { formatDate(place.VisitDate) }</p>
+                    } else {
+                        <p class="text-sm text-slate-400">{ formatDate(place.VisitDate) }</p>
+                    }
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button
+                    class="text-slate-400 hover:text-blue-400 transition"
+                    hx-get={ fmt.Sprintf("/editplaceform?id=%d", place.ID) }
+                    hx-target={ fmt.Sprintf("#place-%d", place.ID) }
+                    hx-swap="outerHTML"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
+                <button
+                    class="text-slate-400 hover:text-red-400 transition"
+                    hx-delete={ fmt.Sprintf("/places?id=%d", place.ID) }
+                    hx-target={ fmt.Sprintf("#place-%d", place.ID) }
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to delete this place?"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        if place.Category != nil {
+            <div class="mb-4">
+                <span
+                    class="inline-block px-3 py-1 text-xs font-semibold rounded-full border"
+                    style={ fmt.Sprintf("background-color: %s10; color: %s; border-color: %s20;", place.MarkerColor, place.MarkerColor, place.MarkerColor) }
+                >
+                    { getCategoryEmoji(place.Category) } { *place.Category }
+                </span>
+            </div>
+        }
+
+        if place.Notes != nil && *place.Notes != "" {
+            <p class="text-slate-300 mb-4 leading-relaxed">
+                { *place.Notes }
+            </p>
+        }
+
+        <div class="text-sm text-slate-400">
+            📍 { fmt.Sprintf("%.4f° N, %.4f° E", place.Latitude, place.Longitude) }
+        </div>
+    </div>
+}
+
+// Trip Card in Timeline (simplified version)
+templ TripCardInTimeline(trip m.Trip) {
+    <div class="glass rounded-xl p-6 border border-white/10 hover:border-blue-400/40 transition card-hover">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-blue-400/20 flex items-center justify-center text-2xl border border-blue-400/30">
+                    ✈️
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">{ trip.Departure } → { trip.Arrival }</h3>
+                    <p class="text-sm text-slate-400">{ formatDate(trip.DepartureTime) }</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 text-center text-sm">
+            <div>
+                <p class="text-slate-400 mb-1">Flight</p>
+                <p class="font-semibold text-white">{ trip.FlightNumber }</p>
+            </div>
+            <div>
+                <p class="text-slate-400 mb-1">Airline</p>
+                <p class="font-semibold text-white">{ trip.Airline }</p>
+            </div>
+            <div>
+                <p class="text-slate-400 mb-1">Departure</p>
+                <p class="font-semibold text-white">{ trip.Departure }</p>
+            </div>
+            <div>
+                <p class="text-slate-400 mb-1">Arrival</p>
+                <p class="font-semibold text-white">{ trip.Arrival }</p>
+            </div>
+        </div>
+    </div>
+}
+
+// Add Place Modal - Hidden state
+templ AddPlaceModal() {
+    <div id="add-place-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    </div>
+}
+
+// Add Place Modal - Visible state with form
+templ AddPlaceModalForm(placeID, name, address string, latitude, longitude float64, category string) {
+    <div id="add-place-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div class="glass rounded-2xl p-8 max-w-lg w-full my-8 border border-white/10">
+            <h3 class="text-2xl font-bold text-white mb-6">Add New Place</h3>
+
+            <form
+                hx-post="/places"
+                hx-target="#timeline-feed"
+                hx-swap="afterbegin"
+            >
+                <input type="hidden" id="place_id" name="place_id" value={ placeID } />
+                <input type="hidden" id="latitude" name="latitude" value={ fmt.Sprintf("%f", latitude) } />
+                <input type="hidden" id="longitude" name="longitude" value={ fmt.Sprintf("%f", longitude) } />
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Place Name *</label>
+                        <input
+                            type="text"
+                            name="name"
+                            id="place-name"
+                            value={ name }
+                            required
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            id="place-address"
+                            value={ address }
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Visit Date *</label>
+                        <input
+                            type="date"
+                            name="visit_date"
+                            required
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-mint-500 transition"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Category</label>
+                        <select
+                            name="category"
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-mint-500 transition"
+                        >
+                            <option value="">Select a category</option>
+                            <option value="Restaurant" selected?={ category == "Restaurant" }>🍕 Restaurant</option>
+                            <option value="Landmark" selected?={ category == "Landmark" }>🗿 Landmark</option>
+                            <option value="Hotel" selected?={ category == "Hotel" }>🏨 Hotel</option>
+                            <option value="Museum" selected?={ category == "Museum" }>🏛️ Museum</option>
+                            <option value="Park" selected?={ category == "Park" }>🌸 Park</option>
+                            <option value="Other" selected?={ category == "Other" }>📍 Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Notes</label>
+                        <textarea
+                            name="notes"
+                            rows="3"
+                            class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                            placeholder="What made this place special?"
+                        ></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-400 mb-2">Marker Color</label>
+                        <input
+                            type="color"
+                            name="marker_color"
+                            value="#26e0b0"
+                            class="w-full h-12 rounded-lg bg-white/5 border border-white/10 cursor-pointer"
+                        />
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button
+                        type="button"
+                        id="close-place-modal"
+                        class="flex-1 px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="flex-1 px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600"
+                    >
+                        Add Place
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+// Edit Place Form Component
+templ EditPlaceForm(place m.Place) {
+    <div
+        class="glass rounded-xl p-6 border border-mint-500/40 transition"
+        id={ fmt.Sprintf("place-%d", place.ID) }
+    >
+        <h3 class="text-xl font-bold text-white mb-4">Edit Place</h3>
+
+        <form hx-put="/places" hx-target={ fmt.Sprintf("#place-%d", place.ID) } hx-swap="outerHTML">
+            <input type="hidden" name="id" value={ fmt.Sprint(place.ID) } />
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Place Name *</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={ place.Name }
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Address</label>
+                    <input
+                        type="text"
+                        name="address"
+                        value={ getStringValue(place.Address) }
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Visit Date *</label>
+                    <input
+                        type="date"
+                        name="visit_date"
+                        value={ time.Unix(int64(place.VisitDate), 0).Format("2006-01-02") }
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-mint-500 transition"
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Category</label>
+                    <select
+                        name="category"
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-mint-500 transition"
+                    >
+                        <option value="">Select a category</option>
+                        <option value="Restaurant" selected?={ place.Category != nil && *place.Category == "Restaurant" }>🍕 Restaurant</option>
+                        <option value="Landmark" selected?={ place.Category != nil && *place.Category == "Landmark" }>🗿 Landmark</option>
+                        <option value="Hotel" selected?={ place.Category != nil && *place.Category == "Hotel" }>🏨 Hotel</option>
+                        <option value="Museum" selected?={ place.Category != nil && *place.Category == "Museum" }>🏛️ Museum</option>
+                        <option value="Park" selected?={ place.Category != nil && *place.Category == "Park" }>🌸 Park</option>
+                        <option value="Other" selected?={ place.Category != nil && *place.Category == "Other" }>📍 Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Notes</label>
+                    <textarea
+                        name="notes"
+                        rows="3"
+                        class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 transition"
+                        placeholder="What made this place special?"
+                    >{ getStringValue(place.Notes) }</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-2">Marker Color</label>
+                    <input
+                        type="color"
+                        name="marker_color"
+                        value={ place.MarkerColor }
+                        class="w-full h-12 rounded-lg bg-white/5 border border-white/10 cursor-pointer"
+                    />
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button
+                    type="button"
+                    hx-get={ fmt.Sprintf("/places?refresh=%d", place.ID) }
+                    hx-target={ fmt.Sprintf("#place-%d", place.ID) }
+                    hx-swap="outerHTML"
+                    class="flex-1 px-6 py-3 rounded-lg font-semibold transition glass hover:bg-white/10 text-slate-300"
+                >
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    class="flex-1 px-6 py-3 rounded-lg font-semibold transition bg-mint-500 text-ink-900 hover:bg-mint-600"
+                >
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+}
+
+// Helper functions
+func formatDate(timestamp uint32) string {
+    t := time.Unix(int64(timestamp), 0)
+    return t.Format("January 2, 2006")
+}
+
+func getCategoryEmoji(category *string) string {
+    if category == nil {
+        return "📍"
+    }
+
+    switch *category {
+    case "Restaurant":
+        return "🍕"
+    case "Landmark":
+        return "🗿"
+    case "Hotel":
+        return "🏨"
+    case "Museum":
+        return "🏛️"
+    case "Park":
+        return "🌸"
+    default:
+        return "📍"
+    }
+}
+
+func getStringValue(s *string) string {
+    if s == nil {
+        return ""
+    }
+    return *s
+}
