@@ -19,14 +19,11 @@ var NonceKey key = "nonces"
 type Nonces struct {
 	Htmx            string
 	ResponseTargets string
-	Tw              string
 	Modal           string
 	TabsJS          string
 	MapJS           string
 	Map3dJS         string
 	ThreeJS         string
-	Leaflet         string
-	HtmxCSSHash     string
 	ConvertTS       string
 	PWA             string
 }
@@ -48,23 +45,16 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		// Generate a new set of nonce values for this request.
 		// These nonces allow specific inline scripts and styles to run.
 		nonceSet := Nonces{
-			// Nonce for inline HTMX scripts.
+			// Nonces for inline scripts
 			Htmx:            generateRandomString(16),
 			ResponseTargets: generateRandomString(16),
-			// Nonce for replacing content instead of hx-on
-			Modal:  generateRandomString(16),
-			TabsJS: generateRandomString(16), // For tab functionality in templ UI
-			// Mapping JS and CSS (Leaflet.js and leaflet.css)
-			Leaflet: generateRandomString(16),
-			MapJS:   generateRandomString(16),
-			Map3dJS: generateRandomString(16),
-			ThreeJS: generateRandomString(16),
-			// Nonce for convertTimes.js
-			ConvertTS: generateRandomString(16),
-			// Nonce for PWA scripts
-			PWA: generateRandomString(16),
-			// Nonce for Tailwind CSS
-			Tw: generateRandomString(16),
+			Modal:           generateRandomString(16),
+			TabsJS:          generateRandomString(16),
+			MapJS:           generateRandomString(16),
+			Map3dJS:         generateRandomString(16),
+			ThreeJS:         generateRandomString(16),
+			ConvertTS:       generateRandomString(16),
+			PWA:             generateRandomString(16),
 		}
 
 		// Store the nonce set in the request context so other parts of the application
@@ -73,7 +63,7 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		// Build the CSP header using the generated nonces.
 		// Note: 'unsafe-inline' for style-src is needed for HTMX swap animations
-		// Note: 'unsafe-hashes' for style-src allows HTMX to use inline style attributes
+		// Note: We don't use nonces for style-src because it would make 'unsafe-inline' be ignored
 		cspHeader := fmt.Sprintf(
 			"default-src 'self'; "+
 				"base-uri 'self'; "+
@@ -81,9 +71,9 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 				"frame-ancestors 'none'; "+
 				"form-action 'self' https://accounts.google.com; "+
 				"script-src 'self' 'strict-dynamic' "+
-				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' "+
+				"'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' 'nonce-%s' "+
 				"https://cdn.jsdelivr.net; "+
-				"style-src 'self' 'unsafe-inline' 'nonce-%s' 'nonce-%s' https://fonts.googleapis.com; "+
+				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "+
 				"img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com; "+
 				"connect-src 'self' https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://accounts.google.com https://oauth2.googleapis.com https://places.googleapis.com; "+
 				"font-src 'self' https://fonts.gstatic.com; ",
@@ -92,13 +82,10 @@ func CSPMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			nonceSet.ConvertTS,
 			nonceSet.Modal,
 			nonceSet.TabsJS,
-			nonceSet.Leaflet,
 			nonceSet.MapJS,
 			nonceSet.Map3dJS,
 			nonceSet.ThreeJS,
 			nonceSet.PWA,
-			nonceSet.Tw,
-			nonceSet.Leaflet,
 		)
 		w.Header().Set("Content-Security-Policy", cspHeader)
 
@@ -149,11 +136,6 @@ func GetResponseTargetsNonce(ctx context.Context) string {
 	return nonceSet.ResponseTargets
 }
 
-func GetTwNonce(ctx context.Context) string {
-	nonceSet := GetNonces(ctx)
-	return nonceSet.Tw
-}
-
 func GetConvertTSNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
 	return nonceSet.ConvertTS
@@ -166,7 +148,7 @@ func GetModalNonce(ctx context.Context) string {
 
 func GetLeafletNonce(ctx context.Context) string {
 	nonceSet := GetNonces(ctx)
-	return nonceSet.Leaflet
+	return nonceSet.MapJS // Leaflet JS uses the MapJS nonce
 }
 
 func GetMapJSNonce(ctx context.Context) string {

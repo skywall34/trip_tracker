@@ -36,7 +36,7 @@ templ header(title string) {
         <script src="/static/js/pwa-features.js"     nonce={ middleware.GetPWANonce(ctx) }></script>
         
         <!-- Map stack -->
-        <link rel="stylesheet" href="/static/css/leaflet.css" nonce={ middleware.GetLeafletNonce(ctx) }>
+        <link rel="stylesheet" href="/static/css/leaflet.css">
         <script src="/static/js/leaflet.js"          nonce={ middleware.GetLeafletNonce(ctx) }></script>
         <script src="/static/js/map.js"              nonce={ middleware.GetMapJSNonce(ctx) }></script>
 
@@ -52,10 +52,10 @@ templ header(title string) {
         <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
 
         <!-- Tailwind output -->
-        <link rel="stylesheet" href="/static/css/output.css" nonce={ middleware.GetTwNonce(ctx) }>
-        
+        <link rel="stylesheet" href="/static/css/output.css">
+
         <!-- Mobile CSS -->
-        <link rel="stylesheet" href="/static/css/mobile.css" nonce={ middleware.GetTwNonce(ctx) }>
+        <link rel="stylesheet" href="/static/css/mobile.css">
 
         <!-- PWA Installation Script -->
         <script nonce={ middleware.GetPWANonce(ctx) }>
