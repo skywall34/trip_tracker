@@ -45,6 +45,22 @@ services:
     deploy:
       mode: replicated
       replicas: 3
+  fantasytrading:
+    image: ghcr.io/skywall34/fantasy-rading:prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.triptracker.rule=Host(`optimizerleague.pro`)"
+      - "traefik.http.routers.triptracker.entrypoints=websecure"
+      - "traefik.http.routers.triptracker.tls.certresolver=myresolver"
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - ./data/database.db:/root/data/database.db
+      - ./.env:/root/.env:ro
+    environment:
+      - DOTENV_PATH=/root/.env
+    deploy:
+      mode: replicated
+      replicas: 1
   portfolio:
     image: ghcr.io/skywall34/portfolio:prod
     labels:
