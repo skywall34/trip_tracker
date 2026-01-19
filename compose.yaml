@@ -46,7 +46,7 @@ services:
       mode: replicated
       replicas: 3
   fantasytrading:
-    image: ghcr.io/skywall34/fantasy-rading:prod
+    image: ghcr.io/skywall34/fantasy-trading:prod
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.triptracker.rule=Host(`optimizerleague.pro`)"
