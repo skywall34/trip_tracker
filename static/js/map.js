@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const _basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+
   let mapElement = document.getElementById("map");
   if (!mapElement) {
     return; // Exit if the map element does not exist
@@ -17,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }).addTo(map);
 
   const customIcon = new L.Icon({
-    iconUrl: "/static/images/marker-icon.png",
-    iconRetinaUrl: "/static/images/marker-icon-2x.png",
-    shadowUrl: "/static/images/marker-shadow.png",
+    iconUrl: _basePath + "/static/images/marker-icon.png",
+    iconRetinaUrl: _basePath + "/static/images/marker-icon-2x.png",
+    shadowUrl: _basePath + "/static/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -29,9 +31,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Create custom icons for different airport types
   const layoverIcon = new L.Icon({
-    iconUrl: "/static/images/marker-icon.png",
-    iconRetinaUrl: "/static/images/marker-icon-2x.png",
-    shadowUrl: "/static/images/marker-shadow.png",
+    iconUrl: _basePath + "/static/images/marker-icon.png",
+    iconRetinaUrl: _basePath + "/static/images/marker-icon-2x.png",
+    shadowUrl: _basePath + "/static/images/marker-shadow.png",
     iconSize: [30, 49],
     iconAnchor: [15, 49],
     popupAnchor: [1, -34],
@@ -39,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
     shadowSize: [41, 41],
   });
 
-  fetch("/api/trips")
+  fetch(_basePath + "/api/trips")
     .then((response) => response.json())
     .then((data) => {
       // Check if data has the expected structure - if not, assume old API format

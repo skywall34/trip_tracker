@@ -1,5 +1,7 @@
 // https://github.com/bobbyroe/vertex-earth
 
+const _basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -86,7 +88,7 @@ function createFlightPath(from, to, globeGroup) {
 }
 
 async function loadTrips() {
-  const response = await fetch("/api/trips");
+  const response = await fetch(_basePath + "/api/trips");
   let data = await response.json();
 
   // Check if data has the expected structure - if not, assume old API format
@@ -202,7 +204,7 @@ const fragmentShader = `
 // ─── ENTRYPOINT ────────────────────────────────────────────────────────────────
 //
 
-if (window.location.pathname !== "/worldmap3d") {
+if (!window.location.pathname.endsWith("/worldmap3d")) {
   console.log("Not on /worldmap3d → skipping ThreeJS init.");
 } else {
   // Get the canvas element from the template
@@ -250,10 +252,10 @@ if (window.location.pathname !== "/worldmap3d") {
 
   // textures
   const loader = new THREE.TextureLoader();
-  const starSprite = loader.load("/static/images/circle.png");
-  const colorMap = loader.load("/static/images/03_earthlights1k.jpg");
-  const elevMap = loader.load("/static/images/01_earthbump1k.jpg");
-  const alphaMap = loader.load("/static/images/02_earthspec1k.jpg");
+  const starSprite = loader.load(_basePath + "/static/images/circle.png");
+  const colorMap = loader.load(_basePath + "/static/images/03_earthlights1k.jpg");
+  const elevMap = loader.load(_basePath + "/static/images/01_earthbump1k.jpg");
+  const alphaMap = loader.load(_basePath + "/static/images/02_earthspec1k.jpg");
   // globe group
   const globeGroup = new THREE.Group();
   scene.add(globeGroup);

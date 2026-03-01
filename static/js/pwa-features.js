@@ -1,4 +1,6 @@
 // PWA Feature Enhancements
+const _basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+
 class PWAFeatures {
   constructor() {
     this.initializeFeatures();
@@ -39,7 +41,7 @@ class PWAFeatures {
 
       // Reverse geocoding to get airport/city
       const response = await fetch(
-        `/api/location?lat=${latitude}&lng=${longitude}`
+        _basePath + `/api/location?lat=${latitude}&lng=${longitude}`
       );
       const location = await response.json();
 
