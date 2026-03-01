@@ -11,6 +11,7 @@ templ header(title string) {
         <title>{ title }</title>
 
         <!-- PWA Meta Tags -->
+        <meta name="base-path" content={ middleware.GetBasePath(ctx) }/>
         <meta name="application-name" content="Mia's Trips"/>
         <meta name="apple-mobile-web-app-capable" content="yes"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -59,7 +60,8 @@ templ header(title string) {
 
         <!-- PWA Installation Script -->
         <script nonce={ middleware.GetPWANonce(ctx) }>
-          const _swPath = "{ middleware.GetBasePath(ctx) }" + "/sw.js";
+          const _basePath = document.querySelector('meta[name="base-path"]').content || '';
+          const _swPath = _basePath + "/sw.js";
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
               navigator.serviceWorker.register(_swPath)
