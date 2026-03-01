@@ -72,7 +72,7 @@ templ WorldMap3D() {
 
             <div class="mt-6 aspect-[16/9] rounded-xl bg-ink-800 border border-white/10 relative overflow-hidden">
                 <canvas id="worldmap3d-canvas" class="absolute inset-0 w-full h-full"></canvas>
-                <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
+                <script type="module" src={ middleware.GetBasePath(ctx) + "/static/js/worldmap3d.js" } nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
             </div>
         </div>
     </section>

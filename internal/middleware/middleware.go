@@ -177,6 +177,19 @@ func GetPWANonce(ctx context.Context) string {
 }
 
 
+/**********************************Base Path Middleware******************************************/
+
+type BasePathContextKey string
+
+var BasePathKey BasePathContextKey = "basePath"
+
+func GetBasePath(ctx context.Context) string {
+	if bp, ok := ctx.Value(BasePathKey).(string); ok {
+		return bp
+	}
+	return ""
+}
+
 /***********************************Auth Middleware**********************************************/
 
 type AuthMiddleware struct {

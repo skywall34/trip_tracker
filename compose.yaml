@@ -33,7 +33,7 @@ services:
     image: ghcr.io/skywall34/triptracker:prod
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.triptracker.rule=Host(`fromnto.cloud`)"
+      - "traefik.http.routers.triptracker.rule=Host(`themshin.com`) && PathPrefix(`/fromnto`)"
       - "traefik.http.routers.triptracker.entrypoints=websecure"
       - "traefik.http.routers.triptracker.tls.certresolver=myresolver"
       - "com.centurylinklabs.watchtower.enable=true"
@@ -42,6 +42,7 @@ services:
       - ./.env:/root/.env:ro
     environment:
       - DOTENV_PATH=/root/.env
+      - BASE_PATH=/fromnto
     deploy:
       mode: replicated
       replicas: 3

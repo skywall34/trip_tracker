@@ -49,7 +49,7 @@ func (h *OfflineHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Offline - Mia's Trips</title>
-		<link rel="stylesheet" href="/static/css/output.css">
+		<link rel="stylesheet" href="/fromnto/static/css/output.css">
 	</head>
 	<body class="bg-ink-900 text-slate-300 min-h-screen flex items-center justify-center">
 		<div class="text-center max-w-md mx-auto px-4">

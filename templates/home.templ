@@ -1,5 +1,8 @@
 package templates
 
+import (
+    "github.com/skywall34/trip-tracker/internal/middleware"
+)
 
 templ Home() {
     <!-- Hero + unified search / manual add panel -->
@@ -12,13 +15,13 @@ templ Home() {
                 Track your adventures like a pro producer.
             </h1>
             <p class="mt-2 text-slate-300/80">
-                Search flights, add trips, and see what’s next—right from here.
+                Search flights, add trips, and see what's next—right from here.
             </p>
 
             <!-- Search flights -->
             <form
                 class="mt-6 flex items-center gap-3"
-                hx-get="/api/flights"
+                hx-get={ middleware.GetBasePath(ctx) + "/api/flights" }
                 hx-target="#search-results"
                 hx-swap="innerHTML"
             >
@@ -41,7 +44,7 @@ templ Home() {
                     type="button"
                     id="toggle-manual"
                     class="px-4 py-3 rounded-xl border border-white/10 hover:bg-white/5 hover:border-mint-500/30 text-slate-300 hover:text-white cursor-pointer relative z-10 transition-all duration-300"
-                    hx-get="/createtripform"
+                    hx-get={ middleware.GetBasePath(ctx) + "/createtripform" }
                     hx-target="#manual-create"
                     hx-swap="innerHTML"
                 >
@@ -64,14 +67,14 @@ templ Home() {
             <div class="flex items-center gap-2 text-xs">
                 <button
                     class="px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-white"
-                    hx-get="/trips?past=false"
+                    hx-get={ middleware.GetBasePath(ctx) + "/trips?past=false" }
                     hx-target="#home-trips-list"
                     hx-swap="innerHTML"
                     hx-trigger="click"
                 >Upcoming</button>
                 <button
                     class="px-3 py-1.5 rounded-md border border-white/10 hover:bg-white/5"
-                    hx-get="/trips?past=true"
+                    hx-get={ middleware.GetBasePath(ctx) + "/trips?past=true" }
                     hx-target="#home-trips-list"
                     hx-swap="innerHTML"
                     hx-trigger="click"
@@ -80,7 +83,7 @@ templ Home() {
         </div>
 
         <div id="home-trips-list"
-             hx-get="/trips?past=false"
+             hx-get={ middleware.GetBasePath(ctx) + "/trips?past=false" }
              hx-trigger="load, trip:created from:body"
              hx-target="#home-trips-list"
              hx-swap="innerHTML">

@@ -19,26 +19,26 @@ templ header(title string) {
         <meta name="theme-color" content="#10b981"/>
 
         <!-- Icons -->
-        <link rel="manifest" href="/manifest.json"/>
-        <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png"/>
-        <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png"/>
+        <link rel="manifest" href={ middleware.GetBasePath(ctx) + "/manifest.json" }/>
+        <link rel="icon" type="image/png" sizes="32x32" href={ middleware.GetBasePath(ctx) + "/static/icons/favicon-32x32.png" }/>
+        <link rel="apple-touch-icon" href={ middleware.GetBasePath(ctx) + "/static/icons/apple-touch-icon.png" }/>
 
         <!-- Core JS -->
-        <script src="/static/js/htmx.min.js"         nonce={ middleware.GetHtmxNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/htmx.min.js" }         nonce={ middleware.GetHtmxNonce(ctx) }></script>
         <script nonce={ middleware.GetHtmxNonce(ctx) }>
             // Configure HTMX to work with CSP - disable eval
             htmx.config.allowEval = false;
         </script>
-        <script src="/static/js/response-targets.js" nonce={ middleware.GetResponseTargetsNonce(ctx) }></script>
-        <script src="/static/js/modal.js"            nonce={ middleware.GetModalNonce(ctx) }></script>
-        <script src="/static/js/tabs.js"             nonce={ middleware.GetTabsJSNonce(ctx) }></script>
-        <script src="/static/js/convertTimes.js"     nonce={ middleware.GetConvertTSNonce(ctx) }></script>
-        <script src="/static/js/pwa-features.js"     nonce={ middleware.GetPWANonce(ctx) }></script>
-        
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/response-targets.js" } nonce={ middleware.GetResponseTargetsNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/modal.js" }            nonce={ middleware.GetModalNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/tabs.js" }             nonce={ middleware.GetTabsJSNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/convertTimes.js" }     nonce={ middleware.GetConvertTSNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/pwa-features.js" }     nonce={ middleware.GetPWANonce(ctx) }></script>
+
         <!-- Map stack -->
-        <link rel="stylesheet" href="/static/css/leaflet.css">
-        <script src="/static/js/leaflet.js"          nonce={ middleware.GetLeafletNonce(ctx) }></script>
-        <script src="/static/js/map.js"              nonce={ middleware.GetMapJSNonce(ctx) }></script>
+        <link rel="stylesheet" href={ middleware.GetBasePath(ctx) + "/static/css/leaflet.css" }>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/leaflet.js" }          nonce={ middleware.GetLeafletNonce(ctx) }></script>
+        <script src={ middleware.GetBasePath(ctx) + "/static/js/map.js" }              nonce={ middleware.GetMapJSNonce(ctx) }></script>
 
         <!-- THREE import map + module -->
         <script type="importmap" nonce={ middleware.GetThreeJSNonce(ctx) }>
@@ -49,19 +49,20 @@ templ header(title string) {
             }
         }
         </script>
-        <script type="module" src="/static/js/worldmap3d.js" nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
+        <script type="module" src={ middleware.GetBasePath(ctx) + "/static/js/worldmap3d.js" } nonce={ middleware.GetMap3DJSNonce(ctx) }></script>
 
         <!-- Tailwind output -->
-        <link rel="stylesheet" href="/static/css/output.css">
+        <link rel="stylesheet" href={ middleware.GetBasePath(ctx) + "/static/css/output.css" }>
 
         <!-- Mobile CSS -->
-        <link rel="stylesheet" href="/static/css/mobile.css">
+        <link rel="stylesheet" href={ middleware.GetBasePath(ctx) + "/static/css/mobile.css" }>
 
         <!-- PWA Installation Script -->
         <script nonce={ middleware.GetPWANonce(ctx) }>
+          const _swPath = "{ middleware.GetBasePath(ctx) }" + "/sw.js";
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/sw.js')
+              navigator.serviceWorker.register(_swPath)
                 .then(registration => console.log('SW registered'))
                 .catch(error => console.log('SW registration failed'));
             });
@@ -102,15 +103,15 @@ templ header(title string) {
 
 templ mobileNav() {
     <nav class="mobile-nav md:hidden">
-        <a href="/" class="mobile-nav-item">
+        <a href={ middleware.GetBasePath(ctx) + "/" } class="mobile-nav-item">
             <div class="mobile-nav-icon">🏠</div>
             <span>Home</span>
         </a>
-        <a href="/statistics" class="mobile-nav-item">
+        <a href={ middleware.GetBasePath(ctx) + "/statistics" } class="mobile-nav-item">
             <div class="mobile-nav-icon">📊</div>
             <span>Stats</span>
         </a>
-        <a href="/worldmap" class="mobile-nav-item">
+        <a href={ middleware.GetBasePath(ctx) + "/worldmap" } class="mobile-nav-item">
             <div class="mobile-nav-icon">🗺️</div>
             <span>Map</span>
         </a>
@@ -128,22 +129,22 @@ templ nav() {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="h-6 w-6 rounded-full led"></div>
-                <a href="/" class="font-semibold tracking-tight text-white">Mia’s Trips</a>
+                <a href={ middleware.GetBasePath(ctx) + "/" } class="font-semibold tracking-tight text-white">Mia's Trips</a>
                 <span class="hidden sm:inline-block text-xs font-mono px-2 py-1 rounded bg-white/5 border border-white/10 ml-2">Beta</span>
             </div>
             <nav class="hidden md:flex items-center gap-6 text-sm">
-                <a class="hover:text-white" href="/">Home</a>
-                <a class="hover:text-white" href="/statistics">Statistics</a>
-                <a class="hover:text-white" href="/worldmap">World Map</a>
-                <a class="hover:text-white" href="/places">Places</a>
+                <a class="hover:text-white" href={ middleware.GetBasePath(ctx) + "/" }>Home</a>
+                <a class="hover:text-white" href={ middleware.GetBasePath(ctx) + "/statistics" }>Statistics</a>
+                <a class="hover:text-white" href={ middleware.GetBasePath(ctx) + "/worldmap" }>World Map</a>
+                <a class="hover:text-white" href={ middleware.GetBasePath(ctx) + "/places" }>Places</a>
             </nav>
 
             if middleware.GetUserUsingContext(ctx) >= 0 {
-                <a hx-post="/logout" hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
+                <a hx-post={ middleware.GetBasePath(ctx) + "/logout" } hx-trigger="click" hx-target="body" hx-swap="outerHTML" class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
                     Logout
                 </a>
             } else {
-                <a href="/login" class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
+                <a href={ middleware.GetBasePath(ctx) + "/login" } class="text-xs font-medium px-3 py-1.5 rounded-md border border-white/10 hover:border-white/20 hover:bg-white/5 transition">
                     Login or Create Account
                 </a>
             }

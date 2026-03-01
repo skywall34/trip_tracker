@@ -181,10 +181,11 @@ func (h *[Action][Resource]Handler) ServeHTTP(w http.ResponseWriter, r *http.Req
 
 ### Current Middleware (applied individually, not chained)
 
-1. **Auth**: Session-based authentication
-2. **TextHTML**: Sets HTML content type for templ responses  
-3. **CSP**: Content Security Policy for XSS protection (includes PWA nonces)
-4. **Logging**: Request/response logging
+1. **basePathMiddleware** (`main.go`): Wraps the entire app mux. Injects `BASE_PATH` into request context (used by templates via `middleware.GetBasePath(ctx)`) and rewrites `Location` / `HX-Redirect` / `HX-Location` / `HX-Push-Url` / `HX-Replace-Url` response headers so server-side redirects resolve correctly under the sub-path.
+2. **Auth**: Session-based authentication
+3. **TextHTML**: Sets HTML content type for templ responses
+4. **CSP**: Content Security Policy for XSS protection (includes PWA nonces)
+5. **Logging**: Request/response logging
 
 ### CSP Enhancement for PWA
 
@@ -245,6 +246,7 @@ Middleware chaining breaks CSP and TextHTML middleware functionality.
 ### Required Environment Variables
 
 - `PORT` (optional): Server port, defaults to 3000
+- `BASE_PATH` (optional): URL prefix the app is mounted under. Empty (`""`) for local dev (serves at `/`). Set to `/fromnto` in production so the app lives at `themshin.com/fromnto`.
 
 ### Development Setup
 
@@ -278,8 +280,12 @@ air
 ### PWA Testing Commands
 
 ```bash
-# Test as website (desktop)
+# Test as website (desktop) — local dev, no BASE_PATH
 open http://localhost:3000
+
+# Test with sub-path prefix (mirrors production)
+BASE_PATH=/fromnto air
+open http://localhost:3000/fromnto
 
 # Test as mobile website (find your IP first)
 ip addr show | grep "inet " | grep -v 127.0.0.1
@@ -352,6 +358,7 @@ if err != nil {
 - **Provider**: Hostinger VPS
 - **OS**: Ubuntu
 - **Container Registry**: GitHub Container Registry (ghcr.io)
+- **Production URL**: `https://themshin.com/fromnto` (shares the `themshin.com` domain with the portfolio; Traefik routes `PathPrefix(/fromnto)` to this app)
 
 ## Current Limitations & Future Improvements
 

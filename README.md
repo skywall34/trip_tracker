@@ -156,7 +156,7 @@ templates.Layout(c, "Trips").Render(r.Context(), w)
      go version
      ```
 
-2. **Environment**: You can set an optional `PORT` environment variable to specify the port number on which the backend will run.
+2. **Environment**: You can set an optional `PORT` environment variable to specify the port number on which the backend will run. Set `BASE_PATH=/fromnto` to mirror the production sub-path locally.
 
 ---
 
@@ -319,8 +319,10 @@ air
 4. **Access the Application**:
 
 ### 🌐 As a Website
-- **Desktop**: http://localhost:3000
+- **Desktop (local dev)**: http://localhost:3000
+- **Desktop (sub-path test)**: `BASE_PATH=/fromnto air` → http://localhost:3000/fromnto
 - **Mobile Browser**: http://YOUR_IP:3000 (responsive mobile website)
+- **Production**: https://themshin.com/fromnto
 
 ### 📱 As a Mobile App
 - **Full PWA Features**: Use ngrok tunnel (HTTPS required)

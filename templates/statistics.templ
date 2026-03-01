@@ -2,6 +2,7 @@ package templates
 
 import (
     "github.com/skywall34/trip-tracker/internal/models"
+    "github.com/skywall34/trip-tracker/internal/middleware"
     "strconv"
 )
 
@@ -57,8 +58,8 @@ templ Statistics(firstName string, tsAggregation models.TimeSpaceAggregation) {
             <!-- Toggle: Month/Year -->
             <div class="flex justify-center mb-6">
                 <div class="flex bg-ink-800 border border-white/10 rounded-full p-1">
-                    <button hx-get="/api/statistics?agg=m" hx-target="#aggregation" hx-trigger="load, click" class="px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none">Month</button>
-                    <button hx-get="/api/statistics?agg=y" hx-target="#aggregation" class="px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none">Year</button>
+                    <button hx-get={ middleware.GetBasePath(ctx) + "/api/statistics?agg=m" } hx-target="#aggregation" hx-trigger="load, click" class="px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none">Month</button>
+                    <button hx-get={ middleware.GetBasePath(ctx) + "/api/statistics?agg=y" } hx-target="#aggregation" class="px-6 py-2 rounded-full text-slate-300 hover:text-white font-semibold transition-all duration-300 hover:bg-mint-500/20 focus:outline-none">Year</button>
                 </div>
             </div>
 

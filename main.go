@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 
@@ -14,6 +16,33 @@ import (
 	m "github.com/skywall34/trip-tracker/internal/middleware"
 	"github.com/skywall34/trip-tracker/internal/models"
 )
+
+// basePathMiddleware injects the base path into request context and rewrites
+// redirect/HTMX headers so they point under the sub-path.
+func basePathMiddleware(basePath string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), m.BasePathKey, basePath)
+		bpw := &basePathResponseWriter{ResponseWriter: w, basePath: basePath}
+		next.ServeHTTP(bpw, r.WithContext(ctx))
+	})
+}
+
+type basePathResponseWriter struct {
+	http.ResponseWriter
+	basePath string
+}
+
+func (bw *basePathResponseWriter) WriteHeader(code int) {
+	if bw.basePath != "" {
+		headers := []string{"Location", "HX-Redirect", "HX-Location", "HX-Push-Url", "HX-Replace-Url"}
+		for _, h := range headers {
+			if val := bw.Header().Get(h); strings.HasPrefix(val, "/") && !strings.HasPrefix(val, bw.basePath+"/") {
+				bw.Header().Set(h, bw.basePath+val)
+			}
+		}
+	}
+	bw.ResponseWriter.WriteHeader(code)
+}
 
 func main() {
 
@@ -25,6 +54,8 @@ func main() {
 	if err := godotenv.Load(dotenvPath); err != nil {
 		log.Fatalf("Error loading .env file %s", err)
 	}
+
+	basePath := os.Getenv("BASE_PATH") // "" for local dev, "/fromnto" for production
 
 	db, err := database.InitDB("file:./internal/database/database.db?_enable_math_functions=1")
 	if err != nil {
@@ -64,18 +95,18 @@ func main() {
 
 	//
 
-	mux := http.NewServeMux()
+	appMux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir("./static"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	appMux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// PWA routes
-	mux.Handle("/manifest.json", handlers.NewPWAManifestHandler())
-	mux.Handle("/sw.js", handlers.NewServiceWorkerHandler())
-	mux.Handle("/offline", handlers.NewOfflineHandler())
+	appMux.Handle("/manifest.json", handlers.NewPWAManifestHandler())
+	appMux.Handle("/sw.js", handlers.NewServiceWorkerHandler())
+	appMux.Handle("/offline", handlers.NewOfflineHandler())
 
 	// Main
-	mux.Handle("/",
+	appMux.Handle("/",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -83,7 +114,7 @@ func main() {
 						handlers.NewGetHomeHandler().ServeHTTP)))))
 
 	// Page Routes
-	mux.Handle("GET /trips",
+	appMux.Handle("GET /trips",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -92,7 +123,7 @@ func main() {
 							handlers.GetTripHandlerParams{
 								TripStore: tripStore}).ServeHTTP)))))
 
-	mux.Handle("POST /trips",
+	appMux.Handle("POST /trips",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -101,7 +132,7 @@ func main() {
 							handlers.PostTripHandlerParams{
 								TripStore: tripStore}).ServeHTTP)))))
 
-	mux.Handle("PUT /trips",
+	appMux.Handle("PUT /trips",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -110,7 +141,7 @@ func main() {
 							handlers.EditTripHandlerParams{
 								TripStore: tripStore}).ServeHTTP)))))
 
-	mux.Handle("DELETE /trips",
+	appMux.Handle("DELETE /trips",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -120,7 +151,7 @@ func main() {
 								TripStore: tripStore}).ServeHTTP)))))
 
 	// Places Routes
-	mux.Handle("GET /places",
+	appMux.Handle("GET /places",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -131,7 +162,7 @@ func main() {
 								TripStore:  tripStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("POST /places",
+	appMux.Handle("POST /places",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -141,7 +172,7 @@ func main() {
 								PlaceStore: placeStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("PUT /places",
+	appMux.Handle("PUT /places",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -151,7 +182,7 @@ func main() {
 								PlaceStore: placeStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("DELETE /places",
+	appMux.Handle("DELETE /places",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -161,7 +192,7 @@ func main() {
 								PlaceStore: placeStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("GET /editplaceform",
+	appMux.Handle("GET /editplaceform",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -172,31 +203,31 @@ func main() {
 							}).ServeHTTP)))))
 
 	// Google Places API routes
-	mux.Handle("GET /api/places/search",
+	appMux.Handle("GET /api/places/search",
 		authMiddleware.AddUserToContext(
 			m.LoggingMiddleware(
 				handlers.NewGetPlaceSearchHandler(
 					handlers.GetPlaceSearchHandlerParams{}).ServeHTTP)))
 
-	mux.Handle("GET /api/places/details",
+	appMux.Handle("GET /api/places/details",
 		authMiddleware.AddUserToContext(
 			m.LoggingMiddleware(
 				handlers.NewGetPlaceDetailsHandler(
 					handlers.GetPlaceDetailsHandlerParams{}).ServeHTTP)))
 
-	mux.Handle("GET /api/places/modal",
+	appMux.Handle("GET /api/places/modal",
 		authMiddleware.AddUserToContext(
 			m.LoggingMiddleware(
 				handlers.NewGetPlaceModalHandler(
 					handlers.GetPlaceModalHandlerParams{}).ServeHTTP)))
 
-	mux.Handle("GET /api/places/modal/close",
+	appMux.Handle("GET /api/places/modal/close",
 		authMiddleware.AddUserToContext(
 			m.LoggingMiddleware(
 				handlers.NewGetPlaceModalHandler(
 					handlers.GetPlaceModalHandlerParams{}).ServeHTTP)))
 
-	mux.Handle("GET /api/places/filter",
+	appMux.Handle("GET /api/places/filter",
 		authMiddleware.AddUserToContext(
 			m.LoggingMiddleware(
 				handlers.NewGetPlaceFilterHandler(
@@ -205,13 +236,13 @@ func main() {
 						TripStore:  tripStore,
 					}).ServeHTTP)))
 
-	mux.Handle("GET /login",
+	appMux.Handle("GET /login",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(
 					handlers.NewGetLoginHandler().ServeHTTP))))
 
-	mux.Handle("POST /login",
+	appMux.Handle("POST /login",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(
@@ -220,20 +251,20 @@ func main() {
 							UserStore:    userStore,
 							SessionStore: sessionStore}).ServeHTTP))))
 
-	mux.Handle("POST /logout",
+	appMux.Handle("POST /logout",
 		m.CSPMiddleware(
 			m.LoggingMiddleware(handlers.NewPostLogoutHandler(
 				handlers.PostLogoutHandlerParams{
 					SessionCookieName: "session_id",
 				}).ServeHTTP)))
 
-	mux.Handle("GET /register",
+	appMux.Handle("GET /register",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(
 					handlers.NewGetRegisterHandler().ServeHTTP))))
 
-	mux.Handle("POST /register",
+	appMux.Handle("POST /register",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(handlers.NewPostRegisterHandler(
@@ -242,7 +273,7 @@ func main() {
 						SessionStore: sessionStore,
 					}).ServeHTTP))))
 
-	mux.Handle("GET /statistics",
+	appMux.Handle("GET /statistics",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -253,7 +284,7 @@ func main() {
 								TripStore: tripStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("GET /worldmap",
+	appMux.Handle("GET /worldmap",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -263,21 +294,21 @@ func main() {
 								TripStore: tripStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("GET /worldmap3d",
+	appMux.Handle("GET /worldmap3d",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
 					m.LoggingMiddleware(
 						handlers.NewGetWorldMap3dHandlerHandler().ServeHTTP)))))
 
-	mux.Handle("GET /createtripform",
+	appMux.Handle("GET /createtripform",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
 					m.LoggingMiddleware(
 						handlers.NewGetCreateTripHandler().ServeHTTP)))))
 
-	mux.Handle("GET /edittripform", // Edit trip
+	appMux.Handle("GET /edittripform", // Edit trip
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
@@ -287,27 +318,27 @@ func main() {
 								TripStore: tripStore,
 							}).ServeHTTP)))))
 
-	mux.Handle("GET /forgot-password",
+	appMux.Handle("GET /forgot-password",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(
 					handlers.NewGetForgotPasswordHandler().ServeHTTP))))
 
-	mux.Handle("GET /reset-password",
+	appMux.Handle("GET /reset-password",
 		m.CSPMiddleware(
 			m.TextHTMLMiddleware(
 				m.LoggingMiddleware(
 					handlers.NewGetResetPasswordHandlerParams().ServeHTTP))))
 
 	// API CALLS TODO: Possibly version
-	mux.Handle("GET /api/flights",
+	appMux.Handle("GET /api/flights",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.TextHTMLMiddleware(
 					m.LoggingMiddleware(
 						handlers.NewGetFlightHandler().ServeHTTP)))))
 
-	mux.Handle("GET /api/trips",
+	appMux.Handle("GET /api/trips",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.LoggingMiddleware(
@@ -315,7 +346,7 @@ func main() {
 						handlers.GetTripMapApiHandlerParams{
 							TripStore: tripStore}).ServeHTTP))))
 
-	mux.Handle("GET /api/statistics",
+	appMux.Handle("GET /api/statistics",
 		authMiddleware.AddUserToContext(
 			m.CSPMiddleware(
 				m.LoggingMiddleware(
@@ -323,7 +354,7 @@ func main() {
 						handlers.GetStatisticsHandlerParams{
 							TripStore: tripStore}).ServeHTTP))))
 
-	mux.Handle("POST /api/forgot-password",
+	appMux.Handle("POST /api/forgot-password",
 		m.CSPMiddleware(
 			m.LoggingMiddleware(
 				handlers.NewPostForgotPasswordHandler(
@@ -333,7 +364,7 @@ func main() {
 						EmailService:       emailService,
 					}).ServeHTTP)))
 
-	mux.Handle("POST /api/reset-password",
+	appMux.Handle("POST /api/reset-password",
 		m.CSPMiddleware(
 			m.LoggingMiddleware(
 				handlers.NewPostResetPasswordHandler(
@@ -343,19 +374,27 @@ func main() {
 					}).ServeHTTP)))
 
 	// Google Auth
-	mux.HandleFunc("/auth/google/login",
+	appMux.HandleFunc("/auth/google/login",
 		api.NewGoogleLoginHandlerParams(
 			api.GoogleLoginHandlerParams{
 				GoogleOauthConfig: googleOauthConfig,
 			}).ServeHTTP)
 
-	mux.HandleFunc("/auth/google/callback",
+	appMux.HandleFunc("/auth/google/callback",
 		api.NewGoogleCallbackHandlerParams(
 			api.GoogleCallbackHandlerParams{
 				UserStore:         userStore,
 				SessionStore:      sessionStore,
 				GoogleOauthConfig: googleOauthConfig,
 			}).ServeHTTP)
+
+	// Mount appMux under basePath (or root if basePath is empty)
+	mux := http.NewServeMux()
+	if basePath != "" {
+		mux.Handle(basePath+"/", http.StripPrefix(basePath, basePathMiddleware(basePath, appMux)))
+	} else {
+		mux.Handle("/", basePathMiddleware("", appMux))
+	}
 
 	appPort := os.Getenv("APP_PORT")
 	if appPort == "" {

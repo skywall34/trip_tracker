@@ -1,5 +1,7 @@
 package templates
 
+import "github.com/skywall34/trip-tracker/internal/middleware"
+
 templ Register() {
     <div class="flex-1 flex flex-col justify-center items-center px-4">
         <div class="w-full max-w-md">
@@ -8,9 +10,9 @@ templ Register() {
                 <p class="text-slate-400">Join us to start tracking your adventures</p>
             </div>
             <div class="bg-ink-800/90 backdrop-blur-xl border border-white/10 rounded-xl p-6 sm:p-8 shadow-glass">
-                <form hx-post="/register" hx-trigger="submit" hx-target-400="#register-error" class="space-y-4">
+                <form hx-post={ middleware.GetBasePath(ctx) + "/register" } hx-trigger="submit" hx-target-400="#register-error" class="space-y-4">
                     <div id="register-error" class="text-red-400 text-sm"></div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-slate-300 mb-1">First Name</label>
@@ -35,10 +37,10 @@ templ Register() {
                     <button type="submit" class="w-full bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 py-3 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow mt-6">
                         Create Account
                     </button>
-                    
+
                     <div class="text-center mt-4">
                         <span class="text-slate-400 text-sm">Already have an account? </span>
-                        <a href="/login" class="text-mint-400 hover:text-mint-300 font-medium transition-colors text-sm">Sign In</a>
+                        <a href={ middleware.GetBasePath(ctx) + "/login" } class="text-mint-400 hover:text-mint-300 font-medium transition-colors text-sm">Sign In</a>
                     </div>
                 </form>
             </div>
@@ -62,7 +64,7 @@ templ RegisterSuccess() {
             </div>
             <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">Welcome Aboard!</h1>
             <p class="text-slate-400 mb-8">Your account has been created successfully</p>
-            <a href="/" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow">
+            <a href={ middleware.GetBasePath(ctx) + "/" } class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-mint-600 to-mint-500 hover:from-mint-500 hover:to-mint-400 text-ink-900 rounded-xl font-semibold transition-all duration-300 shadow-mint-glow">
                 Start Tracking Your Adventures
             </a>
         </div>
