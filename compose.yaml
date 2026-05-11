@@ -73,5 +73,24 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+  cravings:
+    image: ghcr.io/skywall34/cravings:prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cravings.rule=Host(`themshin.com`) && PathPrefix(`/cravings`)"
+      - "traefik.http.routers.cravings.entrypoints=websecure"
+      - "traefik.http.routers.cravings.tls.certresolver=myresolver"
+      - "traefik.http.routers.cravings.middlewares=cravings-strip"
+      - "traefik.http.middlewares.cravings-strip.stripprefix.prefixes=/cravings"
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - /home/mshin/cravings/cravings.db:/app/cravings.db
+      - /home/mshin/cravings/.env:/app/.env:ro
+    environment:
+      - BASE_PATH=/cravings
+      - CRAVINGS_DB=/app/cravings.db
+    deploy:
+      mode: replicated
+      replicas: 1
 volumes:
   letsencrypt:
