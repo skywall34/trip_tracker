@@ -1,6 +1,8 @@
 services:
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower:latest
+    environment:
+      - DOCKER_API_VERSION=1.40
     command:
       - "--label-enable"
       - "--interval"
@@ -10,7 +12,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/mshin/.docker/config.json:/config.json:ro
   reverse-proxy:
-    image: traefik:v3.1
+    image: traefik:v3.6.15
     command:
       - "--providers.docker"
       - "--providers.docker.exposedbydefault=false"
@@ -41,6 +43,7 @@ services:
       - ./internal/database/database.db:/root/internal/database/database.db
       - ./.env:/root/.env:ro
     environment:
+      - DOCKER_API_VERSION=1.40
       - DOTENV_PATH=/root/.env
       - BASE_PATH=/fromnto
     deploy:
@@ -58,12 +61,15 @@ services:
       - /home/mshin/fantasy-trading/data:/root/data
       - /home/mshin/fantasy-trading/.env:/root/.env:ro
     environment:
+      - DOCKER_API_VERSION=1.40
       - DOTENV_PATH=/root/.env
     deploy:
       mode: replicated
       replicas: 1
   portfolio:
     image: ghcr.io/skywall34/portfolio:prod
+    environment:
+      - DOCKER_API_VERSION=1.40
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portfolio.rule=Host(`themshin.com`)"
@@ -87,6 +93,7 @@ services:
       - /home/mshin/cravings/cravings.db:/app/cravings.db
       - /home/mshin/cravings/.env:/app/.env:ro
     environment:
+      - DOCKER_API_VERSION=1.40
       - BASE_PATH=/cravings
       - CRAVINGS_DB=/app/cravings.db
     deploy:
